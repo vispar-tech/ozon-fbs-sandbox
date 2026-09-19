@@ -1,0 +1,110 @@
+name: Pull Request
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  changes:
+    name: Filter changes
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      client: ${{ steps.filter.outputs.client }}
+      docker: ${{ steps.filter.outputs.docker }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v4
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+              - 'tsconfig.base.json'
+              - 'package.json'
+              - 'pnpm-lock.yaml'
+            client:
+              - 'client/**'
+              - 'tsconfig.base.json'
+              - 'package.json'
+              - 'pnpm-lock.yaml'
+            docker:
+              - 'backend/Dockerfile'
+              - 'client/Dockerfile'
+              - 'docker-compose.yml'
+              - 'client/nginx.conf'
+              - '.dockerignore'
+              - 'package.json'
+              - 'pnpm-lock.yaml'
+
+  lint:
+    name: Lint
+    needs: changes
+    if: needs.changes.outputs.backend == 'true' || needs.changes.outputs.client == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      # pnpm version from packageManager field (pnpm@12.3.4)
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+
+  build-test:
+    name: Build and test
+    needs: changes
+    if: needs.changes.outputs.backend == 'true' || needs.changes.outputs.client == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      # pnpm version from packageManager field (pnpm@12.3.4)
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm test
+
+  docker:
+    name: Docker stack
+    needs: changes
+    if: needs.changes.outputs.docker == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and smoke-test Docker stack
+        run: |
+          docker compose up -d --build
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:8080/api/hello >/dev/null; then
+              echo "proxy OK"
+              docker compose down
+              exit 0
+            fi
+            sleep 2
+          done
+          docker compose logs
+          docker compose down
+          exit 1
