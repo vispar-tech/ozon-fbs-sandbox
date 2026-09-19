@@ -111,8 +111,8 @@ jobs:
 
   verify:
     name: Verify
-    needs: [lint, build-test, docker]
-    if: always()
+    needs: [changes, lint, build-test, docker]
+    if: always() && needs.changes.result == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Check all required jobs passed
