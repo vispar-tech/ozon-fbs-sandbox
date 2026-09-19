@@ -108,3 +108,15 @@ jobs:
           docker compose logs
           docker compose down
           exit 1
+
+  verify:
+    name: Verify
+    needs: [lint, build-test, docker]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check all required jobs passed
+        run: |
+          test "${{ needs.lint.result }}" = "success" || test "${{ needs.lint.result }}" = "skipped"
+          test "${{ needs.build-test.result }}" = "success" || test "${{ needs.build-test.result }}" = "skipped"
+          test "${{ needs.docker.result }}" = "success" || test "${{ needs.docker.result }}" = "skipped"
