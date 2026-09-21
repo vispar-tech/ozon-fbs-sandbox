@@ -14,9 +14,11 @@ FROM base AS build
 COPY pnpm-workspace.yaml pnpm-lock.yaml package.json tsconfig.base.json ./
 COPY backend/package.json backend/
 COPY client/package.json client/
+COPY shared/package.json shared/
 RUN --mount=type=cache,id=pnpm-backend,target=/pnpm/store \
   pnpm install --frozen-lockfile
 COPY backend/ backend/
+COPY shared/ shared/
 RUN pnpm --filter backend build
 # Self-contained prod tree: only backend deps, no devDeps
 RUN pnpm --filter backend deploy --prod /app/backend-prod

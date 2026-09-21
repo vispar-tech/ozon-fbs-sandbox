@@ -12,6 +12,7 @@
     "dev:backend": "pnpm --filter backend dev",
     "dev:client": "pnpm --filter client dev",
     "build": "pnpm --filter backend build && pnpm --filter client build",
+    "generate:types": "openapi-typescript .schemas/ozon-seller-api-openapi.json -o shared/src/generated/ozon-api.ts",
     "lint": "eslint .",
     "test": "pnpm --filter backend test"
   },
@@ -19,6 +20,8 @@
     "concurrently": "^10.0.5",
     "eslint": "^10.0.0",
     "eslint-config-love": "^157.0.0",
+    "openapi-typescript": "^7.9.0",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
     "typescript-eslint": "^8.58.1"
   }
 }

@@ -21,5 +21,8 @@ logs/
 .vscode/*
 !.vscode/extensions.json
 
+# ozon openapi scheme
+.schemas
+
 # deepwork state (git-local)
 .slim/deepwork/

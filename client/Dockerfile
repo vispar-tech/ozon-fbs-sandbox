@@ -14,9 +14,11 @@ FROM base AS build
 COPY pnpm-workspace.yaml pnpm-lock.yaml package.json tsconfig.base.json ./
 COPY backend/package.json backend/
 COPY client/package.json client/
+COPY shared/package.json shared/
 RUN --mount=type=cache,id=pnpm-client,target=/pnpm/store \
   pnpm install --frozen-lockfile
 COPY client/ client/
+COPY shared/ shared/
 RUN pnpm --filter client build
 
 FROM nginx:alpine
