@@ -20,6 +20,7 @@ logs/
 .idea/
 .vscode/*
 !.vscode/extensions.json
+.opencode/
 
 # ozon openapi scheme
 .schemas
