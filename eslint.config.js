@@ -26,6 +26,8 @@ export default [
     ignores: [
       '**/dist/**',
       '**/node_modules/**',
+      // Сгенерированный openapi-typescript файл (70k строк): линт не нужен и медленный
+      'shared/src/generated/**',
       // Plain JS outside any tsconfig: type-aware love rules can't parse it
       'eslint.config.js'
     ]
