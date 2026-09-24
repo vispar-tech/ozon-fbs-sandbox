@@ -72,6 +72,6 @@
 
 ## CI
 
-- `ci.yml` — единственный workflow: триггеры — push в main/develop + все PR; path-filter (dorny/paths-filter) только на PR, на push — все outputs true; jobs: `changes` / `frontend` / `backend` / `docker` / `verify`.
+- `ci.yml` — единственный workflow: триггеры — push в main + все PR; path-filter (dorny/paths-filter) только на PR, на push — все outputs true; jobs: `changes` / `frontend` / `backend` / `docker` / `verify`.
 - backend-job: Python 3.14, из `backend/` — poetry install --no-root --with dev, pre-commit (ruff-format, ruff, mypy), pytest.
 - docker-job: валидация compose (prod + dev-оверлей, merged `config --quiet`), `docker compose up -d --build` (prod) + retry-curl `http://localhost:8080/api/health`.
