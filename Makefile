@@ -35,7 +35,7 @@ test: ## Запустить pytest (backend)
 lint: lint-backend lint-frontend ## Запустить все линтеры: ruff + mypy (backend) + eslint (frontend)
 
 lint-backend: ## ruff-format + ruff + mypy (backend)
-	cd backend && poetry run ruff format --check && poetry run ruff check backend tests && poetry run mypy backend tests
+	cd backend && poetry run ruff format --check && poetry run ruff check backend tests scripts && poetry run mypy backend tests scripts
 
 lint-frontend: ## eslint (frontend)
 	cd frontend && pnpm lint

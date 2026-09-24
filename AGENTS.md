@@ -39,7 +39,7 @@
 
 ## Структура и где что менять
 
-- `backend/` — FastAPI бэкенд: routes, services, db, settings, tests; контракт — `backend/AGENTS.md`
+- `backend/` — FastAPI бэкенд: routes, services, db, settings, tests, scripts; контракт — `backend/AGENTS.md`
 - `frontend/src/app/main.tsx` — entry (StrictMode), импортирует `index.scss`; `frontend/src/app/App.tsx` — BrowserRouter + Routes; `frontend/src/app/AppShell.tsx` — шапка с навигацией
 - `frontend/src/pages/admin/` — дашборд продавцов; `frontend/src/pages/seller/` — детали кабинета; `frontend/src/pages/showcase/` — витрина дизайн-системы
 - `frontend/src/shared/api/` — типизированный API-клиент; `frontend/src/shared/model/` — типы; `frontend/src/shared/ui/` — дизайн-система

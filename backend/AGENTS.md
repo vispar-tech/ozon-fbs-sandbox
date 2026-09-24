@@ -16,9 +16,10 @@ FastAPI-бэкенд песочницы `ozon-fbs-sandbox`. Контракт д�
 | `poetry run python -m backend` | старт приложения на `:3000` |
 | `poetry run pytest` | тесты |
 | `poetry run ruff format --check` | проверка форматирования |
-| `poetry run ruff check backend tests` | линт |
-| `poetry run mypy backend tests` | проверка типов |
+| `poetry run ruff check backend tests scripts` | линт |
+| `poetry run mypy backend tests scripts` | проверка типов |
 | `poetry run alembic upgrade head` | применить миграции |
+| `poetry run python scripts/fetch_ozon_fixture.py ...` | скачать реальный ответ Ozon Seller API в `data/fixtures/` (ключи — флаги `--client-id`/`--api-key` или env `OZON_CLIENT_ID`/`OZON_API_KEY`) |
 
 ## Окружение
 
@@ -46,6 +47,7 @@ FastAPI-бэкенд песочницы `ozon-fbs-sandbox`. Контракт д�
 - `backend/db/` — `base.py`, `meta.py`, `utils.py` (create/drop database для тестов), `dependencies.py`, `models/` (SQLAlchemy-модели), `repositories/` (BaseRepository), `types/` (типы доменной границы: `dates.py` — iso-ms-Z сериализация, `pydantic_type.py` — JSONB-колонка на Pydantic-модели), `migrations/` (alembic; `alembic.ini` в `backend/`; исключён из ruff)
 - `backend/schemas/` — web-DTO: `base.py` (ApiModel, from_attributes), `cabinets.py`, `dates.py` (реэкспорт дат из `db/types`)
 - `backend/services/` — `base.py` (BaseService)
+- `backend/scripts/` — `fetch_ozon_fixture.py` (CLI: реальный ответ Ozon Seller API → `data/fixtures/`)
 - `backend/data/fixtures/` — `demo-cabinet.json` (фикстура кабинета: seller_info, roles)
 - `backend/static/docs/` — self-hosted assets swagger-ui / redoc
 - `tests/` — pytest: `conftest.py` + по файлу на роутер/модуль
@@ -56,6 +58,6 @@ FastAPI-бэкенд песочницы `ozon-fbs-sandbox`. Контракт д�
 
 ## Lint
 
-- ruff-format (`--check`) + ruff + mypy — напрямую (команды в `Makefile` `lint-backend`); husky-хук запускает их через `make lint`.
+- ruff-format (`--check`) + ruff + mypy — напрямую (команды в `Makefile` `lint-backend`; скоуп — `backend`, `tests`, `scripts`); husky-хук запускает их через `make lint`.
 - mypy: `strict = true` (`backend/pyproject.toml`).
 - ruff: line-length 88, complexity ≤ 10; исключён `backend/db/migrations/`; в `tests/` разрешён assert (S101).
