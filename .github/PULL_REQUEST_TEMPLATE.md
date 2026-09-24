@@ -9,8 +9,8 @@
 ## Testing
 
 - [ ] Added tests covering the changes
-- [ ] All existing tests pass (`pnpm test`)
-- [ ] `pnpm lint` and `pnpm build` pass
+- [ ] Frontend: `pnpm lint` and `pnpm build` pass (in `frontend/`)
+- [ ] Backend: `poetry run pytest` and `poetry run pre-commit run -a` pass (in `backend/`)
 - [ ] Docker stack smoke-tested if Docker/CI files changed
 
 ## Checklist

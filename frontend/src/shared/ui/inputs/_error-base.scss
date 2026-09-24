@@ -1,0 +1,7 @@
+@mixin error-base {
+  border-color: var(--color-danger) !important;
+
+  &:focus {
+    box-shadow: 0 0 0 3px var(--color-danger-bg) !important;
+  }
+}

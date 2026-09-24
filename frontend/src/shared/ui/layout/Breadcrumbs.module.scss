@@ -1,0 +1,39 @@
+.breadcrumbs {
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+}
+
+.list {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+}
+
+.link {
+  color: var(--accent);
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.text {
+  color: var(--text-h);
+}
+
+.current {
+  color: var(--text-secondary);
+}
+
+.separator {
+  margin: 0 var(--space-2);
+  color: var(--text-secondary);
+}

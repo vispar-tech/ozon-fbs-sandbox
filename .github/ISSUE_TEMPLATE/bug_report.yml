@@ -26,8 +26,8 @@ body:
       label: Area
       description: Which part of the project is affected?
       options:
-        - Backend (Hono)
-        - Client (React/Vite)
+        - Backend (FastAPI)
+        - Frontend (React/Vite)
         - Docker / CI
         - Other
     validations:
@@ -44,8 +44,8 @@ body:
     id: environment
     attributes:
       label: Environment
-      description: OS, Node version, Docker version if relevant.
-      placeholder: macOS 14, Node 26.9.0, Docker 27
+      description: OS, Python/Node/Docker version if relevant.
+      placeholder: macOS 14, Python 3.13, Node 26.9.0, Docker 27
     validations:
       required: true
   - type: textarea

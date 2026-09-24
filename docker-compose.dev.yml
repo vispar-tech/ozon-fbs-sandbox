@@ -1,0 +1,68 @@
+# Dev-оверлей поверх docker-compose.yml:
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+# Отличия от prod-стека:
+#   - dev-образ (target: dev, с dev-зависимостями) + BACKEND_RELOAD
+#   - migrator-сервис: dev-образ + код смонтирован, alembic upgrade head
+#   - БД (сервис db) — изолированная от prod-стека: своя БД ozon_fbs_sandbox_dev,
+#     свой volume pgdata_dev, хост-порт 5433 (prod — 5432)
+#   - код backend смонтирован в контейнер (live-reload)
+services:
+  backend:
+    build:
+      target: dev
+    image: backend:dev
+    env_file:
+      - path: ./backend/.env
+        required: false
+    environment:
+      BACKEND_RELOAD: "True"
+      BACKEND_DB_HOST: db
+      BACKEND_DB_BASE: ozon_fbs_sandbox_dev
+    volumes:
+      - ./backend:/app/src/
+    depends_on:
+      db:
+        condition: service_healthy
+      migrator:
+        condition: service_completed_successfully
+
+  db:
+    image: postgres:18.3-trixie
+    ports:
+      - "127.0.0.1:5433:5432"
+    environment:
+      POSTGRES_USER: ozon_fbs_sandbox
+      POSTGRES_PASSWORD: ozon_fbs_sandbox
+      POSTGRES_DB: ozon_fbs_sandbox_dev
+    volumes:
+      - pgdata_dev:/var/lib/postgresql
+    restart: unless-stopped
+    healthcheck:
+      test: pg_isready -U ozon_fbs_sandbox
+      interval: 2s
+      timeout: 3s
+      retries: 40
+
+  migrator:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: dev
+    image: backend:dev
+    restart: "no"
+    command: alembic upgrade head
+    env_file:
+      - path: ./backend/.env
+        required: false
+    environment:
+      BACKEND_RELOAD: "False"
+      BACKEND_DB_HOST: db
+      BACKEND_DB_BASE: ozon_fbs_sandbox_dev
+    volumes:
+      - ./backend:/app/src/
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata_dev:

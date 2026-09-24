@@ -1,0 +1,36 @@
+@use './field-base' as *;
+@use './error-base' as *;
+
+.textarea {
+  @include field-base;
+
+  height: auto;
+  min-height: 72px;
+  padding: var(--space-2) var(--space-3);
+  resize: vertical;
+  line-height: var(--leading-normal);
+
+  &:hover:not(:disabled):not(:focus) {
+    border-color: var(--border-strong);
+  }
+
+  &::placeholder {
+    color: var(--text-secondary);
+  }
+}
+
+.textarea-error {
+  @include error-base;
+}
+
+.textarea-sm {
+  min-height: 56px;
+  font-size: var(--text-sm);
+  padding: var(--space-1) var(--space-2);
+}
+
+.textarea-lg {
+  min-height: 88px;
+  font-size: var(--text-md);
+  padding: var(--space-3) var(--space-4);
+}

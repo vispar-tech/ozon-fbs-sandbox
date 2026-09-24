@@ -1,0 +1,62 @@
+@use './visually-hidden' as *;
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+}
+
+.track {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  background: var(--border-strong);
+  border-radius: var(--radius-full);
+  transition: background var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  background: var(--accent-text);
+  border-radius: 50%;
+  transition: transform var(--transition-fast);
+  box-shadow: var(--shadow-xs);
+}
+
+.input {
+  @include visually-hidden;
+}
+
+.input:checked + .track {
+  background: var(--accent);
+}
+
+.input:checked + .track .thumb {
+  transform: translateX(18px);
+}
+
+.input:focus-visible + .track {
+  box-shadow: var(--focus-ring);
+}
+
+.input:disabled + .track {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.input:disabled ~ .label {
+  opacity: 0.45;
+}
+
+.label {
+  font-size: var(--text-base);
+  line-height: 1;
+  color: var(--text-h);
+  user-select: none;
+}

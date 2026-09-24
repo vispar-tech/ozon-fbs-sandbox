@@ -22,8 +22,14 @@ logs/
 !.vscode/extensions.json
 .opencode/
 
+# local personal compose override (не в remote)
+docker-compose.override.yml
+
 # ozon openapi scheme
 .schemas
 
 # deepwork state (git-local)
 .slim/deepwork/
+
+# Playwright MCP artifacts
+.playwright-mcp/

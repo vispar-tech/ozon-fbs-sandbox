@@ -1,0 +1,64 @@
+@use '../inputs/field-base' as *;
+@use '../inputs/error-base' as *;
+
+.wrap {
+  position: relative;
+}
+
+.search-input {
+  @include field-base;
+  padding-left: var(--space-8);
+  padding-right: var(--space-8);
+
+  &::placeholder {
+    color: var(--text-secondary);
+  }
+
+  &::-webkit-search-cancel-button,
+  &::-webkit-search-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+}
+
+.search-input-error {
+  @include error-base;
+}
+
+.icon {
+  position: absolute;
+  left: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+  pointer-events: none;
+}
+
+.clear {
+  position: absolute;
+  right: var(--space-2);
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+
+  &:hover {
+    background: var(--bg-subtle);
+    color: var(--text-h);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}

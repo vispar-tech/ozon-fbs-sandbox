@@ -1,0 +1,51 @@
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+.icon svg {
+  width: 90%;
+  height: 90%;
+}
+
+.iconPrimary {
+  color: var(--accent-text);
+}
+
+.iconSecondary {
+  color: var(--accent);
+}
+
+.iconGhost {
+  color: var(--text);
+}
+
+.iconDanger {
+  color: var(--color-danger);
+}
+
+.iconLink {
+  color: var(--accent);
+}
+
+.iconXs {
+  width: 14px;
+  height: 14px;
+}
+
+.iconSm {
+  width: 16px;
+  height: 16px;
+}
+
+.iconMd {
+  width: 20px;
+  height: 20px;
+}
+
+.iconLg {
+  width: 24px;
+  height: 24px;
+}

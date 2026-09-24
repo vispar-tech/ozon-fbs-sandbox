@@ -3,6 +3,7 @@ name: CI
 on:
   push:
     branches: [main, develop]
+  pull_request:
 
 permissions:
   contents: read
@@ -12,29 +13,130 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint-build-test:
+  changes:
+    name: Filter changes
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      frontend: ${{ steps.out.outputs.frontend }}
+      docker: ${{ steps.out.outputs.docker }}
+      python-backend: ${{ steps.out.outputs.python-backend }}
     steps:
       - uses: actions/checkout@v7
+      - uses: dorny/paths-filter@v4
+        if: github.event_name == 'pull_request'
+        id: filter
+        with:
+          filters: |
+            frontend:
+              - 'frontend/**'
+            docker:
+              - 'backend/Dockerfile'
+              - 'frontend/Dockerfile'
+              - 'docker-compose.yml'
+              - 'docker-compose.dev.yml'
+              - 'frontend/nginx.conf'
+            python-backend:
+              - 'backend/**'
+      - id: out
+        run: |
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "frontend=true" >> "$GITHUB_OUTPUT"
+            echo "docker=true" >> "$GITHUB_OUTPUT"
+            echo "python-backend=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "frontend=${{ steps.filter.outputs.frontend }}" >> "$GITHUB_OUTPUT"
+            echo "docker=${{ steps.filter.outputs.docker }}" >> "$GITHUB_OUTPUT"
+            echo "python-backend=${{ steps.filter.outputs.python-backend }}" >> "$GITHUB_OUTPUT"
+          fi
 
-      # pnpm version from packageManager field (pnpm@12.3.4)
+  frontend:
+    name: Frontend build
+    needs: changes
+    if: needs.changes.outputs.frontend == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
-
+        with:
+          package_json_file: frontend/package.json
       - uses: actions/setup-node@v7
         with:
-          node-version-file: .nvmrc
+          node-version-file: frontend/.nvmrc
           cache: pnpm
-
+          cache-dependency-path: frontend/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
+        working-directory: frontend
       - run: pnpm lint
+        working-directory: frontend
       - run: pnpm build
-      - run: pnpm test
+        working-directory: frontend
+
+  backend:
+    name: Backend checks
+    needs: changes
+    if: needs.changes.outputs.python-backend == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: backend
+    services:
+      postgres:
+        image: postgres:18.3-trixie
+        env:
+          POSTGRES_USER: ozon_fbs_sandbox
+          POSTGRES_PASSWORD: ozon_fbs_sandbox
+          POSTGRES_DB: ozon_fbs_sandbox
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U ozon_fbs_sandbox"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      BACKEND_DB_HOST: localhost
+      BACKEND_DB_PORT: 5432
+      BACKEND_DB_USER: ozon_fbs_sandbox
+      BACKEND_DB_PASS: ozon_fbs_sandbox
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+      - name: Install Poetry
+        run: pip install poetry
+      - name: Install backend deps
+        run: poetry install --no-root --with dev
+      - name: Lint backend
+        run: |
+          poetry run pre-commit run -a ruff-format
+          poetry run pre-commit run -a ruff
+          poetry run pre-commit run -a mypy
+      - name: Test backend
+        run: poetry run pytest -vv
+
+  docker:
+    name: Docker stack
+    needs: changes
+    if: needs.changes.outputs.docker == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - name: Validate compose files
+        run: docker compose -f docker-compose.yml -f docker-compose.dev.yml config --quiet
       - name: Build and smoke-test Docker stack
         run: |
-          docker compose up -d --build
+          docker compose up -d --build || { docker compose logs; docker compose down; exit 1; }
           for i in $(seq 1 30); do
-            if curl -sf http://localhost:8080/api/hello >/dev/null; then
+            if curl -sf http://localhost:8080/api/health >/dev/null; then
               echo "proxy OK"
               docker compose down
               exit 0
@@ -44,3 +146,15 @@ jobs:
           docker compose logs
           docker compose down
           exit 1
+
+  verify:
+    name: Verify
+    needs: [changes, frontend, backend, docker]
+    if: always() && needs.changes.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check all required jobs passed
+        run: |
+          test "${{ needs.frontend.result }}" = "success" || test "${{ needs.frontend.result }}" = "skipped"
+          test "${{ needs.backend.result }}" = "success" || test "${{ needs.backend.result }}" = "skipped"
+          test "${{ needs.docker.result }}" = "success" || test "${{ needs.docker.result }}" = "skipped"
