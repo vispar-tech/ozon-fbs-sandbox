@@ -1,0 +1,2 @@
+# Exclude generated code from GitHub language statistics and diffs
+frontend/src/shared/model/generated/* linguist-generated
