@@ -1,0 +1,33 @@
+.banner {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-danger-bg);
+  border: 1px solid var(--color-danger-border);
+}
+
+.icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  color: var(--color-danger);
+  margin: 0 0 var(--space-1);
+}
+
+.message {
+  font-size: var(--text-sm);
+  color: var(--text);
+  margin: 0;
+  line-height: var(--leading-relaxed);
+}

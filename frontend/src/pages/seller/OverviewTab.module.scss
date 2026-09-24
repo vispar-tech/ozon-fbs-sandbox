@@ -1,0 +1,132 @@
+.overview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-4);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.fieldLabel {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.fieldValue {
+  font-size: var(--text-base);
+  color: var(--text-h);
+  word-break: break-word;
+}
+
+.fieldValueEmpty {
+  color: var(--text-secondary);
+}
+
+.mono {
+  font-family: var(--mono);
+  font-size: var(--text-sm);
+}
+
+.subscriptionGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-4);
+}
+
+.empty {
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+}
+
+.ratingsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-4);
+}
+
+.ratingBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.ratingMain {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.ratingValue {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  color: var(--text-h);
+}
+
+.ratingValues {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.ratingField {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.ratingLabel {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+}
+
+.ratingData {
+  font-size: var(--text-sm);
+  color: var(--text-h);
+}
+
+.ratingDate {
+  font-size: var(--text-xs);
+  font-family: var(--mono);
+  color: var(--text-secondary);
+}
+
+.expiresAt {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+
+  code {
+    font-family: var(--mono);
+    font-size: var(--text-xs);
+  }
+}
+
+.rolesList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+
+.methods {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.noMethods {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  font-style: italic;
+}

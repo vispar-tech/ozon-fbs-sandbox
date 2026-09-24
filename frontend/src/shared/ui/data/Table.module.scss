@@ -1,0 +1,106 @@
+.wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.wrap-sticky {
+  overflow-y: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-base);
+}
+
+.table th {
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  font-weight: var(--weight-semibold);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  background: var(--bg-subtle);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.table td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border);
+  color: var(--text-h);
+  vertical-align: middle;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.table tbody tr:hover td {
+  background: var(--bg-subtle);
+}
+
+.table-compact td {
+  padding: var(--space-2) var(--space-3);
+}
+
+.table-compact th {
+  padding: var(--space-2) var(--space-3);
+}
+
+.table-sticky {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table-sticky th {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+}
+
+.checkbox-cell {
+  width: var(--space-12);
+  text-align: center;
+}
+
+.empty-cell {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: var(--space-8);
+}
+
+.sort-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--text-h);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.sort-icon {
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.sort-icon-asc,
+.sort-icon-desc {
+  color: var(--accent);
+}
+
+.sort-icon-none {
+  opacity: 0.45;
+}

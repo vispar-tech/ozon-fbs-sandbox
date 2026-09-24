@@ -1,7 +1,0 @@
-packages:
-  - backend
-  - client
-  - shared
-
-allowBuilds:
-  esbuild: true

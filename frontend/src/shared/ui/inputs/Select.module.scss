@@ -1,0 +1,114 @@
+@use './field-base' as *;
+@use './error-base' as *;
+@use './menu-base' as *;
+
+$menu-max-height: 240px;
+
+.select {
+  @include field-base;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  text-align: left;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    border-color: var(--border-strong);
+  }
+}
+
+.select-placeholder {
+  color: var(--text-secondary);
+}
+
+.select-error {
+  @include error-base;
+}
+
+.select-sm {
+  height: 32px;
+  font-size: var(--text-sm);
+}
+
+.select-lg {
+  height: 40px;
+  font-size: var(--text-md);
+}
+
+.chevron {
+  flex-shrink: 0;
+  color: var(--text-secondary);
+  transition: transform var(--transition-fast);
+}
+
+.chevron-open {
+  transform: rotate(180deg);
+}
+
+.panel {
+  @include menu-base;
+}
+
+.search {
+  width: 100%;
+  margin-bottom: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  background: var(--bg);
+  color: var(--text-h);
+  font-size: var(--text-sm);
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.listbox {
+  max-height: $menu-max-height;
+  overflow-y: auto;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: none;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  color: var(--text-h);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+
+  &:hover:not(:disabled) {
+    background: var(--bg-subtle);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+.option-selected {
+  color: var(--accent);
+  font-weight: var(--weight-medium);
+}
+
+.empty {
+  padding: var(--space-2) var(--space-3);
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+}

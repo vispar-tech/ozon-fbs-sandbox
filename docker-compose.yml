@@ -1,19 +1,76 @@
 services:
   backend:
     build:
-      context: .
-      dockerfile: backend/Dockerfile
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file:
+      - path: ./backend/.env
+        required: false
+    environment:
+      BACKEND_HOST: 0.0.0.0
+      BACKEND_PORT: 3000
+      BACKEND_RELOAD: "False"
+      BACKEND_DB_HOST: db
+      BACKEND_DB_PORT: 5432
+      BACKEND_DB_USER: ozon_fbs_sandbox
+      BACKEND_DB_PASS: ozon_fbs_sandbox
+      BACKEND_DB_BASE: ozon_fbs_sandbox
     ports:
       - "127.0.0.1:3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+      migrator:
+        condition: service_completed_successfully
     restart: unless-stopped
 
-  client:
+  db:
+    image: postgres:18.3-trixie
+    ports:
+      - "127.0.0.1:5432:5432"
+    environment:
+      POSTGRES_USER: ozon_fbs_sandbox
+      POSTGRES_PASSWORD: ozon_fbs_sandbox
+      POSTGRES_DB: ozon_fbs_sandbox
+    volumes:
+      - pgdata:/var/lib/postgresql
+    restart: unless-stopped
+    healthcheck:
+      test: pg_isready -U ozon_fbs_sandbox
+      interval: 2s
+      timeout: 3s
+      retries: 40
+
+  migrator:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file:
+      - path: ./backend/.env
+        required: false
+    environment:
+      BACKEND_RELOAD: "False"
+      BACKEND_DB_HOST: db
+      BACKEND_DB_PORT: 5432
+      BACKEND_DB_USER: ozon_fbs_sandbox
+      BACKEND_DB_PASS: ozon_fbs_sandbox
+      BACKEND_DB_BASE: ozon_fbs_sandbox
+    command: alembic upgrade head
+    restart: "no"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
     build:
       context: .
-      dockerfile: client/Dockerfile
+      dockerfile: frontend/Dockerfile
     ports:
       - "127.0.0.1:8080:80"
     depends_on:
       backend:
         condition: service_healthy
     restart: unless-stopped
+
+volumes:
+  pgdata:

@@ -1,0 +1,39 @@
+@use './field-base' as *;
+@use './error-base' as *;
+
+.input {
+  @include field-base;
+
+  &:hover:not(:disabled):not(:focus) {
+    border-color: var(--border-strong);
+  }
+
+  &::placeholder {
+    color: var(--text-secondary);
+  }
+
+  &[type='number'] {
+    -moz-appearance: textfield;
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+}
+
+.input-error {
+  @include error-base;
+}
+
+.input-sm {
+  height: 32px;
+  font-size: var(--text-sm);
+  padding: 0 var(--space-2);
+}
+
+.input-lg {
+  height: 40px;
+  font-size: var(--text-md);
+}
