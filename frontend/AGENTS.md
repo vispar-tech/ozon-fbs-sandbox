@@ -15,8 +15,10 @@ React/Vite-воркспейс монорепо `ozon-fbs-sandbox`. Корнев�
 | `pnpm dev` | Vite dev-сервер на `:5173`, прокси `/api` → `http://localhost:3000` |
 | `pnpm build` | `tsc6 -b && vite build` → `dist/` |
 | `pnpm lint` | eslint (eslint-config-love + simple-import-sort + no-separators) |
+| `pnpm typecheck` | `tsc6 -b` (проверка типов) |
+| `pnpm install` | установка зависимостей; `prepare` ставит husky-хуки (`cd .. && husky frontend/.husky`) |
 | `pnpm preview` | локальный просмотр `dist/` |
-| `pnpm generate:types` | `openapi-typescript` из `.schemas/ozon-seller-api-openapi.json` → `src/shared/model/generated/ozon-api.ts` |
+| `pnpm generate:types` | `openapi-typescript` из `../ozon-seller-api-schema/schemas/ozon-seller-api-openapi.json` → `src/shared/model/generated/ozon-api.ts` |
 
 ## Структура
 
@@ -29,6 +31,7 @@ React/Vite-воркспейс монорепо `ozon-fbs-sandbox`. Корнев�
 - `public/` — только `favicon.svg`; `vite.config.ts` — dev-прокси `/api` (хардкод `localhost:3000`), resolve.alias `@` → `src/`.
 - `nginx.conf` — prod: раздача `dist/`, прокси `/api` → `backend:3000`, security-заголовки, gzip, кэш `/assets/` (immutable).
 - `Dockerfile` — multi-stage: `pnpm build` → nginx runtime.
+- `.husky/pre-commit` — husky-хук (ставится `prepare` при `pnpm install`): обновляет субмодуль схемы → `pnpm generate:types` → `pnpm typecheck` → `make lint` из корня
 
 ## Конвенции
 

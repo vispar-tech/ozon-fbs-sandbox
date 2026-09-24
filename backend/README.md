@@ -31,7 +31,7 @@ cp .env.example .env   # оба файла внутри backend/
 
 ```bash
 poetry run pytest
-poetry run pre-commit run -a   # ruff-format + ruff + mypy; конфиг — в корне репо
+poetry run ruff format --check && poetry run ruff check backend tests && poetry run mypy backend tests
 ```
 
 Из корня: `make test`, `make lint-backend`.

@@ -15,7 +15,9 @@ FastAPI-бэкенд песочницы `ozon-fbs-sandbox`. Контракт д�
 | `poetry install` | установка зависимостей |
 | `poetry run python -m backend` | старт приложения на `:3000` |
 | `poetry run pytest` | тесты |
-| `poetry run pre-commit run -a` | ruff-format + ruff + mypy; конфиг — `.pre-commit-config.yaml` в корне репо |
+| `poetry run ruff format --check` | проверка форматирования |
+| `poetry run ruff check backend tests` | линт |
+| `poetry run mypy backend tests` | проверка типов |
 | `poetry run alembic upgrade head` | применить миграции |
 
 ## Окружение
@@ -54,6 +56,6 @@ FastAPI-бэкенд песочницы `ozon-fbs-sandbox`. Контракт д�
 
 ## Lint
 
-- pre-commit (ruff-format, ruff с `--fix`, mypy): конфиг в корне репо; хуки самонаходят `backend/` из любого cwd; `pre-commit install` — из git-root.
+- ruff-format (`--check`) + ruff + mypy — напрямую (команды в `Makefile` `lint-backend`); husky-хук запускает их через `make lint`.
 - mypy: `strict = true` (`backend/pyproject.toml`).
 - ruff: line-length 88, complexity ≤ 10; исключён `backend/db/migrations/`; в `tests/` разрешён assert (S101).

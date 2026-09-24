@@ -1,0 +1,13 @@
+# Свежая схема (cron коммитит ежедневно) + gitlink в индекс.
+git submodule update --init --remote ozon-seller-api-schema
+git add ozon-seller-api-schema
+
+# Типы из свежей схемы + проверка, что код с ними собирается.
+cd frontend
+pnpm generate:types
+pnpm typecheck
+cd ..
+git add frontend/src/shared/model/generated/ozon-api.ts
+
+# Все линтеры: расхождение схемы/типов с кодом блокирует коммит.
+make lint

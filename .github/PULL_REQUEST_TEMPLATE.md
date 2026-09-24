@@ -10,7 +10,7 @@
 
 - [ ] Added tests covering the changes
 - [ ] Frontend: `pnpm lint` and `pnpm build` pass (in `frontend/`)
-- [ ] Backend: `poetry run pytest` and `poetry run pre-commit run -a` pass (in `backend/`)
+- [ ] Backend: `poetry run pytest` and `poetry run ruff format --check && poetry run ruff check backend tests && poetry run mypy backend tests` pass (in `backend/`)
 - [ ] Docker stack smoke-tested if Docker/CI files changed
 
 ## Checklist

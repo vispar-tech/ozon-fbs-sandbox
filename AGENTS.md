@@ -20,12 +20,12 @@
 | `make dev` | backend `:3000` + Vite `:5173`; падение любого останавливает второй и завершает make |
 | `make dev-backend` / `make dev-frontend` | по отдельности (`cd backend && poetry run python -m backend` / `cd frontend && pnpm dev`) |
 | `make test` | pytest (backend) |
-| `make lint` | все линтеры: pre-commit (backend) + eslint (frontend) |
-| `make lint-backend` | pre-commit: ruff-format + ruff + mypy (конфиг — `.pre-commit-config.yaml` в корне) |
+| `make lint` | все линтеры: ruff + mypy (backend) + eslint (frontend) |
+| `make lint-backend` | ruff-format + ruff + mypy (backend) |
 | `make lint-frontend` | eslint (love + simple-import-sort + no-separators) |
 | `make build` | `tsc6 -b && vite build` → `dist/` |
 | `make migrate` | alembic upgrade head (backend) |
-| `make generate-types` | `frontend/src/shared/model/generated/ozon-api.ts` из `.schemas/ozon-seller-api-openapi.json` (openapi-typescript) |
+| `make generate-types` | `frontend/src/shared/model/generated/ozon-api.ts` из `ozon-seller-api-schema/schemas/ozon-seller-api-openapi.json` (openapi-typescript) |
 | `make docker-up` | prod-стек: frontend `:8080` (nginx) → backend `:3000` + postgres `:5432` + migrator |
 | `make docker-dev-up` | dev-стек: reload + migrator + изолированная БД (override `docker-compose.dev.yml`) |
 | `make docker-down` / `make docker-dev-down` | остановка стеков |
@@ -46,10 +46,12 @@
 - `frontend/eslint.config.js` — lint (love + simple-import-sort + no-separators)
 - `frontend/tsconfig.base.json` — strict-конфиг (extends из app/node конфигов)
 - `frontend/package.json` — единственный package.json (скрипты, зависимости, packageManager)
+- `frontend/.husky/pre-commit` — husky-хук (ставится `prepare` при `pnpm install`): обновляет субмодуль схемы (fetch на каждый коммит — нужна сеть) → перегенерирует типы → typecheck → `make lint`
+- `ozon-seller-api-schema/` — git submodule (vispar-tech/ozon-seller-api-schema): ежедневное зеркало OpenAPI-схемы Ozon Seller API; контракт — `ozon-seller-api-schema/AGENTS.md`
 - `.github/workflows/ci.yml` — единственный CI-workflow (см. секцию CI)
 - `Makefile` — команды из корня
 - `docker-compose.yml` — prod-стек (frontend, backend, postgres `db`, one-shot `migrator`); `docker-compose.dev.yml` — dev-оверлей (reload, migrator, изолированная БД); `backend/Dockerfile`, `frontend/Dockerfile` — контейнеризация
-- `.pre-commit-config.yaml` — pre-commit в корне (ruff-format + ruff + mypy для backend); `pre-commit install` из git-root работает
+- backend-линтеры: ruff-format + ruff + mypy (конфиг — `backend/pyproject.toml`); запускаются напрямую через `make lint` (внутри husky-хука)
 - `backend/.env.example` — шаблон окружения (переменные `BACKEND_*`)
 
 ## Окружение
@@ -60,7 +62,7 @@
 
 ## Работа с AI-агентами (opencode)
 
-- `AGENTS.md` (корень) + `backend/AGENTS.md` + `frontend/AGENTS.md` — контракты; ближайший файл в дереве имеет приоритет.
+- `AGENTS.md` (корень) + `backend/AGENTS.md` + `frontend/AGENTS.md` + `ozon-seller-api-schema/AGENTS.md` (субмодуль) — контракты; ближайший файл в дереве имеет приоритет.
 
 ## Конвенции
 
@@ -73,5 +75,5 @@
 ## CI
 
 - `ci.yml` — единственный workflow: триггеры — push в main + все PR; path-filter (dorny/paths-filter) только на PR, на push — все outputs true; jobs: `changes` / `frontend` / `backend` / `docker` / `verify`.
-- backend-job: Python 3.14, из `backend/` — poetry install --no-root --with dev, pre-commit (ruff-format, ruff, mypy), pytest.
+- backend-job: Python 3.14, из `backend/` — poetry install --no-root --with dev, ruff-format + ruff + mypy, pytest.
 - docker-job: валидация compose (prod + dev-оверлей, merged `config --quiet`), `docker compose up -d --build` (prod) + retry-curl `http://localhost:8080/api/health`.
