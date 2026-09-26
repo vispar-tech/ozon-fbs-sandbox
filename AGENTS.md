@@ -6,7 +6,7 @@
 
 - Python 3.14 + Poetry — `backend/` (FastAPI)
 - Node ≥ 26.9.0, pnpm 12.3.4 — `frontend/` (React 19 + Vite 8 + react-router-dom); все node-утилиты (package.json, .nvmrc, eslint, tsconfig, lockfile) только внутри `frontend/`
-- Типы — во `frontend/src/shared/model/` (FSD shared/model, только типы, без runtime)
+- Типы — во `frontend/src/shared/model/` (FSD shared/model, только типы, без runtime); доменные типы — тонкие алиасы на `generated/backend-api.ts`, который генерируется из схемы бэкенда, поэтому контракт правь в бэке, а не в `.ts`
 - Docker: nginx для frontend, python для backend, postgres для БД, docker-compose для стека
 - TypeScript: `typescript` заалиасен на `@typescript/typescript6` (бинарь `tsc6`)
 
@@ -26,6 +26,7 @@
 | `make build` | `tsc6 -b && vite build` → `dist/` |
 | `make migrate` | alembic upgrade head (backend) |
 | `make generate-types` | `frontend/src/shared/model/generated/ozon-api.ts` из `ozon-seller-api-schema/schemas/ozon-seller-api-openapi.json` (openapi-typescript) |
+| `make generate-api-types` | `frontend/src/shared/model/generated/backend-api.ts` из схемы самого бэкенда (openapi-typescript; промежуточный дамп — `backend/scripts/dump_openapi.py`, офлайн, без БД и сервера) |
 | `make docker-up` | prod-стек: frontend `:8080` (nginx) → backend `:3000` + postgres `:5432` + migrator |
 | `make docker-dev-up` | dev-стек: reload + migrator + изолированная БД (override `docker-compose.dev.yml`) |
 | `make docker-down` / `make docker-dev-down` | остановка стеков |
@@ -46,7 +47,7 @@
 - `frontend/eslint.config.js` — lint (love + simple-import-sort + no-separators)
 - `frontend/tsconfig.base.json` — strict-конфиг (extends из app/node конфигов)
 - `frontend/package.json` — единственный package.json (скрипты, зависимости, packageManager)
-- `frontend/.husky/pre-commit` — husky-хук (ставится `prepare` при `pnpm install`): обновляет субмодуль схемы (fetch на каждый коммит — нужна сеть) → перегенерирует типы → typecheck → `make lint`
+- `frontend/.husky/pre-commit` — husky-хук (ставится `prepare` при `pnpm install`): обновляет субмодуль схемы (fetch на каждый коммит — нужна сеть) → перегенерирует типы из схемы Ozon и из схемы бэкенда → typecheck → `make lint`
 - `ozon-seller-api-schema/` — git submodule (vispar-tech/ozon-seller-api-schema): ежедневное зеркало OpenAPI-схемы Ozon Seller API; контракт — `ozon-seller-api-schema/AGENTS.md`
 - `.github/workflows/ci.yml` — единственный CI-workflow (см. секцию CI)
 - `Makefile` — команды из корня

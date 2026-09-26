@@ -19,19 +19,20 @@ React/Vite-воркспейс монорепо `ozon-fbs-sandbox`. Корнев�
 | `pnpm install` | установка зависимостей; `prepare` ставит husky-хуки (`cd .. && husky frontend/.husky`) |
 | `pnpm preview` | локальный просмотр `dist/` |
 | `pnpm generate:types` | `openapi-typescript` из `../ozon-seller-api-schema/schemas/ozon-seller-api-openapi.json` → `src/shared/model/generated/ozon-api.ts` |
+| `pnpm generate:api-types` | `openapi-typescript` из `../backend/.openapi.json` → `src/shared/model/generated/backend-api.ts`; промежуточный дамп делает `make generate-api-types` из корня |
 
 ## Структура
 
 - `src/app/main.tsx` — entry (StrictMode), импортирует глобальный `index.scss`; `src/app/App.tsx` — BrowserRouter + ErrorBoundary + ToastProvider + Routes: `AppShell` (layout-route через `<Outlet />`) оборачивает `/` и `/seller/:id`; `/design-code` — витрина дизайн-системы вне шелла (ссылки в навигации шелла нет); `*` → 404-страница (`ErrorPage variant='not-found'`); `src/app/AppShell.tsx` — шапка с навигацией; `src/app/ErrorBoundary.tsx` — error boundary рендера (при ошибке — `ErrorPage variant='error'` с кнопкой «Повторить»).
 - `src/pages/admin/` — дашборд продавцов (`AdminDashboard.tsx`, `CreateCabinetModal.tsx`); `src/pages/seller/` — детали кабинета (`SellerDetails.tsx` с табами Обзор/Фикстуры, `EditCabinetModal.tsx`, `OverviewTab.tsx` / `FixturesTab.tsx`); `src/pages/showcase/` — витрина дизайн-системы (`Showcase.tsx` / `ShowcaseHelpers.tsx` / `ShowcaseSections.tsx`, секции с демо); `src/pages/error/` — 404 и ошибка рендера (`ErrorPage.tsx`, variant `'error'` | `'not-found'`).
 - `src/shared/api/` — типизированный API-клиент (`cabinets.ts` — fetch-обёртки над `/api/cabinets*`, класс `ApiError`; barrel `index.ts`).
-- `src/shared/model/` — типы (FSD shared/model: доменные + `generated/ozon-api.ts`).
-- `src/shared/ui/` — дизайн-система по группам: `inputs/` (Input, Select, Toggle, Textarea, Checkbox, field), `feedback/` (Badge, Chip, EmptyState, ErrorBanner, Spinner, Alert, Skeleton, Modal, ConfirmDialog, Toast), `data/` (Table, Tabs, Pagination), `actions/` (Button, Icon, IconButton, DropdownMenu, CopyButton, SearchInput, Tooltip), `layout/` (Section, Card, Breadcrumbs); `src/shared/ui/Portal.tsx` (portal в body); корневой barrel `src/shared/ui/index.ts` (все группы + Portal); `src/shared/hooks/` (useAutoForm, useFocusTrap, useScrollLock, useOutsideClick, useTheme); `src/shared/lib/` (`format.ts`, `refs.ts` — mergeRefs, barrel `index.ts`); в каждой группе `index.ts` (barrel).
+- `src/shared/model/` — типы (FSD shared/model, без runtime). `generated/backend-api.ts` — сгенерированная из схемы бэкенда схема API и источник истины: доменные файлы (`api.ts`, `cabinet.ts`, `errors.ts`, `fixtures.ts`) — только алиасы `components['schemas'][...]` на неё, поля руками не дублировать. `generated/ozon-api.ts` — эталон Ozon (3.1 МБ), в баррель не реэкспортируется. Баррель `index.ts` перечисляет явно только то, что реально использует приложение.
+- `src/shared/ui/` — дизайн-система по группам: `inputs/` (Input, Select, Toggle, Textarea, Checkbox, field), `feedback/` (Badge, Chip, EmptyState, ErrorBanner, Spinner, Alert, Skeleton, Modal, ConfirmDialog, Toast), `data/` (Table, Tabs, Pagination), `actions/` (Button, Icon, IconButton, DropdownMenu, CopyButton, SearchInput, Tooltip), `layout/` (Section, Card, Breadcrumbs); `src/shared/ui/Portal.tsx` (portal в body); корневой barrel `src/shared/ui/index.ts` (все группы + Portal); `src/shared/hooks/` (useAutoForm, useFocusTrap, useScrollLock, useOutsideClick, useTheme); `src/shared/lib/` (`format.ts`, `refs.ts` — mergeRefs, `rating.ts` — предикат `hasPastValue` по опциональному И nullable `past_value`, barrel `index.ts`); в каждой группе `index.ts` (barrel).
 - Стили — SCSS Modules: per-component `*.module.scss` рядом с компонентом, общий `inputs/_field-base.scss` (mixin) для Input/Select; глобальный `src/app/index.scss` (токены `--ozon-*`, dark mode). Без Tailwind/CSS-модулей-глобалок.
 - `public/` — только `favicon.svg`; `vite.config.ts` — dev-прокси `/api` (хардкод `localhost:3000`), resolve.alias `@` → `src/`.
 - `nginx.conf` — prod: раздача `dist/`, прокси `/api` → `backend:3000`, security-заголовки, gzip, кэш `/assets/` (immutable).
 - `Dockerfile` — multi-stage: `pnpm build` → nginx runtime.
-- `.husky/pre-commit` — husky-хук (ставится `prepare` при `pnpm install`): обновляет субмодуль схемы → `pnpm generate:types` → `pnpm typecheck` → `make lint` из корня
+- `.husky/pre-commit` — husky-хук (ставится `prepare` при `pnpm install`): обновляет субмодуль схемы → `pnpm generate:types` → `make generate-api-types` + `git add` сгенерированного `backend-api.ts` → `pnpm typecheck` → `make lint` из корня
 
 ## Конвенции
 
@@ -44,7 +45,7 @@ React/Vite-воркспейс монорепо `ozon-fbs-sandbox`. Корнев�
 - Только существующие UI-компоненты (`@/shared/ui/...`), минимум своего: иконки — через `Icon` (`size` xs/sm/md/lg, без ручных размеров и прямых heroicons), заголовки/футеры карточек — `Card` `title`/`footer`, удаление — `Chip removable`, ошибки — `ErrorBanner`, формы — `useAutoForm`. Запрещены кастомные размеры иконок, ручные SVG, дублирование стилей/разметки, кастомные header'ы вместо `Card title`. Если чего-то не хватает — расширять компонент дизайн-системы, а не делать кастом на месте.
 - Формы — всегда через `useAutoForm`: скалярные поля — `FieldDefinition` + `FieldRenderer` (вложенность — dot-пути в `name`, сид из данных — `initialValues`); массивы и вложенные структуры — целыми значениями в `values` через `handleChange(name, новыйМассив)`. Ручное построение форм (useState + update-хелперы) — только в исключительных случаях, с комментарием-обоснованием. На `<form>` обязателен `noValidate`; submit-кнопка вне формы — через атрибут `form`, остальные кнопки внутри формы — `type='button'`.
 - Тестов в frontend нет (покрытие — backend).
-- Типы фикстур и API — из `@/shared/model`, не дублировать.
+- Типы фикстур и API — из `@/shared/model`, не дублировать. Доменные типы генерируются из схемы бэкенда: правь модель в `backend/backend/db/models/`, а не сгенерированный `.ts`. Каталог `src/shared/model/generated/` перезаписывается на каждом коммите — руками не редактировать.
 
 ## Границы
 
