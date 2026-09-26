@@ -7,6 +7,7 @@ from pydantic import BaseModel
 
 from backend.db.models.roles import Roles
 from backend.db.models.seller_info import SellerInfo
+from backend.schemas.products import ProductAttributes, ProductList
 
 FIXTURES_DIR = Path(__file__).resolve().parents[2] / "data" / "fixtures"
 
@@ -37,17 +38,38 @@ class FixtureService:
         Returns:
             Validated fixtures.
         """
-        return self._load("demo-cabinet.json")
+        return self._load("demo-cabinet.json", Fixtures)
 
-    def _load(self, name: str) -> Fixtures:
+    def load_products_list(self) -> ProductList:
+        """
+        Load the v3 product list fixture.
+
+        Returns:
+            Validated product list response.
+        """
+        return self._load("v3-product-list.json", ProductList)
+
+    def load_products_attributes(self) -> ProductAttributes:
+        """
+        Load the v4 product attributes fixture.
+
+        Returns:
+            Validated product attributes response.
+        """
+        return self._load("v4-product-info-attributes.json", ProductAttributes)
+
+    def _load[FixtureT: BaseModel](
+        self, name: str, fixture_type: type[FixtureT]
+    ) -> FixtureT:
         """
         Load and validate a single fixture file.
 
         Args:
             name: file name inside the storage directory.
+            fixture_type: expected fixture model.
 
         Returns:
-            Validated fixtures.
+            Validated fixture.
         """
         raw = json.loads((self._storage_dir / name).read_text(encoding="utf-8"))
-        return Fixtures.model_validate(raw)
+        return fixture_type.model_validate(raw)

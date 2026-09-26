@@ -1,0 +1,158 @@
+{
+  "result": {
+    "items": [
+      {
+        "archived": false,
+        "has_fbo_stocks": false,
+        "has_fbs_stocks": true,
+        "is_discounted": false,
+        "offer_id": "demo-dress-yuka",
+        "product_id": 12345678901,
+        "quants": [
+          {
+            "quant_code": "FBS",
+            "quant_size": 12
+          }
+        ],
+        "sku": 12345678901
+      },
+      {
+        "archived": false,
+        "has_fbo_stocks": true,
+        "has_fbs_stocks": false,
+        "is_discounted": false,
+        "offer_id": "demo-jeans-yuka",
+        "product_id": 12345678902,
+        "quants": [
+          {
+            "quant_code": "FBO",
+            "quant_size": 8
+          }
+        ],
+        "sku": 12345678902
+      },
+      {
+        "archived": false,
+        "has_fbo_stocks": false,
+        "has_fbs_stocks": true,
+        "is_discounted": true,
+        "offer_id": "demo-jacket-yuka",
+        "product_id": 12345678903,
+        "quants": [
+          {
+            "quant_code": "FBS",
+            "quant_size": 5
+          }
+        ],
+        "sku": 12345678903
+      },
+      {
+        "archived": false,
+        "has_fbo_stocks": true,
+        "has_fbs_stocks": false,
+        "is_discounted": false,
+        "offer_id": "demo-sneakers-antarctica",
+        "product_id": 12345678904,
+        "quants": [
+          {
+            "quant_code": "FBO",
+            "quant_size": 20
+          }
+        ],
+        "sku": 12345678904
+      },
+      {
+        "archived": false,
+        "has_fbo_stocks": false,
+        "has_fbs_stocks": true,
+        "is_discounted": false,
+        "offer_id": "demo-boots-antarctica",
+        "product_id": 12345678905,
+        "quants": [
+          {
+            "quant_code": "FBS",
+            "quant_size": 7
+          }
+        ],
+        "sku": 12345678905
+      },
+      {
+        "archived": false,
+        "has_fbo_stocks": true,
+        "has_fbs_stocks": true,
+        "is_discounted": false,
+        "offer_id": "demo-work-shoes-antarctica",
+        "product_id": 12345678906,
+        "quants": [
+          {
+            "quant_code": "FBO",
+            "quant_size": 4
+          },
+          {
+            "quant_code": "FBS",
+            "quant_size": 3
+          }
+        ],
+        "sku": 12345678906
+      },
+      {
+        "archived": false,
+        "has_fbo_stocks": true,
+        "has_fbs_stocks": false,
+        "is_discounted": false,
+        "offer_id": "demo-smartphone-samsung",
+        "product_id": 12345678907,
+        "quants": [
+          {
+            "quant_code": "FBO",
+            "quant_size": 25
+          }
+        ],
+        "sku": 12345678907
+      },
+      {
+        "archived": false,
+        "has_fbo_stocks": false,
+        "has_fbs_stocks": true,
+        "is_discounted": false,
+        "offer_id": "demo-laptop-samsung",
+        "product_id": 12345678908,
+        "quants": [
+          {
+            "quant_code": "FBS",
+            "quant_size": 6
+          }
+        ],
+        "sku": 12345678908
+      },
+      {
+        "archived": false,
+        "has_fbo_stocks": true,
+        "has_fbs_stocks": false,
+        "is_discounted": true,
+        "offer_id": "demo-headphones-samsung",
+        "product_id": 12345678909,
+        "quants": [
+          {
+            "quant_code": "FBO",
+            "quant_size": 30
+          }
+        ],
+        "sku": 12345678909
+      },
+      {
+        "archived": false,
+        "has_fbo_stocks": false,
+        "has_fbs_stocks": false,
+        "is_discounted": false,
+        "offer_id": "demo-ebook-samsung",
+        "product_id": 12345678910,
+        "quants": [],
+        "sku": 12345678910
+      }
+    ],
+    "last_id": "12345678910",
+    "total": 10,
+    "total_items": 10
+  }
+}

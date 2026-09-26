@@ -13,7 +13,9 @@
     "build": "tsc6 -b && vite build",
     "preview": "vite preview",
     "lint": "eslint .",
-    "generate:types": "openapi-typescript ../.schemas/ozon-seller-api-openapi.json -o ./src/shared/model/generated/ozon-api.ts"
+    "typecheck": "tsc6 -b",
+    "prepare": "cd .. && husky frontend/.husky",
+    "generate:types": "openapi-typescript ../ozon-seller-api-schema/schemas/ozon-seller-api-openapi.json -o ./src/shared/model/generated/ozon-api.ts"
   },
   "dependencies": {
     "@floating-ui/react-dom": "^2.1.9",
@@ -33,6 +35,7 @@
     "eslint": "^10.0.0",
     "eslint-config-love": "^157.0.0",
     "eslint-plugin-simple-import-sort": "^14.0.0",
+    "husky": "^9.1.7",
     "openapi-typescript": "^7.9.0",
     "sass": "^1.104.1",
     "typescript": "npm:@typescript/typescript6@^6.0.2",

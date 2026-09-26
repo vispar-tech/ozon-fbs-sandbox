@@ -116,9 +116,9 @@ jobs:
         run: poetry install --no-root --with dev
       - name: Lint backend
         run: |
-          poetry run pre-commit run -a ruff-format
-          poetry run pre-commit run -a ruff
-          poetry run pre-commit run -a mypy
+          poetry run ruff format --check
+          poetry run ruff check backend tests scripts
+          poetry run mypy backend tests scripts
       - name: Test backend
         run: poetry run pytest -vv
 

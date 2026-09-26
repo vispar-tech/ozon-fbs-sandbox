@@ -32,10 +32,10 @@ dev-frontend: ## Запустить Vite dev-сервер на :5173
 test: ## Запустить pytest (backend)
 	cd backend && poetry run pytest
 
-lint: lint-backend lint-frontend ## Запустить все линтеры: pre-commit (backend) + eslint (frontend)
+lint: lint-backend lint-frontend ## Запустить все линтеры: ruff + mypy (backend) + eslint (frontend)
 
-lint-backend: ## pre-commit: ruff-format + ruff + mypy (backend)
-	cd backend && poetry run pre-commit run -a
+lint-backend: ## ruff-format + ruff + mypy (backend)
+	cd backend && poetry run ruff format --check && poetry run ruff check backend tests scripts && poetry run mypy backend tests scripts
 
 lint-frontend: ## eslint (frontend)
 	cd frontend && pnpm lint

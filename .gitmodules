@@ -1,0 +1,4 @@
+[submodule "ozon-seller-api-schema"]
+	path = ozon-seller-api-schema
+	url = https://github.com/vispar-tech/ozon-seller-api-schema.git
+	branch = main

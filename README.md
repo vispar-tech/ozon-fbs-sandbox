@@ -68,7 +68,7 @@ Docker: `make docker-up` поднимает prod-стек: frontend на `http:/
 | `make dev` | backend `:3000` + Vite `:5173` (Ctrl+C останавливает оба) |
 | `make dev-backend` / `make dev-frontend` | по отдельности |
 | `make test` | pytest (backend) |
-| `make lint` | pre-commit (backend) + eslint (frontend) |
+| `make lint` | ruff + mypy (backend) + eslint (frontend) |
 | `make build` | сборка frontend → `dist/` |
 | `make migrate` | alembic upgrade head |
 | `make generate-types` | `frontend/src/shared/model/generated/ozon-api.ts` из OpenAPI-схемы |
