@@ -117,8 +117,8 @@ jobs:
       - name: Lint backend
         run: |
           poetry run ruff format --check
-          poetry run ruff check backend tests
-          poetry run mypy backend tests
+          poetry run ruff check backend tests scripts
+          poetry run mypy backend tests scripts
       - name: Test backend
         run: poetry run pytest -vv
 
