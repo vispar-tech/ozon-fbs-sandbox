@@ -28,7 +28,7 @@ export function CreateCabinetModal ({ open, onClose, onCreated }: CreateCabinetM
     onSubmit: useCallback(async (data: Record<string, unknown>) => {
       await createCabinet({
         name: String(data.name),
-        demo: data.demo === true ? true : undefined
+        demo: data.demo === true
       })
       onCreated()
     }, [onCreated])

@@ -3,7 +3,7 @@ import type { JSX } from 'react'
 
 import styles from './OverviewTab.module.scss'
 
-import { formatDate } from '@/shared/lib/index.js'
+import { formatDate, hasPastValue } from '@/shared/lib/index.js'
 import type { CabinetSummary } from '@/shared/model/index.js'
 import { Badge, Chip } from '@/shared/ui/feedback/index.js'
 import { Card, Section } from '@/shared/ui/layout/index.js'
@@ -63,7 +63,7 @@ export function OverviewTab ({ cabinet }: OverviewTabProps): JSX.Element {
                             {formatDate(rating.current_value.date_from)} — {formatDate(rating.current_value.date_to)}
                           </span>
                         </div>
-                        {rating.past_value !== undefined && (
+                        {hasPastValue(rating) && (
                           <div className={styles.ratingField}>
                             <span className={styles.ratingLabel}>Прошлое</span>
                             <span className={styles.ratingData}>{rating.past_value.formatted}</span>

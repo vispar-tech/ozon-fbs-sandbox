@@ -15,7 +15,8 @@
     "lint": "eslint .",
     "typecheck": "tsc6 -b",
     "prepare": "cd .. && husky frontend/.husky",
-    "generate:types": "openapi-typescript ../ozon-seller-api-schema/schemas/ozon-seller-api-openapi.json -o ./src/shared/model/generated/ozon-api.ts"
+    "generate:types": "openapi-typescript ../ozon-seller-api-schema/schemas/ozon-seller-api-openapi.json -o ./src/shared/model/generated/ozon-api.ts",
+    "generate:api-types": "openapi-typescript ../backend/.openapi.json -o ./src/shared/model/generated/backend-api.ts"
   },
   "dependencies": {
     "@floating-ui/react-dom": "^2.1.9",

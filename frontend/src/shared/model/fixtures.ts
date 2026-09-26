@@ -1,58 +1,17 @@
-import type { components } from './generated/ozon-api.js'
+import type { components } from './generated/backend-api.js'
 
-type OzonSchemas = components['schemas']
+type BackendSchemas = components['schemas']
 
-export type TaxSystem = OzonSchemas['CompanyTaxSystemEnum']
-export type RatingStatus = OzonSchemas['RatingStatusEnum']
-export type RatingValueType = OzonSchemas['SellerInfoResponseRatingTypeEnum']
-export type SubscriptionType = OzonSchemas['SellerInfoResponseSubscriptionTypeEnum']
-export type RatingStatusFlags = OzonSchemas['v1RatingStatus']
+export type TaxSystem = CompanyInfo['tax_system']
+export type RatingStatus = Rating['status']
+export type RatingValueType = Rating['value_type']
+export type SubscriptionType = Subscription['type']
 
-export interface CompanyInfo {
-  name: string
-  legal_name: string
-  inn: string
-  ogrn: string
-  country: string
-  currency: string
-  ownership_form: string
-  tax_system: TaxSystem
-}
-
-export interface RatingValue {
-  formatted: string
-  value: number
-  date_from: string
-  date_to: string
-  status: RatingStatusFlags
-}
-
-export interface Rating {
-  name: string
-  rating: string
-  status: RatingStatus
-  value_type: RatingValueType
-  current_value: RatingValue
-  past_value?: RatingValue
-}
-
-export interface Subscription {
-  is_premium: boolean
-  type: SubscriptionType
-}
-
-export interface SellerInfo {
-  company: CompanyInfo
-  ratings: Rating[]
-  subscription: Subscription
-}
-
-export interface Role {
-  name: string
-  methods: string[]
-}
-
-export interface Roles {
-  expires_at: string
-  roles: Role[]
-}
+export type CompanyInfo = BackendSchemas['CompanyInfo']
+export type RatingStatusFlags = BackendSchemas['RatingStatusFlags']
+export type RatingValue = BackendSchemas['RatingValue']
+export type Rating = BackendSchemas['Rating']
+export type Subscription = BackendSchemas['Subscription']
+export type SellerInfo = BackendSchemas['SellerInfo']
+export type Role = BackendSchemas['Role']
+export type Roles = BackendSchemas['Roles']
