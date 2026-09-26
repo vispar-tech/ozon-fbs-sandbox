@@ -3,7 +3,7 @@
 from datetime import UTC, datetime
 from typing import Annotated
 
-from pydantic import BeforeValidator, PlainSerializer
+from pydantic import BeforeValidator, PlainSerializer, WithJsonSchema
 
 
 def to_iso_ms_z(dt: datetime) -> str:
@@ -31,11 +31,14 @@ def _empty_str_to_none(value: object) -> object:
     return None if value == "" else value
 
 
-def _expires_at_to_str(dt: datetime | None) -> str:
-    """Serialize ``expires_at`` as iso-ms-Z, ``None`` as TS empty state ``''``.
+def _iso_ms_z_or_empty(dt: datetime | None) -> str:
+    """Serialize a nullable datetime as iso-ms-Z, ``None`` as ``''``.
+
+    ``''`` is the wire form the frontend renders as an empty state, so a
+    missing date stays a plain string on both sides.
 
     Args:
-        dt: expiration datetime or None.
+        dt: datetime or None.
 
     Returns:
         iso-ms-Z string or ``''``.
@@ -43,13 +46,17 @@ def _expires_at_to_str(dt: datetime | None) -> str:
     return "" if dt is None else to_iso_ms_z(dt)
 
 
-ExpiresAt = Annotated[
-    datetime | None,
-    BeforeValidator(_empty_str_to_none),
-    PlainSerializer(_expires_at_to_str, return_type=str),
-]
-
+# ``WithJsonSchema`` declares one wire type for both directions, so pydantic emits
+# a single schema node instead of an ``-Input``/``-Output`` pair per model.
 IsoMsZ = Annotated[
     datetime,
     PlainSerializer(to_iso_ms_z, return_type=str),
+    WithJsonSchema({"type": "string", "format": "date-time"}),
+]
+
+IsoMsZNullable = Annotated[
+    datetime | None,
+    BeforeValidator(_empty_str_to_none),
+    PlainSerializer(_iso_ms_z_or_empty, return_type=str),
+    WithJsonSchema({"type": "string", "format": "date-time"}),
 ]
