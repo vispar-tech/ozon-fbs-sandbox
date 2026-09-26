@@ -73,6 +73,15 @@
 - Тесты: backend — pytest; тестов во frontend нет.
 - Docker: backend — образ `python:3.14-slim-trixie` (multi-stage, Poetry), HEALTHCHECK на `127.0.0.1:3000/api/health`; frontend — сборка pnpm на node → runtime `nginx:alpine`, HEALTHCHECK на `127.0.0.1`. Директив `USER`/dumb-init в Dockerfile нет.
 
+## Git flow
+
+- Долгоживущий `develop` + релизная `main`. Обычная работа — коммиты в `develop` и `git push origin develop`; PR для этого не нужны, squash/rebase на `develop` безвреден (он не release-база).
+- Релиз: preflight `git fetch origin && git merge-base --is-ancestor origin/main origin/develop` (если `false` — `git merge origin/main`, **никогда** rebase) → PR `develop` → `main` с assignee `vispar-tech` → **merge-коммитом** `gh pr merge <N> --merge` → сразу синхронизировать develop: `git fetch origin && git push origin origin/main:develop`.
+- На release-PR запрещены squash и rebase-merge: squash подменяет N коммитов develop одним посторонним коммитом в main, после чего develop перестаёт быть предком main и каждая следующая синхронизация требует rebase + force-push от человека. Именно это ломало flow после PR #9.
+- Шаг синхронизации develop обязателен: merge-коммит создаётся *на* main, значит `main` не становится предком develop сам по себе. Но шаг — fast-forward, то есть безопасный: force-push не нужен ни человеку, ни агенту. Забыть недорого — `strict: true` блокирует следующий merge и предлагает «Update branch».
+- Что держит схему: на `main` `required_linear_history: false` (при `true` GitHub отвергает merge-коммиты, даже когда `allow_merge_commit: true`); ruleset `main: merge-commit only` с `allowed_merge_methods: ["merge"]`, `non_fast_forward`, `deletion` — одна кнопка и серверный запрет force-push в `main`/`develop`; `dependabot.yml` со `target-branch: "develop"` у всех трёх записей, иначе dependabot растёт в `main` мимо `develop`.
+- `--delete-branch` при мержаге не указывать: head release-PR — это `develop`.
+
 ## CI
 
 - `ci.yml` — единственный workflow: триггеры — push в main + все PR; path-filter (dorny/paths-filter) только на PR, на push — все outputs true; jobs: `changes` / `frontend` / `backend` / `docker` / `verify`.
