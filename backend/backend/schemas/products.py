@@ -58,8 +58,10 @@ class ProductAttributeValue(ApiModel):
 class ProductComplexAttributeValue(ApiModel):
     """Single ``complex_attributes[].values[]`` entry.
 
-    Ozon serializes this key as camelCase ``dictionaryValueId`` while the
-    Python attribute stays snake_case, so the alias pins the JSON key.
+    Ozon's own schema diverges between the two attribute contours: the sibling
+    ``attributes[].values[]`` node declares ``dictionary_value_id`` in
+    snake_case, while this one declares ``dictionaryValueId`` in camelCase. The
+    alias pins that divergent wire key while the attribute stays snake_case.
     """
 
     dictionary_value_id: int | None = Field(default=None, alias="dictionaryValueId")

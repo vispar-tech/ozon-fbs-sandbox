@@ -5,6 +5,7 @@ import json
 from fastapi import status
 from httpx import AsyncClient
 
+from backend.schemas.products import ProductComplexAttributeValue
 from backend.services.fixtures import FIXTURES_DIR, FixtureService
 from tests.conftest import _auth, _create
 
@@ -91,8 +92,8 @@ async def test_records_stay_synchronized_between_contours(
     v4 = await client.post("/v4/product/info/attributes", json={}, headers=headers)
     items, cards = v3.json()["result"]["items"], v4.json()["result"]
     assert len(items) == len(cards)
-    v3_keys = {(i["product_id"], str(i["sku"]), i["offer_id"]) for i in items}
-    v4_keys = {(c["id"], c["sku"], c["offer_id"]) for c in cards}
+    v3_keys = sorted((i["product_id"], str(i["sku"]), i["offer_id"]) for i in items)
+    v4_keys = sorted((c["id"], c["sku"], c["offer_id"]) for c in cards)
     assert v3_keys == v4_keys
 
 
@@ -109,3 +110,23 @@ async def test_filter_visibility_must_match_schema_enum(client: AsyncClient) -> 
         response = await client.post(path, json=payload, headers=_auth(created))
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.json() == expected
+
+
+def test_complex_value_keeps_ozon_camel_case_key() -> None:
+    """The complex-attribute dictionary id keeps Ozon's camelCase key.
+
+    Ozon's schema is inconsistent between the two attribute contours: the
+    sibling ``attributes[].values[]`` node declares ``dictionary_value_id`` in
+    snake_case, while ``complex_attributes[].values[]`` declares
+    ``dictionaryValueId`` in camelCase. The DTO alias absorbs that divergence,
+    so the wire key stays pinned even while no fixture card carries a complex
+    attribute.
+    """
+    value = ProductComplexAttributeValue.model_validate(
+        {"dictionaryValueId": 7, "value": "red"}
+    )
+    assert value.dictionary_value_id == 7
+    assert value.model_dump(mode="json", by_alias=True) == {
+        "dictionaryValueId": 7,
+        "value": "red",
+    }
