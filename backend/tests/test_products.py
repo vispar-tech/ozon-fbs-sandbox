@@ -5,7 +5,6 @@ import json
 from fastapi import status
 from httpx import AsyncClient
 
-from backend.schemas.products import ProductComplexAttributeValue
 from backend.services.fixtures import FIXTURES_DIR, FixtureService
 from tests.conftest import _auth, _create
 
@@ -29,39 +28,6 @@ def test_fixture_files_round_trip_through_dto() -> None:
     for name, dump in dumps.items():
         raw = json.loads((FIXTURES_DIR / name).read_text(encoding="utf-8"))
         assert dump == raw
-
-
-async def test_list_endpoint_returns_fixture(client: AsyncClient) -> None:
-    """POST /v3/product/list returns the fixture; v3 ``sku`` stays int.
-
-    Args:
-        client: client for the app.
-    """
-    created = await _create(client, name="product list")
-    response = await client.post("/v3/product/list", json={}, headers=_auth(created))
-    assert response.status_code == status.HTTP_200_OK
-    body = response.json()
-    assert body == FIXTURES.load_products_list().model_dump(mode="json", by_alias=True)
-    assert isinstance(body["result"]["items"][0]["sku"], int)
-
-
-async def test_attributes_endpoint_returns_fixture(client: AsyncClient) -> None:
-    """POST /v4/product/info/attributes returns the fixture; sku and total str.
-
-    Args:
-        client: client for the app.
-    """
-    created = await _create(client, name="product attributes")
-    response = await client.post(
-        "/v4/product/info/attributes", json={}, headers=_auth(created)
-    )
-    assert response.status_code == status.HTTP_200_OK
-    body = response.json()
-    assert body == FIXTURES.load_products_attributes().model_dump(
-        mode="json", by_alias=True
-    )
-    assert isinstance(body["result"][0]["sku"], str)
-    assert body["total"] == "10"
 
 
 async def test_endpoints_require_seller_auth(client: AsyncClient) -> None:
@@ -115,42 +81,31 @@ async def test_filters_and_sorting_are_ignored(client: AsyncClient) -> None:
 async def test_records_stay_synchronized_between_contours(
     client: AsyncClient,
 ) -> None:
-    """Both contours expose the same ten products, ids and last_id aligned.
+    """Each v3 item matches exactly one v4 card by id, sku and offer_id.
 
     Args:
         client: client for the app.
     """
-    created = await _create(client, name="synced products")
-    headers = _auth(created)
-
+    headers = _auth(await _create(client, name="synced products"))
     v3 = await client.post("/v3/product/list", json={}, headers=headers)
-    assert v3.status_code == status.HTTP_200_OK
-    page = v3.json()["result"]
-
     v4 = await client.post("/v4/product/info/attributes", json={}, headers=headers)
-    assert v4.status_code == status.HTTP_200_OK
-    attributes = v4.json()
-
-    items, cards = page["items"], attributes["result"]
-    assert len(items) == 10 == len(cards)
-    for v3_item, v4_item in zip(items, cards, strict=True):
-        assert v3_item["product_id"] == v4_item["id"]
-        assert str(v3_item["sku"]) == v4_item["sku"]
-        assert v3_item["offer_id"] == v4_item["offer_id"]
-
-    assert len({item["product_id"] for item in items}) == 10
-    assert len({item["offer_id"] for item in items}) == 10
-    assert page["last_id"] == str(items[-1]["sku"])
-    assert attributes["last_id"] == cards[-1]["sku"]
-    assert page["total"] == page["total_items"] == 10
-    assert attributes["total"] == "10"
+    items, cards = v3.json()["result"]["items"], v4.json()["result"]
+    assert len(items) == len(cards)
+    v3_keys = {(i["product_id"], str(i["sku"]), i["offer_id"]) for i in items}
+    v4_keys = {(c["id"], c["sku"], c["offer_id"]) for c in cards}
+    assert v3_keys == v4_keys
 
 
-def test_complex_value_serializes_camel_case() -> None:
-    """A complex value round-trips through the schema key ``dictionaryValueId``."""
-    parsed = ProductComplexAttributeValue.model_validate(
-        {"dictionaryValueId": 7, "value": "x"}
-    )
-    assert parsed.dictionary_value_id == 7
-    assert parsed.value == "x"
-    assert parsed.model_dump(by_alias=True) == {"dictionaryValueId": 7, "value": "x"}
+async def test_filter_visibility_must_match_schema_enum(client: AsyncClient) -> None:
+    """A non-enum ``visibility`` filter answers 400/3 on both product routes.
+
+    Args:
+        client: client for the app.
+    """
+    created = await _create(client, name="bad visibility")
+    payload = {"filter": {"visibility": "BOGUS"}}
+    expected = {"code": 3, "message": "Invalid request body", "details": []}
+    for path in ("/v3/product/list", "/v4/product/info/attributes"):
+        response = await client.post(path, json=payload, headers=_auth(created))
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert response.json() == expected

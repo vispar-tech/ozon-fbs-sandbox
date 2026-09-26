@@ -1,8 +1,44 @@
 """Product card schemas (Ozon product list and product attributes)."""
 
+from typing import Literal
+
 from pydantic import Field, HttpUrl
 
 from backend.schemas.base import ApiModel
+
+# Both filters use Ozon's ``productv3GetProductListRequestFilterFilterVisibility``
+# (v3 request) and ``productv2GetProductListRequestFilterFilterVisibility`` (v4
+# request), whose enum arrays are byte-identical: one shared alias serves both.
+type ProductFilterVisibility = Literal[
+    "ALL",
+    "VISIBLE",
+    "INVISIBLE",
+    "EMPTY_STOCK",
+    "NOT_MODERATED",
+    "MODERATED",
+    "DISABLED",
+    "STATE_FAILED",
+    "READY_TO_SUPPLY",
+    "VALIDATION_STATE_PENDING",
+    "VALIDATION_STATE_FAIL",
+    "VALIDATION_STATE_SUCCESS",
+    "TO_SUPPLY",
+    "IN_SALE",
+    "REMOVED_FROM_SALE",
+    "OVERPRICED",
+    "CRITICALLY_OVERPRICED",
+    "EMPTY_BARCODE",
+    "BARCODE_EXISTS",
+    "QUARANTINE",
+    "ARCHIVED",
+    "OVERPRICED_WITH_STOCK",
+    "PARTIAL_APPROVED",
+    "AUTO_ARCHIVED",
+    "MANUAL_ARCHIVED",
+    "SEASONAL_AUTO_ARCHIVED",
+    "VISIBLE_WITH_FBO_STOCK",
+    "SHOWCASE_SELECT_ACTIVE",
+]
 
 
 class ProductQuant(ApiModel):
@@ -115,7 +151,7 @@ class ProductListFilter(ApiModel):
     offer_id: list[str] | None = None
     product_id: list[str] | None = None
     skus: list[str] | None = None
-    visibility: str | None = None
+    visibility: ProductFilterVisibility | None = None
 
 
 class ProductAttributesFilter(ApiModel):
@@ -124,7 +160,7 @@ class ProductAttributesFilter(ApiModel):
     offer_id: list[str] | None = None
     product_id: list[str] | None = None
     sku: list[str] | None = None
-    visibility: str | None = None
+    visibility: ProductFilterVisibility | None = None
 
 
 class ListProductInput(ApiModel):
