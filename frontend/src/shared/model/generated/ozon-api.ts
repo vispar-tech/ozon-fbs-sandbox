@@ -27647,11 +27647,12 @@ export interface components {
          *       - `AUTO_ARCHIVED` — товары, которые система перенесла в архив автоматически;
          *       - `MANUAL_ARCHIVED` — товары, которые продавец перенёс в архив вручную;
          *       - `SEASONAL_AUTO_ARCHIVED` — сезонные товары, которые система перенесла в архив автоматически;
-         *       - `VISIBLE_WITH_FBO_STOCK` — товары с остатками на FBO, которые видят покупатели.
+         *       - `VISIBLE_WITH_FBO_STOCK` — товары с остатками на FBO, которые видят покупатели;
+         *       - `SHOWCASE_SELECT_ACTIVE` — товары, которые видны на витрине Ozon Селект.
          * @default ALL
          * @enum {string}
          */
-        productv2GetProductListRequestFilterFilterVisibility: "ALL" | "VISIBLE" | "INVISIBLE" | "EMPTY_STOCK" | "NOT_MODERATED" | "MODERATED" | "DISABLED" | "STATE_FAILED" | "READY_TO_SUPPLY" | "VALIDATION_STATE_PENDING" | "VALIDATION_STATE_FAIL" | "VALIDATION_STATE_SUCCESS" | "TO_SUPPLY" | "IN_SALE" | "REMOVED_FROM_SALE" | "OVERPRICED" | "CRITICALLY_OVERPRICED" | "EMPTY_BARCODE" | "BARCODE_EXISTS" | "QUARANTINE" | "ARCHIVED" | "OVERPRICED_WITH_STOCK" | "PARTIAL_APPROVED" | "AUTO_ARCHIVED" | "MANUAL_ARCHIVED" | "SEASONAL_AUTO_ARCHIVED" | "VISIBLE_WITH_FBO_STOCK";
+        productv2GetProductListRequestFilterFilterVisibility: "ALL" | "VISIBLE" | "INVISIBLE" | "EMPTY_STOCK" | "NOT_MODERATED" | "MODERATED" | "DISABLED" | "STATE_FAILED" | "READY_TO_SUPPLY" | "VALIDATION_STATE_PENDING" | "VALIDATION_STATE_FAIL" | "VALIDATION_STATE_SUCCESS" | "TO_SUPPLY" | "IN_SALE" | "REMOVED_FROM_SALE" | "OVERPRICED" | "CRITICALLY_OVERPRICED" | "EMPTY_BARCODE" | "BARCODE_EXISTS" | "QUARANTINE" | "ARCHIVED" | "OVERPRICED_WITH_STOCK" | "PARTIAL_APPROVED" | "AUTO_ARCHIVED" | "MANUAL_ARCHIVED" | "SEASONAL_AUTO_ARCHIVED" | "VISIBLE_WITH_FBO_STOCK" | "SHOWCASE_SELECT_ACTIVE";
         /** object */
         productv2ProductsStocksRequest: {
             /** @description Информация о товарах на складах. */
@@ -27767,11 +27768,12 @@ export interface components {
          *       - `AUTO_ARCHIVED` — товары, которые система перенесла в архив автоматически;
          *       - `MANUAL_ARCHIVED` — товары, которые продавец перенёс в архив вручную;
          *       - `SEASONAL_AUTO_ARCHIVED` — сезонные товары, которые система перенесла в архив автоматически;
-         *       - `VISIBLE_WITH_FBO_STOCK` — товары с остатками на FBO, которые видят покупатели.
+         *       - `VISIBLE_WITH_FBO_STOCK` — товары с остатками на FBO, которые видят покупатели;
+         *       - `SHOWCASE_SELECT_ACTIVE` — товары, которые видны на витрине Ozon Селект.
          * @default ALL
          * @enum {string}
          */
-        productv3GetProductListRequestFilterFilterVisibility: "ALL" | "VISIBLE" | "INVISIBLE" | "EMPTY_STOCK" | "NOT_MODERATED" | "MODERATED" | "DISABLED" | "STATE_FAILED" | "READY_TO_SUPPLY" | "VALIDATION_STATE_PENDING" | "VALIDATION_STATE_FAIL" | "VALIDATION_STATE_SUCCESS" | "TO_SUPPLY" | "IN_SALE" | "REMOVED_FROM_SALE" | "OVERPRICED" | "CRITICALLY_OVERPRICED" | "EMPTY_BARCODE" | "BARCODE_EXISTS" | "QUARANTINE" | "ARCHIVED" | "OVERPRICED_WITH_STOCK" | "PARTIAL_APPROVED" | "AUTO_ARCHIVED" | "MANUAL_ARCHIVED" | "SEASONAL_AUTO_ARCHIVED" | "VISIBLE_WITH_FBO_STOCK";
+        productv3GetProductListRequestFilterFilterVisibility: "ALL" | "VISIBLE" | "INVISIBLE" | "EMPTY_STOCK" | "NOT_MODERATED" | "MODERATED" | "DISABLED" | "STATE_FAILED" | "READY_TO_SUPPLY" | "VALIDATION_STATE_PENDING" | "VALIDATION_STATE_FAIL" | "VALIDATION_STATE_SUCCESS" | "TO_SUPPLY" | "IN_SALE" | "REMOVED_FROM_SALE" | "OVERPRICED" | "CRITICALLY_OVERPRICED" | "EMPTY_BARCODE" | "BARCODE_EXISTS" | "QUARANTINE" | "ARCHIVED" | "OVERPRICED_WITH_STOCK" | "PARTIAL_APPROVED" | "AUTO_ARCHIVED" | "MANUAL_ARCHIVED" | "SEASONAL_AUTO_ARCHIVED" | "VISIBLE_WITH_FBO_STOCK" | "SHOWCASE_SELECT_ACTIVE";
         /** object */
         productv3GetProductListResponse: {
             result?: components["schemas"]["productv3GetProductListResponseResult"];
@@ -48845,13 +48847,13 @@ export interface operations {
                      *         {
                      *           "id": 5055881,
                      *           "info": "Здоровье и красота",
-                     *           "picture": "https://ir-20.ozone.ru/s3/multimedia-i/6010930878.jpg",
+                     *           "picture": "https://ir.ozone.ru/s3/multimedia-i/6010930878.jpg",
                      *           "value": "Sunshine"
                      *         },
                      *         {
                      *           "id": 5056737,
                      *           "info": "Красота и здоровье",
-                     *           "picture": "https://ir-20.ozone.ru/s3/multimedia-v/6088253599.jpg",
+                     *           "picture": "https://ir.ozone.ru/s3/multimedia-v/6088253599.jpg",
                      *           "value": "Essence"
                      *         }
                      *       ]
@@ -53695,7 +53697,7 @@ export interface operations {
                      * @example {
                      *       "result": {
                      *         "error": "",
-                     *         "file_url": "https://ir-20.ozone.ru/s3/ord-tmp-12/small_label/ticket-00-0000-0000.pdf",
+                     *         "file_url": "https://ir.ozone.ru/s3/ord-tmp-12/small_label/ticket-00-0000-0000.pdf",
                      *         "printed_postings_count": 1,
                      *         "status": "completed",
                      *         "unprinted_postings": [],
@@ -59155,7 +59157,7 @@ export interface operations {
                      *         "created_at": "2021-11-25T14:54:55.688260Z",
                      *         "error": "",
                      *         "expires_at": "2025-11-10T11:16:00.267Z",
-                     *         "file": "https://ir-20.ozone.ru/s3/item-picture-6/f3/ce/f4ceae54b323213d3e61e59c323bd8e5.csv",
+                     *         "file": "https://ir.ozone.ru/s3/item-picture-6/f3/ce/f4ceae54b323213d3e61e59c323bd8e5.csv",
                      *         "params": {},
                      *         "report_type": "seller_products",
                      *         "status": "success"
@@ -59258,7 +59260,7 @@ export interface operations {
                      *             "created_at": "2019-02-06T12:09:47.258062Z",
                      *             "error": "",
                      *             "expires_at": "2025-11-10T11:35:10.028Z",
-                     *             "file": "https://ir-20.ozone.ru/s3/item-picture-6/f3/ce/f4ceae54b323213d3e61e59c323bd8e5.csvv",
+                     *             "file": "https://ir.ozone.ru/s3/item-picture-6/f3/ce/f4ceae54b323213d3e61e59c323bd8e5.csvv",
                      *             "params": {
                      *               "visibility": "3"
                      *             },
@@ -59269,7 +59271,7 @@ export interface operations {
                      *             "code": "REPORT_seller_products_924336_1720170405_a9ea2f27-a473-4b13-99f9-d0cfcb5b1a69",
                      *             "created_at": "2019-02-15T08:34:32.267178Z",
                      *             "error": "",
-                     *             "file": "https://ir-20.ozone.ru/s3/item-picture-6/f3/ce/f4ceae54b323213d3e61e59c323bd8e5.csv",
+                     *             "file": "https://ir.ozone.ru/s3/item-picture-6/f3/ce/f4ceae54b323213d3e61e59c323bd8e5.csv",
                      *             "params": {
                      *               "visibility": "3"
                      *             },
@@ -74789,8 +74791,8 @@ export interface operations {
                      *           "height": 10,
                      *           "id": 213761435,
                      *           "images": [
-                     *             "https://ir-20.ozone.ru/s3/multimedia-4/6804736960.jpg",
-                     *             "https://ir-20.ozone.ru/s3/multimedia-j/6835412647.jpg"
+                     *             "https://ir.ozone.ru/s3/multimedia-4/6804736960.jpg",
+                     *             "https://ir.ozone.ru/s3/multimedia-j/6835412647.jpg"
                      *           ],
                      *           "model_info": {
                      *             "count": 4,
@@ -74799,7 +74801,7 @@ export interface operations {
                      *           "name": "Пленка защитная для Xiaomi Redmi Note 10 Pro 5G",
                      *           "offer_id": "21470",
                      *           "pdf_list": [],
-                     *           "primary_image": "https://ir-20.ozone.ru/s3/multimedia-4/6804736960.jpg",
+                     *           "primary_image": "https://ir.ozone.ru/s3/multimedia-4/6804736960.jpg",
                      *           "sku": 423434534,
                      *           "type_id": 124572394,
                      *           "weight": 50,

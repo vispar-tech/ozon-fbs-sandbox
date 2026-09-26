@@ -1,0 +1,766 @@
+{
+  "last_id": "12345678910",
+  "result": [
+    {
+      "id": 12345678901,
+      "sku": "12345678901",
+      "offer_id": "demo-dress-yuka",
+      "name": "Платье Юка льняное",
+      "barcode": "4607086561010",
+      "color_image": "",
+      "images": [
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/1912_evening_dress.jpg/960px-1912_evening_dress.jpg",
+        "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b0/Dress%2C_Woman%27s_%28Evening_Gown%3B_Flapper_Dress%29_%2848709928157%29.jpg/960px-Dress%2C_Woman%27s_%28Evening_Gown%3B_Flapper_Dress%29_%2848709928157%29.jpg"
+      ],
+      "primary_image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/1912_evening_dress.jpg/960px-1912_evening_dress.jpg",
+      "description_category_id": 200000933,
+      "type_id": 93182,
+      "weight": 350,
+      "weight_unit": "g",
+      "width": 30,
+      "height": 40,
+      "depth": 3,
+      "dimension_unit": "mm",
+      "attributes": [
+        {
+          "complex_id": 0,
+          "id": 31,
+          "values": [
+            {
+              "dictionary_value_id": 972108475,
+              "value": "BLADNES"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 10096,
+          "values": [
+            {
+              "dictionary_value_id": 61581,
+              "value": "синий"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 4295,
+          "values": [
+            {
+              "dictionary_value_id": 35430,
+              "value": "48"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 9163,
+          "values": [
+            {
+              "dictionary_value_id": 22881,
+              "value": "Женский"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 4180,
+          "values": [
+            {
+              "dictionary_value_id": 0,
+              "value": "Платье Юка льняное"
+            }
+          ]
+        }
+      ],
+      "complex_attributes": [],
+      "attributes_with_defaults": [],
+      "model_info": {
+        "model_id": 518355913,
+        "count": 55
+      },
+      "pdf_list": [],
+      "barcodes": [
+        "4607086561010",
+        "OZN12345678901"
+      ]
+    },
+    {
+      "id": 12345678902,
+      "sku": "12345678902",
+      "offer_id": "demo-jeans-yuka",
+      "name": "Джинсы Юка широкие",
+      "barcode": "4607086561027",
+      "color_image": "",
+      "images": [
+        "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a7/HK_MTR_train_interior_visitors_jeans_pants_blue_white_grey_black_n_sports_shoes_paper_bag_Royce%27_Chocolate_and_Cakes_August_2021_SS2.jpg/960px-HK_MTR_train_interior_visitors_jeans_pants_blue_white_grey_black_n_sports_shoes_paper_bag_Royce%27_Chocolate_and_Cakes_August_2021_SS2.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/High_waisted_jeans_1435042736.jpg/960px-High_waisted_jeans_1435042736.jpg"
+      ],
+      "primary_image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a7/HK_MTR_train_interior_visitors_jeans_pants_blue_white_grey_black_n_sports_shoes_paper_bag_Royce%27_Chocolate_and_Cakes_August_2021_SS2.jpg/960px-HK_MTR_train_interior_visitors_jeans_pants_blue_white_grey_black_n_sports_shoes_paper_bag_Royce%27_Chocolate_and_Cakes_August_2021_SS2.jpg",
+      "description_category_id": 200000933,
+      "type_id": 93080,
+      "weight": 550,
+      "weight_unit": "g",
+      "width": 32,
+      "height": 42,
+      "depth": 5,
+      "dimension_unit": "mm",
+      "attributes": [
+        {
+          "complex_id": 0,
+          "id": 31,
+          "values": [
+            {
+              "dictionary_value_id": 972108475,
+              "value": "BLADNES"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 10096,
+          "values": [
+            {
+              "dictionary_value_id": 61574,
+              "value": "черный"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 4295,
+          "values": [
+            {
+              "dictionary_value_id": 35431,
+              "value": "50"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 9163,
+          "values": [
+            {
+              "dictionary_value_id": 22880,
+              "value": "Мужской"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 4180,
+          "values": [
+            {
+              "dictionary_value_id": 0,
+              "value": "Джинсы Юка широкие"
+            }
+          ]
+        }
+      ],
+      "complex_attributes": [],
+      "attributes_with_defaults": [],
+      "model_info": {
+        "model_id": 6055161691,
+        "count": 10
+      },
+      "pdf_list": [],
+      "barcodes": [
+        "4607086561027",
+        "OZN12345678902"
+      ]
+    },
+    {
+      "id": 12345678903,
+      "sku": "12345678903",
+      "offer_id": "demo-jacket-yuka",
+      "name": "Куртка Юка оверсайз",
+      "barcode": "4607086561034",
+      "color_image": "",
+      "images": [
+        "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/27/Denim_jacket_details.jpg/960px-Denim_jacket_details.jpg",
+        "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/90/Denim_jacket_from_Dolce_%26_Gabbana_with_human_skull_on_back_made_from_Swarovski_glass_crystals.jpg/960px-Denim_jacket_from_Dolce_%26_Gabbana_with_human_skull_on_back_made_from_Swarovski_glass_crystals.jpg"
+      ],
+      "primary_image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/27/Denim_jacket_details.jpg/960px-Denim_jacket_details.jpg",
+      "description_category_id": 200000933,
+      "type_id": 93137,
+      "weight": 900,
+      "weight_unit": "g",
+      "width": 35,
+      "height": 45,
+      "depth": 8,
+      "dimension_unit": "mm",
+      "attributes": [
+        {
+          "complex_id": 0,
+          "id": 31,
+          "values": [
+            {
+              "dictionary_value_id": 972108475,
+              "value": "BLADNES"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 10096,
+          "values": [
+            {
+              "dictionary_value_id": 61576,
+              "value": "серый"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 4295,
+          "values": [
+            {
+              "dictionary_value_id": 35432,
+              "value": "52"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 9163,
+          "values": [
+            {
+              "dictionary_value_id": 22880,
+              "value": "Мужской"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 4180,
+          "values": [
+            {
+              "dictionary_value_id": 0,
+              "value": "Куртка Юка оверсайз"
+            }
+          ]
+        }
+      ],
+      "complex_attributes": [],
+      "attributes_with_defaults": [],
+      "model_info": {
+        "model_id": 4101244115,
+        "count": 5
+      },
+      "pdf_list": [],
+      "barcodes": [
+        "4607086561034",
+        "OZN12345678903"
+      ]
+    },
+    {
+      "id": 12345678904,
+      "sku": "12345678904",
+      "offer_id": "demo-sneakers-antarctica",
+      "name": "Кроссовки Antarctica Run",
+      "barcode": "4607086561041",
+      "color_image": "",
+      "images": [
+        "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/17/Forgotten_children%27s_sneakers_in_R%C3%A5g%C3%A5rdsdal_1.jpg/960px-Forgotten_children%27s_sneakers_in_R%C3%A5g%C3%A5rdsdal_1.jpg",
+        "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Forgotten_children%27s_sneakers_in_R%C3%A5g%C3%A5rdsdal_2.jpg/960px-Forgotten_children%27s_sneakers_in_R%C3%A5g%C3%A5rdsdal_2.jpg"
+      ],
+      "primary_image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/17/Forgotten_children%27s_sneakers_in_R%C3%A5g%C3%A5rdsdal_1.jpg/960px-Forgotten_children%27s_sneakers_in_R%C3%A5g%C3%A5rdsdal_1.jpg",
+      "description_category_id": 15621048,
+      "type_id": 91248,
+      "weight": 700,
+      "weight_unit": "g",
+      "width": 33,
+      "height": 13,
+      "depth": 20,
+      "dimension_unit": "mm",
+      "attributes": [
+        {
+          "complex_id": 0,
+          "id": 31,
+          "values": [
+            {
+              "dictionary_value_id": 5091002,
+              "value": "Antarctica"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 10096,
+          "values": [
+            {
+              "dictionary_value_id": 61571,
+              "value": "белый"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 4298,
+          "values": [
+            {
+              "dictionary_value_id": 23570,
+              "value": "42"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 9163,
+          "values": [
+            {
+              "dictionary_value_id": 22880,
+              "value": "Мужской"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 4180,
+          "values": [
+            {
+              "dictionary_value_id": 0,
+              "value": "Кроссовки Antarctica Run"
+            }
+          ]
+        }
+      ],
+      "complex_attributes": [],
+      "attributes_with_defaults": [],
+      "model_info": {
+        "model_id": 734819205,
+        "count": 1
+      },
+      "pdf_list": [],
+      "barcodes": [
+        "4607086561041",
+        "OZN12345678904"
+      ]
+    },
+    {
+      "id": 12345678905,
+      "sku": "12345678905",
+      "offer_id": "demo-boots-antarctica",
+      "name": "Ботинки Antarctica Trail",
+      "barcode": "4607086561058",
+      "color_image": "",
+      "images": [
+        "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e2/Brown_winter_shoe_01.jpg/960px-Brown_winter_shoe_01.jpg",
+        "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/52/Brown_winter_shoe_02.jpg/960px-Brown_winter_shoe_02.jpg"
+      ],
+      "primary_image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e2/Brown_winter_shoe_01.jpg/960px-Brown_winter_shoe_01.jpg",
+      "description_category_id": 15621048,
+      "type_id": 91239,
+      "weight": 1100,
+      "weight_unit": "g",
+      "width": 33,
+      "height": 15,
+      "depth": 25,
+      "dimension_unit": "mm",
+      "attributes": [
+        {
+          "complex_id": 0,
+          "id": 31,
+          "values": [
+            {
+              "dictionary_value_id": 5091002,
+              "value": "Antarctica"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 10096,
+          "values": [
+            {
+              "dictionary_value_id": 61575,
+              "value": "коричневый"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 4298,
+          "values": [
+            {
+              "dictionary_value_id": 23566,
+              "value": "41"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 9163,
+          "values": [
+            {
+              "dictionary_value_id": 22880,
+              "value": "Мужской"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 4180,
+          "values": [
+            {
+              "dictionary_value_id": 0,
+              "value": "Ботинки Antarctica Trail"
+            }
+          ]
+        }
+      ],
+      "complex_attributes": [],
+      "attributes_with_defaults": [],
+      "model_info": {
+        "model_id": 6045829137,
+        "count": 1
+      },
+      "pdf_list": [],
+      "barcodes": [
+        "4607086561058",
+        "OZN12345678905"
+      ]
+    },
+    {
+      "id": 12345678906,
+      "sku": "12345678906",
+      "offer_id": "demo-work-shoes-antarctica",
+      "name": "Рабочая обувь Antarctica Guard",
+      "barcode": "4607086561065",
+      "color_image": "",
+      "images": [
+        "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c1/DeWalt_Newark_work_boots_cut_in_half.jpg/960px-DeWalt_Newark_work_boots_cut_in_half.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Effects_of_work_shoes_from_sweating.jpg/960px-Effects_of_work_shoes_from_sweating.jpg"
+      ],
+      "primary_image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c1/DeWalt_Newark_work_boots_cut_in_half.jpg/960px-DeWalt_Newark_work_boots_cut_in_half.jpg",
+      "description_category_id": 15621049,
+      "type_id": 115951170,
+      "weight": 1300,
+      "weight_unit": "g",
+      "width": 34,
+      "height": 15,
+      "depth": 26,
+      "dimension_unit": "mm",
+      "attributes": [
+        {
+          "complex_id": 0,
+          "id": 31,
+          "values": [
+            {
+              "dictionary_value_id": 5091002,
+              "value": "Antarctica"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 10096,
+          "values": [
+            {
+              "dictionary_value_id": 61576,
+              "value": "серый"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 4298,
+          "values": [
+            {
+              "dictionary_value_id": 23575,
+              "value": "43"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 9163,
+          "values": [
+            {
+              "dictionary_value_id": 22880,
+              "value": "Мужской"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 4180,
+          "values": [
+            {
+              "dictionary_value_id": 0,
+              "value": "Рабочая обувь Antarctica Guard"
+            }
+          ]
+        }
+      ],
+      "complex_attributes": [],
+      "attributes_with_defaults": [],
+      "model_info": {
+        "model_id": 518366042,
+        "count": 1
+      },
+      "pdf_list": [],
+      "barcodes": [
+        "4607086561065",
+        "OZN12345678906"
+      ]
+    },
+    {
+      "id": 12345678907,
+      "sku": "12345678907",
+      "offer_id": "demo-smartphone-samsung",
+      "name": "Смартфон Samsung Galaxy",
+      "barcode": "4607086561072",
+      "color_image": "",
+      "images": [
+        "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/be/Blackview_A60_Smartphone_Android_mobile_phone_and_folio_case.jpg/960px-Blackview_A60_Smartphone_Android_mobile_phone_and_folio_case.jpg",
+        "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/78/Blackview_A60_Smartphone_Android_mobile_phone_back_face.jpg/960px-Blackview_A60_Smartphone_Android_mobile_phone_back_face.jpg"
+      ],
+      "primary_image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/be/Blackview_A60_Smartphone_Android_mobile_phone_and_folio_case.jpg/960px-Blackview_A60_Smartphone_Android_mobile_phone_and_folio_case.jpg",
+      "description_category_id": 15621050,
+      "type_id": 95139,
+      "weight": 195,
+      "weight_unit": "g",
+      "width": 76,
+      "height": 163,
+      "depth": 8,
+      "dimension_unit": "mm",
+      "attributes": [
+        {
+          "complex_id": 0,
+          "id": 85,
+          "values": [
+            {
+              "dictionary_value_id": 5060050,
+              "value": "Samsung"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 10096,
+          "values": [
+            {
+              "dictionary_value_id": 61574,
+              "value": "черный"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 4180,
+          "values": [
+            {
+              "dictionary_value_id": 0,
+              "value": "Смартфон Samsung Galaxy"
+            }
+          ]
+        }
+      ],
+      "complex_attributes": [],
+      "attributes_with_defaults": [],
+      "model_info": {
+        "model_id": 6012477833,
+        "count": 1
+      },
+      "pdf_list": [],
+      "barcodes": [
+        "4607086561072",
+        "OZN12345678907"
+      ]
+    },
+    {
+      "id": 12345678908,
+      "sku": "12345678908",
+      "offer_id": "demo-laptop-samsung",
+      "name": "Ноутбук Samsung Galaxy Book",
+      "barcode": "4607086561089",
+      "color_image": "",
+      "images": [
+        "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d6/HP_Pavilion_Computer_laptop_keyboard_closeup.jpg/960px-HP_Pavilion_Computer_laptop_keyboard_closeup.jpg",
+        "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0e/IBM_Thinkpad_R51.jpg/960px-IBM_Thinkpad_R51.jpg"
+      ],
+      "primary_image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d6/HP_Pavilion_Computer_laptop_keyboard_closeup.jpg/960px-HP_Pavilion_Computer_laptop_keyboard_closeup.jpg",
+      "description_category_id": 17028619,
+      "type_id": 91477,
+      "weight": 1700,
+      "weight_unit": "g",
+      "width": 355,
+      "height": 250,
+      "depth": 17,
+      "dimension_unit": "mm",
+      "attributes": [
+        {
+          "complex_id": 0,
+          "id": 85,
+          "values": [
+            {
+              "dictionary_value_id": 5060050,
+              "value": "Samsung"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 10096,
+          "values": [
+            {
+              "dictionary_value_id": 61576,
+              "value": "серый"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 4180,
+          "values": [
+            {
+              "dictionary_value_id": 0,
+              "value": "Ноутбук Samsung Galaxy Book"
+            }
+          ]
+        }
+      ],
+      "complex_attributes": [],
+      "attributes_with_defaults": [],
+      "model_info": {
+        "model_id": 4101992864,
+        "count": 1
+      },
+      "pdf_list": [],
+      "barcodes": [
+        "4607086561089",
+        "OZN12345678908"
+      ]
+    },
+    {
+      "id": 12345678909,
+      "sku": "12345678909",
+      "offer_id": "demo-headphones-samsung",
+      "name": "Наушники Samsung Galaxy Buds",
+      "barcode": "4607086561096",
+      "color_image": "",
+      "images": [
+        "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/56/2023_S%C5%82uchawki_Sony_WI-XB400_%281%29.jpg/960px-2023_S%C5%82uchawki_Sony_WI-XB400_%281%29.jpg",
+        "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/42/2023_S%C5%82uchawki_Sony_WI-XB400_%282%29.jpg/960px-2023_S%C5%82uchawki_Sony_WI-XB400_%282%29.jpg"
+      ],
+      "primary_image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/56/2023_S%C5%82uchawki_Sony_WI-XB400_%281%29.jpg/960px-2023_S%C5%82uchawki_Sony_WI-XB400_%281%29.jpg",
+      "description_category_id": 17028929,
+      "type_id": 504866264,
+      "weight": 60,
+      "weight_unit": "g",
+      "width": 60,
+      "height": 45,
+      "depth": 25,
+      "dimension_unit": "mm",
+      "attributes": [
+        {
+          "complex_id": 0,
+          "id": 85,
+          "values": [
+            {
+              "dictionary_value_id": 5060050,
+              "value": "Samsung"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 10096,
+          "values": [
+            {
+              "dictionary_value_id": 61571,
+              "value": "белый"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 4180,
+          "values": [
+            {
+              "dictionary_value_id": 0,
+              "value": "Наушники Samsung Galaxy Buds"
+            }
+          ]
+        }
+      ],
+      "complex_attributes": [],
+      "attributes_with_defaults": [],
+      "model_info": {
+        "model_id": 509823177,
+        "count": 1
+      },
+      "pdf_list": [],
+      "barcodes": [
+        "4607086561096",
+        "OZN12345678909"
+      ]
+    },
+    {
+      "id": 12345678910,
+      "sku": "12345678910",
+      "offer_id": "demo-ebook-samsung",
+      "name": "Электронная книга Samsung Galaxy",
+      "barcode": "4607086561102",
+      "color_image": "",
+      "images": [
+        "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ef/Augen_The_Book_E-reader_jeh.jpg/960px-Augen_The_Book_E-reader_jeh.jpg",
+        "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/70/Cybook_Opus_Bookeen.jpg/960px-Cybook_Opus_Bookeen.jpg"
+      ],
+      "primary_image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ef/Augen_The_Book_E-reader_jeh.jpg/960px-Augen_The_Book_E-reader_jeh.jpg",
+      "description_category_id": 17028618,
+      "type_id": 91870,
+      "weight": 210,
+      "weight_unit": "g",
+      "width": 160,
+      "height": 220,
+      "depth": 8,
+      "dimension_unit": "mm",
+      "attributes": [
+        {
+          "complex_id": 0,
+          "id": 85,
+          "values": [
+            {
+              "dictionary_value_id": 5060050,
+              "value": "Samsung"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 10096,
+          "values": [
+            {
+              "dictionary_value_id": 61576,
+              "value": "серый"
+            }
+          ]
+        },
+        {
+          "complex_id": 0,
+          "id": 4180,
+          "values": [
+            {
+              "dictionary_value_id": 0,
+              "value": "Электронная книга Samsung Galaxy"
+            }
+          ]
+        }
+      ],
+      "complex_attributes": [],
+      "attributes_with_defaults": [],
+      "model_info": {
+        "model_id": 6055743018,
+        "count": 1
+      },
+      "pdf_list": [],
+      "barcodes": [
+        "4607086561102",
+        "OZN12345678910"
+      ]
+    }
+  ],
+  "total": "10"
+}
