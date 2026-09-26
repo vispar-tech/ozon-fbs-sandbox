@@ -127,6 +127,7 @@ export function Showcase (): JSX.Element {
 
       <section id='tabs' className={styles.section}>
         <h2 className={styles.sectionTitle}>Tabs</h2>
+        <p className={styles.description}>Panels mount on first activation and stay mounted when switching back.</p>
         <Tabs tabs={[
           { key: 'overview', label: 'Overview' },
           { key: 'roles', label: 'Roles', count: 5 },
