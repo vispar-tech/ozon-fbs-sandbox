@@ -30,3 +30,6 @@ docker-compose.override.yml
 
 # Playwright MCP artifacts
 .playwright-mcp/
+
+# промежуточный дамп OpenAPI-схемы бэкенда (для generate-api-types)
+backend/.openapi.json

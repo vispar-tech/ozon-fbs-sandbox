@@ -2,8 +2,8 @@
 # Полное описание команд — в AGENTS.md и README.md.
 
 .PHONY: help install install-backend install-frontend dev dev-backend dev-frontend \
-	test lint lint-backend lint-frontend build migrate generate-types docker-up docker-dev-up \
-	docker-down docker-dev-down
+	test lint lint-backend lint-frontend build migrate generate-types generate-api-types \
+	docker-up docker-dev-up docker-down docker-dev-down
 
 help: ## Показать доступные цели
 	@grep -E '^[a-zA-Z_-]+:.*?## ' Makefile | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
@@ -48,6 +48,10 @@ migrate: ## Применить alembic-миграции (backend)
 
 generate-types: ## Сгенерировать типы Ozon API из OpenAPI-схемы
 	cd frontend && pnpm generate:types
+
+generate-api-types: ## Сгенерировать типы backend API из OpenAPI-схемы бэкенда
+	cd backend && PYTHONPATH=. poetry run python scripts/dump_openapi.py .openapi.json
+	cd frontend && pnpm generate:api-types
 
 docker-up: ## Собрать и поднять prod-стек (frontend :8080 → backend :3000)
 	docker compose up --build

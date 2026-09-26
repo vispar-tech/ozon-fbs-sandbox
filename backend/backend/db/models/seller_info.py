@@ -3,7 +3,7 @@
 from typing import Literal
 
 from backend.db.models.base import DomainModel
-from backend.db.types.dates import IsoMsZ
+from backend.db.types.dates import IsoMsZNullable
 
 TaxSystem = Literal["UNKNOWN", "UNSPECIFIED", "OSNO", "USN", "NPD", "AUSN", "PSN"]
 RatingStatus = Literal["UNKNOWN", "OK", "WARNING", "CRITICAL"]
@@ -45,8 +45,8 @@ class RatingValue(DomainModel):
 
     formatted: str
     value: int | float
-    date_from: IsoMsZ
-    date_to: IsoMsZ
+    date_from: IsoMsZNullable
+    date_to: IsoMsZNullable
     status: RatingStatusFlags
 
 
@@ -58,7 +58,8 @@ class Rating(DomainModel):
     status: RatingStatus
     value_type: RatingValueType
     current_value: RatingValue
-    past_value: RatingValue
+    # Optional in Ozon: a rating may have no history.
+    past_value: RatingValue | None = None
 
 
 class Subscription(DomainModel):

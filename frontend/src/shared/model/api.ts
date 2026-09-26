@@ -1,12 +1,6 @@
-import type { Roles, SellerInfo } from './fixtures.js'
+import type { components } from './generated/backend-api.js'
 
-export interface CreateCabinetInput {
-  name: string
-  demo?: boolean
-}
+type BackendSchemas = components['schemas']
 
-export interface UpdateCabinetInput {
-  name?: string
-  seller_info?: SellerInfo
-  roles?: Roles
-}
+export type CreateCabinetInput = BackendSchemas['CreateCabinetInput']
+export type UpdateCabinetInput = BackendSchemas['UpdateCabinetInput']

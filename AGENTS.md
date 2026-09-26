@@ -6,7 +6,7 @@
 
 - Python 3.14 + Poetry — `backend/` (FastAPI)
 - Node ≥ 26.9.0, pnpm 12.3.4 — `frontend/` (React 19 + Vite 8 + react-router-dom); все node-утилиты (package.json, .nvmrc, eslint, tsconfig, lockfile) только внутри `frontend/`
-- Типы — во `frontend/src/shared/model/` (FSD shared/model, только типы, без runtime)
+- Типы — во `frontend/src/shared/model/` (FSD shared/model, только типы, без runtime); доменные типы — тонкие алиасы на `generated/backend-api.ts`, который генерируется из схемы бэкенда, поэтому контракт правь в бэке, а не в `.ts`
 - Docker: nginx для frontend, python для backend, postgres для БД, docker-compose для стека
 - TypeScript: `typescript` заалиасен на `@typescript/typescript6` (бинарь `tsc6`)
 
@@ -26,6 +26,7 @@
 | `make build` | `tsc6 -b && vite build` → `dist/` |
 | `make migrate` | alembic upgrade head (backend) |
 | `make generate-types` | `frontend/src/shared/model/generated/ozon-api.ts` из `ozon-seller-api-schema/schemas/ozon-seller-api-openapi.json` (openapi-typescript) |
+| `make generate-api-types` | `frontend/src/shared/model/generated/backend-api.ts` из схемы самого бэкенда (openapi-typescript; промежуточный дамп — `backend/scripts/dump_openapi.py`, офлайн, без БД и сервера) |
 | `make docker-up` | prod-стек: frontend `:8080` (nginx) → backend `:3000` + postgres `:5432` + migrator |
 | `make docker-dev-up` | dev-стек: reload + migrator + изолированная БД (override `docker-compose.dev.yml`) |
 | `make docker-down` / `make docker-dev-down` | остановка стеков |
@@ -46,7 +47,7 @@
 - `frontend/eslint.config.js` — lint (love + simple-import-sort + no-separators)
 - `frontend/tsconfig.base.json` — strict-конфиг (extends из app/node конфигов)
 - `frontend/package.json` — единственный package.json (скрипты, зависимости, packageManager)
-- `frontend/.husky/pre-commit` — husky-хук (ставится `prepare` при `pnpm install`): обновляет субмодуль схемы (fetch на каждый коммит — нужна сеть) → перегенерирует типы → typecheck → `make lint`
+- `frontend/.husky/pre-commit` — husky-хук (ставится `prepare` при `pnpm install`): обновляет субмодуль схемы (fetch на каждый коммит — нужна сеть) → перегенерирует типы из схемы Ozon и из схемы бэкенда → typecheck → `make lint`
 - `ozon-seller-api-schema/` — git submodule (vispar-tech/ozon-seller-api-schema): ежедневное зеркало OpenAPI-схемы Ozon Seller API; контракт — `ozon-seller-api-schema/AGENTS.md`
 - `.github/workflows/ci.yml` — единственный CI-workflow (см. секцию CI)
 - `Makefile` — команды из корня
@@ -71,6 +72,15 @@
 - `no-magic-numbers`: для frontend разрешены `[0,1]` (идиоматика React).
 - Тесты: backend — pytest; тестов во frontend нет.
 - Docker: backend — образ `python:3.14-slim-trixie` (multi-stage, Poetry), HEALTHCHECK на `127.0.0.1:3000/api/health`; frontend — сборка pnpm на node → runtime `nginx:alpine`, HEALTHCHECK на `127.0.0.1`. Директив `USER`/dumb-init в Dockerfile нет.
+
+## Git flow
+
+- Долгоживущий `develop` + релизная `main`. Обычная работа — коммиты в `develop` и `git push origin develop`; PR для этого не нужны, squash/rebase на `develop` безвреден (он не release-база).
+- Релиз: preflight `git fetch origin && git merge-base --is-ancestor origin/main origin/develop` (если `false` — `git merge origin/main`, **никогда** rebase) → PR `develop` → `main` с assignee `vispar-tech` → **merge-коммитом** `gh pr merge <N> --merge` → сразу синхронизировать develop: `git fetch origin && git push origin origin/main:develop`.
+- На release-PR запрещены squash и rebase-merge: squash подменяет N коммитов develop одним посторонним коммитом в main, после чего develop перестаёт быть предком main и каждая следующая синхронизация требует rebase + force-push от человека. Именно это ломало flow после PR #9.
+- Шаг синхронизации develop обязателен: merge-коммит создаётся *на* main, значит `main` не становится предком develop сам по себе. Но шаг — fast-forward, то есть безопасный: force-push не нужен ни человеку, ни агенту. Забыть недорого — `strict: true` блокирует следующий merge и предлагает «Update branch».
+- Что держит схему: на `main` `required_linear_history: false` (при `true` GitHub отвергает merge-коммиты, даже когда `allow_merge_commit: true`); ruleset `main: merge-commit only` с `allowed_merge_methods: ["merge"]`, `non_fast_forward`, `deletion` — одна кнопка и серверный запрет force-push в `main`/`develop`; `dependabot.yml` со `target-branch: "develop"` у всех трёх записей, иначе dependabot растёт в `main` мимо `develop`.
+- `--delete-branch` при мержаге не указывать: head release-PR — это `develop`.
 
 ## CI
 

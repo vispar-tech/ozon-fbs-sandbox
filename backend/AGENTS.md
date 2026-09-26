@@ -20,6 +20,7 @@ FastAPI-бэкенд песочницы `ozon-fbs-sandbox`. Контракт д�
 | `poetry run mypy backend tests scripts` | проверка типов |
 | `poetry run alembic upgrade head` | применить миграции |
 | `poetry run python scripts/fetch_ozon_fixture.py ...` | скачать реальный ответ Ozon Seller API в `data/fixtures/` (ключи — флаги `--client-id`/`--api-key` или env `OZON_CLIENT_ID`/`OZON_API_KEY`) |
+| `poetry run python scripts/dump_openapi.py <path>` | дамп собственной OpenAPI-схемы в JSON (офлайн: без сервера и БД); вход для `make generate-api-types` из корня |
 
 ## Окружение
 
@@ -46,10 +47,10 @@ FastAPI-бэкенд песочницы `ozon-fbs-sandbox`. Контракт д�
 
 - `backend/__main__.py` — точка входа (uvicorn при `reload`, иначе gunicorn); рядом `settings.py`, `log.py`, `gunicorn_runner.py`
 - `backend/web/` — `application.py` (`get_app`, префикс `/api`, `docs_url=None`), `lifespan.py`, `middleware.py` (`RequireJsonMiddleware`: не-JSON Content-Type на write-роутах `/api/cabinets` → 400/3), `errors.py` (единый Ozon-контракт ошибок: схема `{code, message, details}`, константы gRPC-кодов, глобальные exception-хендлеры), `api/` — `router.py` (собирает роутеры; новые роутеры регистрируются здесь)
-- `backend/db/` — `base.py`, `meta.py`, `utils.py` (create/drop database для тестов), `dependencies.py`, `models/` (SQLAlchemy-модели), `repositories/` (BaseRepository), `types/` (типы доменной границы: `dates.py` — iso-ms-Z сериализация, `pydantic_type.py` — JSONB-колонка на Pydantic-модели), `migrations/` (alembic; `alembic.ini` в `backend/`; исключён из ruff)
+- `backend/db/` — `base.py`, `meta.py`, `utils.py` (create/drop database для тестов), `dependencies.py`, `models/` (SQLAlchemy-модели; `DomainModel` с `extra="forbid"` — лишние ключи отвергаются, а не тихо пишутся в БД), `repositories/` (BaseRepository), `types/` (типы доменной границы: `dates.py` — два алиаса дат, `IsoMsZ` (non-null) и `IsoMsZNullable` (nullable; на проводе `None`↔`''`, в БД `''`↔`NULL`); оба несут `WithJsonSchema` — иначе pydantic расщепляет их на `-Input`/`-Output` в OpenAPI, `pydantic_type.py` — JSONB-колонка на Pydantic-модели), `migrations/` (alembic; `alembic.ini` в `backend/`; исключён из ruff)
 - `backend/schemas/` — web-DTO: `base.py` (ApiModel, from_attributes), `cabinets.py`, `dates.py` (реэкспорт дат из `db/types`), `products.py` (DTO карточек товаров v3/v4)
 - `backend/services/` — `base.py` (BaseService), `fixtures.py` (типизированная загрузка JSON-фикстур)
-- `backend/scripts/` — `fetch_ozon_fixture.py` (CLI: реальный ответ Ozon Seller API → `data/fixtures/`). Ключи `OZON_CLIENT_ID`/`OZON_API_KEY` скрипт читает сам через `load_dotenv(backend/.env)`; в `Settings` они не попадают (там `extra="ignore"`), поэтому сервисный `.env` общий с этим скриптом и значения из шаблона — `backend/.env.example`
+- `backend/scripts/` — `fetch_ozon_fixture.py` (CLI: реальный ответ Ozon Seller API → `data/fixtures/`), `dump_openapi.py` (CLI: собственная OpenAPI-схема → JSON, офлайн; в CI зовётся с `PYTHONPATH=.`, т.к. там `poetry install --no-root` и корневой пакет не встаёт). Ключи `OZON_CLIENT_ID`/`OZON_API_KEY` скрипт читает сам через `load_dotenv(backend/.env)`; в `Settings` они не попадают (там `extra="ignore"`), поэтому сервисный `.env` общий с этим скриптом и значения из шаблона — `backend/.env.example`
 - `backend/data/fixtures/` — `demo-cabinet.json` (кабинет: seller_info, roles), `v3-product-list.json` (список карточек v3), `v4-product-info-attributes.json` (атрибуты карточек v4)
 - `backend/static/docs/` — self-hosted assets swagger-ui / redoc
 - `tests/` — pytest: `conftest.py` + по файлу на роутер/модуль

@@ -1,5 +1,5 @@
-export interface OzonError {
-  code: number
-  message: string
-  details: unknown[]
-}
+import type { components } from './generated/backend-api.js'
+
+type BackendSchemas = components['schemas']
+
+export type OzonError = BackendSchemas['OzonError']

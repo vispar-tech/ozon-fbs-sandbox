@@ -2,6 +2,11 @@
 git submodule update --init --remote ozon-seller-api-schema
 git add ozon-seller-api-schema
 
+# Типы backend-контракта: генерируются из схемы самого бэкенда (offline),
+# чтобы фронт не разъезжался с его моделями — до typecheck/lint.
+make generate-api-types
+git add frontend/src/shared/model/generated/backend-api.ts
+
 # Типы из свежей схемы + проверка, что код с ними собирается.
 cd frontend
 pnpm generate:types

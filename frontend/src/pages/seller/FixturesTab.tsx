@@ -6,6 +6,7 @@ import styles from './FixturesTab.module.scss'
 
 import { updateCabinet } from '@/shared/api/index.js'
 import { buildFormSchema, type FieldDefinition, FieldRenderer, useAutoForm } from '@/shared/hooks/index.js'
+import { hasPastValue } from '@/shared/lib/index.js'
 import type { CabinetSummary, Rating, Roles, SellerInfo } from '@/shared/model/index.js'
 import { Button, Icon } from '@/shared/ui/actions/index.js'
 import { Chip, ErrorBanner, useToast } from '@/shared/ui/feedback/index.js'
@@ -139,7 +140,7 @@ function flattenSellerInfo (fixture: SellerInfo): SellerInfoFormValues {
     ratings: fixture.ratings.map((r) => ({
       ...r,
       current_value: { ...r.current_value },
-      past_value: r.past_value === undefined ? undefined : { ...r.past_value }
+      past_value: hasPastValue(r) ? { ...r.past_value } : null
     }))
   }
 }
@@ -160,16 +161,18 @@ function buildSellerInfoFixture (data: SellerInfoFormValues): SellerInfo {
       type: data['subscription.type'] as SellerInfo['subscription']['type'], // eslint-disable-line @typescript-eslint/no-unsafe-type-assertion -- reconstructing from flat form values
       is_premium: data['subscription.is_premium']
     },
-    ratings: data.ratings.map((r) => {
-      const currentNum = Number(String(r.current_value.value))
-      const pastNum = r.past_value === undefined ? undefined : Number(String(r.past_value.value))
-      return {
-        ...r,
-        current_value: { ...r.current_value, value: Number.isNaN(currentNum) ? 0 : currentNum },
-        past_value: r.past_value === undefined ? undefined : { ...r.past_value, value: pastNum === undefined || Number.isNaN(pastNum) ? 0 : pastNum }
-      }
-    })
+    ratings: data.ratings.map((r) => ({
+      ...r,
+      current_value: { ...r.current_value, value: toRatingValueNumber(r.current_value.value) },
+      past_value: hasPastValue(r) ? { ...r.past_value, value: toRatingValueNumber(r.past_value.value) } : null
+    }))
   }
+}
+
+// Форма отдаёт value строкой, а тип у RatingValue.value — number.
+function toRatingValueNumber (value: number): number {
+  const parsed = Number(String(value))
+  return Number.isNaN(parsed) ? 0 : parsed
 }
 
 function emptyRating (): Rating {
@@ -178,7 +181,8 @@ function emptyRating (): Rating {
     rating: '',
     status: 'UNKNOWN',
     value_type: 'UNKNOWN',
-    current_value: { formatted: '', value: 0, date_from: '', date_to: '', status: { danger: false, premium: false, warning: false } }
+    current_value: { formatted: '', value: 0, date_from: '', date_to: '', status: { danger: false, premium: false, warning: false } },
+    past_value: null
   }
 }
 
@@ -212,7 +216,7 @@ function SellerInfoEditor ({ cabinet, onUpdated }: EditorProps): JSX.Element {
     form.handleChange('ratings', ratings.map((r, idx) => {
       if (idx !== ratingIndex) return r
       const target = r[which] // eslint-disable-line @typescript-eslint/prefer-destructuring -- dynamic key access
-      if (target === undefined) return r
+      if (target === undefined || target === null) return r
       return { ...r, [which]: { ...target, [field]: value } }
     }))
   }
@@ -221,7 +225,7 @@ function SellerInfoEditor ({ cabinet, onUpdated }: EditorProps): JSX.Element {
     form.handleChange('ratings', ratings.map((r, idx) => {
       if (idx !== ratingIndex) return r
       const target = r[which] // eslint-disable-line @typescript-eslint/prefer-destructuring -- dynamic key access
-      if (target === undefined) return r
+      if (target === undefined || target === null) return r
       return { ...r, [which]: { ...target, status: { ...target.status, [flag]: checked } } }
     }))
   }
@@ -239,9 +243,7 @@ function SellerInfoEditor ({ cabinet, onUpdated }: EditorProps): JSX.Element {
   function removePastValue (ratingIndex: number): void {
     form.handleChange('ratings', ratings.map((r, idx) => {
       if (idx !== ratingIndex) return r
-      const copy = { ...r }
-      delete copy.past_value
-      return copy
+      return { ...r, past_value: null }
     }))
   }
 
@@ -275,11 +277,8 @@ function SellerInfoEditor ({ cabinet, onUpdated }: EditorProps): JSX.Element {
                   onFlagChange={(flag, checked) => { updateRatingStatusFlag(ratingIdx, 'current_value', flag, checked) }}
                 />
 
-                {rating.past_value === undefined
+                {hasPastValue(rating)
                   ? (
-                      <Button type='button' variant='secondary' size='sm' icon={<Icon icon={PlusIcon} size='sm' />} onClick={() => { addPastValue(ratingIdx) }}>Добавить прошлое значение</Button>
-                    )
-                  : (
                       <>
                         <div className={styles.pastValueHeader}>
                           <Button type='button' variant='ghost' size='sm' onClick={() => { removePastValue(ratingIdx) }}>Убрать</Button>
@@ -291,6 +290,9 @@ function SellerInfoEditor ({ cabinet, onUpdated }: EditorProps): JSX.Element {
                           onFlagChange={(flag, checked) => { updateRatingStatusFlag(ratingIdx, 'past_value', flag, checked) }}
                         />
                       </>
+                    )
+                  : (
+                      <Button type='button' variant='secondary' size='sm' icon={<Icon icon={PlusIcon} size='sm' />} onClick={() => { addPastValue(ratingIdx) }}>Добавить прошлое значение</Button>
                     )}
               </div>
             </Card>
@@ -320,9 +322,9 @@ function RatingValueEditor ({ title, value, onFieldChange, onFlagChange }: Ratin
         <Input label='Дата окончания' value={value.date_to} onChange={(e) => { onFieldChange('date_to', e.target.value) }} />
       </div>
       <div className={styles.flagsRow}>
-        <Toggle label='Опасность' checked={value.status.danger ?? false} onChange={(checked) => { onFlagChange('danger', checked) }} />
-        <Toggle label='Премиум' checked={value.status.premium ?? false} onChange={(checked) => { onFlagChange('premium', checked) }} />
-        <Toggle label='Предупреждение' checked={value.status.warning ?? false} onChange={(checked) => { onFlagChange('warning', checked) }} />
+        <Toggle label='Опасность' checked={value.status.danger} onChange={(checked) => { onFlagChange('danger', checked) }} />
+        <Toggle label='Премиум' checked={value.status.premium} onChange={(checked) => { onFlagChange('premium', checked) }} />
+        <Toggle label='Предупреждение' checked={value.status.warning} onChange={(checked) => { onFlagChange('warning', checked) }} />
       </div>
     </>
   )

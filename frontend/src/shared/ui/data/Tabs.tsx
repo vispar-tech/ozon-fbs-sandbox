@@ -35,7 +35,15 @@ export function Tabs ({
   const firstTabKey = tabs[INITIAL_INDEX]?.key ?? ''
   const [internalActive, setInternalActive] = useState(defaultActive ?? firstTabKey)
   const currentKey = activeKey ?? internalActive
+  // Panels mount on first activation and stay mounted afterwards (panel state survives
+  // switching). Visited keys are adjusted during render, not in an effect, so a panel
+  // never paints empty for a frame.
+  const [visitedKeys, setVisitedKeys] = useState<ReadonlySet<string>>(() => new Set([currentKey]))
   const tablistRef = useRef<HTMLDivElement>(null)
+
+  if (!visitedKeys.has(currentKey)) {
+    setVisitedKeys(new Set(visitedKeys).add(currentKey))
+  }
 
   const handleChange = (key: string): void => {
     onChange?.(key)
@@ -97,7 +105,7 @@ export function Tabs ({
               hidden={tab.key !== currentKey}
               tabIndex={tab.key === currentKey ? 0 : INACTIVE_TAB_INDEX}
             >
-              {panel}
+              {visitedKeys.has(tab.key) && panel}
             </div>
           )
         })}
