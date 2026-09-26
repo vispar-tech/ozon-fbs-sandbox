@@ -11,7 +11,7 @@ import httpx
 from dotenv import load_dotenv
 
 DEFAULT_BASE_URL = "https://api-seller.ozon.ru"
-FIXTURES_DIR = Path(__file__).resolve().parent.parent / "data" / "fixtures"
+FIXTURES_DIR = (Path(__file__).resolve().parent.parent / "data" / "fixtures").resolve()
 HTTP_METHODS = ("GET", "POST", "PUT", "PATCH", "DELETE")
 ENV_CLIENT_ID = "OZON_CLIENT_ID"
 ENV_API_KEY = "OZON_API_KEY"
@@ -80,6 +80,18 @@ def default_output_name(path: str) -> str:
     return path.strip("/").replace("/", "-") + ".json"
 
 
+def resolve_output_path(raw_output: str | None, path: str) -> Path:
+    """Resolve the fixture destination, keeping it inside the fixtures directory."""
+    output = (FIXTURES_DIR / (raw_output or default_output_name(path))).resolve()
+    try:
+        output.relative_to(FIXTURES_DIR)
+    except ValueError:
+        raise SystemExit(
+            f"--output must stay inside {FIXTURES_DIR}, got: {raw_output}",
+        ) from None
+    return output
+
+
 def fetch_fixture(args: argparse.Namespace) -> Path:
     """Fetch the Ozon API response and write it to the fixtures directory."""
     client_id, api_key = resolve_credentials(args)
@@ -109,7 +121,7 @@ def fetch_fixture(args: argparse.Namespace) -> Path:
         payload = response.json()
     except json.JSONDecodeError as exc:
         raise SystemExit(f"API returned non-JSON response: {exc}") from None
-    output = FIXTURES_DIR / (args.output or default_output_name(args.path))
+    output = resolve_output_path(args.output, args.path)
     output.write_text(
         json.dumps(payload, indent=2, ensure_ascii=False) + "\n",
     )
