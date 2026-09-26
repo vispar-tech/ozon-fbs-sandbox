@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 
 import httpx
+from dotenv import load_dotenv
 
 DEFAULT_BASE_URL = "https://api-seller.ozon.ru"
 FIXTURES_DIR = Path(__file__).resolve().parent.parent / "data" / "fixtures"
@@ -117,6 +118,7 @@ def fetch_fixture(args: argparse.Namespace) -> Path:
 
 def main() -> None:
     """Run the fixture fetch."""
+    load_dotenv(Path(__file__).resolve().parent.parent / ".env")
     args = parse_args()
     output = fetch_fixture(args)
     print(f"Saved fixture to {output}")

@@ -19,6 +19,7 @@ dependencies = [
   "asyncpg >=0.31.0,<1",
   "httptools >=0.7.1,<1",
   "loguru >=0.7.3,<1",
+  "python-dotenv (>=1.2.3,<2.0.0)",
 ]
 
 [tool.poetry.group.dev.dependencies]

@@ -56,10 +56,16 @@ class Settings(BaseSettings):
             path=f"/{self.db_base}",
         )
 
+    # extra="ignore": backend/.env is shared with scripts/fetch_ozon_fixture.py
+    # and carries script-only OZON_CLIENT_ID/OZON_API_KEY keys without the
+    # BACKEND_ prefix - with extra="forbid" the app fails to start
+    # (extra_forbidden). Trade-off: a typo in BACKEND_* is silently dropped
+    # and the default value is used instead.
     model_config = SettingsConfigDict(
         env_file=".env",
         env_prefix="BACKEND_",
         env_file_encoding="utf-8",
+        extra="ignore",
     )
 
 
