@@ -47,7 +47,7 @@ warn_return_any = false
 namespace_packages = true
 
 [tool.pytest.ini_options]
-addopts = "-p no:unraisableexception"
+addopts = "-p no:unraisableexception --cov=backend --cov-report=term-missing"
 filterwarnings = [
     "error",
     "ignore::DeprecationWarning",
@@ -57,6 +57,16 @@ anyio_mode = "auto"
 env = [
     "BACKEND_DB_BASE=ozon_fbs_sandbox_test",
 ]
+
+[tool.coverage.run]
+omit = [
+    "backend/db/migrations/*",  # run by alembic upgrade, not by tests
+]
+
+[tool.coverage.report]
+fail_under = 70
+show_missing = true
+skip_covered = true
 
 [tool.ruff]
 target-version = "py314"

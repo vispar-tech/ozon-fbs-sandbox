@@ -67,7 +67,7 @@ Docker: `make docker-up` поднимает prod-стек: frontend на `http:/
 | `make install` | установка зависимостей backend (Poetry) и frontend (pnpm) |
 | `make dev` | backend `:3000` + Vite `:5173` (Ctrl+C останавливает оба) |
 | `make dev-backend` / `make dev-frontend` | по отдельности |
-| `make test` | pytest (backend) |
+| `make test` | pytest + coverage-гейт ≥70% (backend) |
 | `make lint` | ruff + mypy (backend) + eslint (frontend) |
 | `make build` | сборка frontend → `dist/` |
 | `make migrate` | alembic upgrade head |
