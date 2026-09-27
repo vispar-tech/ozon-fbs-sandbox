@@ -8,7 +8,7 @@ FastAPI-бэкенд песочницы `ozon-fbs-sandbox`. Стек, make-ко�
 |---|---|
 | `poetry install` | установка зависимостей |
 | `poetry run python -m backend` | старт приложения на `:3000` |
-| `poetry run pytest` | тесты |
+| `poetry run pytest` | тесты + coverage-гейт 70% (см. `## Coverage`) |
 | `poetry run ruff format --check`, `poetry run ruff check backend tests scripts`, `poetry run mypy backend tests scripts` | линтеры, скоуп `backend tests scripts` |
 | `poetry run alembic upgrade head` | применить миграции |
 | `poetry run python scripts/fetch_ozon_fixture.py ...` | скачать реальный ответ Ozon Seller API в `data/fixtures/` (ключи флагами `--client-id`/`--api-key` или env `OZON_CLIENT_ID`/`OZON_API_KEY`) |
@@ -19,6 +19,12 @@ FastAPI-бэкенд песочницы `ozon-fbs-sandbox`. Стек, make-ко�
 - Полный список переменных с дефолтами в `backend/.env.example`.
 - Script-only `OZON_CLIENT_ID`/`OZON_API_KEY` лежат в том же `.env` и читаются скриптами. `Settings` их не читает, поэтому в `settings.py` стоит `extra="ignore"`, иначе старт падает с `extra_forbidden`.
 - pytest через `pytest-env` пинит тестовую БД `BACKEND_DB_BASE=ozon_fbs_sandbox_test` (`[tool.pytest.ini_options]` в `pyproject.toml`); conftest создаёт и дропает её и строит схему через `meta.create_all`.
+
+## Coverage
+
+- pytest-cov, гейт один и для локального прогона, и для CI: `--cov=backend --cov-report=term-missing` в `addopts`, `fail_under = 70` плюс `show_missing` и `skip_covered` в `[tool.coverage.report]` — всё в `backend/pyproject.toml`.
+- `omit` в `[tool.coverage.run]` исключает `backend/db/migrations/`: каталог исполняет `alembic upgrade`, а не тесты, из ruff он тоже выключен.
+- `backend/__main__.py` и `backend/gunicorn_runner.py` меряются и стоят на 0% — это bootstrap (uvicorn/gunicorn), юнит-тестами он не закрывается. Сейчас общий процент 91%, и около 30 statements из 53 непокрытых приходятся на эти два файла.
 
 ## API
 

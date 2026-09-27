@@ -29,7 +29,7 @@ dev-backend: ## Запустить FastAPI dev-сервер на :3000
 dev-frontend: ## Запустить Vite dev-сервер на :5173
 	cd frontend && pnpm dev
 
-test: ## Запустить pytest (backend)
+test: ## Запустить pytest с coverage-гейтом 70% (backend)
 	cd backend && poetry run pytest
 
 lint: lint-backend lint-frontend ## Запустить все линтеры: ruff + mypy (backend) + eslint (frontend)

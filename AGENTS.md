@@ -18,7 +18,7 @@
 | `make install` | зависимости: backend (Poetry) + frontend (pnpm) |
 | `make dev` | backend + Vite; падение любого останавливает второй и завершает make |
 | `make dev-backend` / `make dev-frontend` | по отдельности (`cd backend && poetry run python -m backend` / `cd frontend && pnpm dev`) |
-| `make test` | pytest (backend) |
+| `make test` | pytest + coverage-гейт ≥70% (backend) |
 | `make lint` | ruff + mypy (backend) + eslint (frontend) |
 | `make lint-backend` / `make lint-frontend` | линтеры по одному стеку |
 | `make build` | `tsc6 -b && vite build` → `frontend/dist/` |
@@ -64,4 +64,5 @@ Husky-хук `frontend/.husky/pre-commit` обновляет субмодуль 
 
 `.github/workflows/ci.yml`, единственный workflow: push в main и все PR, jobs `changes` / `frontend` / `backend` / `docker` / `verify`.
 - path-filter (dorny/paths-filter) считает затронутые файлы только на PR. На push все outputs true, потому что CI гоняет всё.
+- Гейт покрытия отдельным шагом не описан: `fail_under = 70` лежит в `[tool.coverage.report]` (`backend/pyproject.toml`), поэтому `backend` краснеет на падении покрытия сам.
 - `docker` поднимает prod-стек и ждёт `http://localhost:8080/api/health`, так что локальная проверка `make docker-up` перед коммитом не лишняя.
