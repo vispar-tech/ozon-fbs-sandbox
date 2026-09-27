@@ -1,11 +1,14 @@
-# Dev-оверлей поверх docker-compose.yml:
+# Dev overlay on top of docker-compose.yml:
 #   docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
-# Отличия от prod-стека:
-#   - dev-образ (target: dev, с dev-зависимостями) + BACKEND_RELOAD
-#   - migrator-сервис: dev-образ + код смонтирован, alembic upgrade head
-#   - БД (сервис db) — изолированная от prod-стека: своя БД ozon_fbs_sandbox_dev,
-#     свой volume pgdata_dev, хост-порт 5433 (prod — 5432)
-#   - код backend смонтирован в контейнер (live-reload)
+# Differences from the prod stack:
+#   - dev images (target: dev, with dev dependencies) + BACKEND_RELOAD
+#   - migrator service: dev image + code mounted, alembic upgrade head
+#   - frontend service: vite dev server with HMR (target: dev), code mounted,
+#     host port 5173 (prod publishes 8080 for the nginx runtime)
+#   - database (db service) — isolated from the prod stack: its own
+#     ozon_fbs_sandbox_dev database, its own pgdata_dev volume, host port
+#     5433 (prod — 5432)
+#   - backend code mounted into the container (live-reload)
 services:
   backend:
     build:
@@ -28,8 +31,9 @@ services:
 
   db:
     image: postgres:18.3-trixie
-    ports:
-      - "127.0.0.1:5433:5432"
+    # base publishes 5432 (prod); the dev stack publishes 5433 only — compose
+    # merges ports lists, so without this the stack would claim both
+    ports: !override ["127.0.0.1:5433:5432"]
     environment:
       POSTGRES_USER: ozon_fbs_sandbox
       POSTGRES_PASSWORD: ozon_fbs_sandbox
@@ -64,5 +68,31 @@ services:
       db:
         condition: service_healthy
 
+  frontend:
+    build:
+      target: dev
+    image: frontend:dev
+    restart: unless-stopped
+    # base publishes 8080:80 for the nginx runtime; the dev runtime is vite on 5173
+    ports: !override ["127.0.0.1:5173:5173"]
+    expose:
+      - "5173"
+    environment:
+      # inside the compose network the backend is reachable by service name,
+      # not via host localhost
+      VITE_PROXY_TARGET: http://backend:3000
+    working_dir: /app/frontend
+    command: pnpm dev --host 0.0.0.0 --port 5173 --strictPort
+    volumes:
+      - ./frontend:/app/frontend
+      - frontend_node_modules:/app/frontend/node_modules
+    depends_on:
+      backend:
+        condition: service_healthy
+
 volumes:
   pgdata_dev:
+  # seeded from the image (the dev stage's node_modules) so that the bind mount
+  # of the source over /app/frontend does not shadow the dependencies; after
+  # changing dependencies rebuild the image, the volume keeps the old ones
+  frontend_node_modules:
