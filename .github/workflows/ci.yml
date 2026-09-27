@@ -41,6 +41,7 @@ jobs:
               - 'docker-compose.yml'
               - 'docker-compose.dev.yml'
               - 'frontend/nginx.conf'
+              - 'frontend/proxy-headers.conf'
               - '.github/**'
               - 'Makefile'
             backend:
