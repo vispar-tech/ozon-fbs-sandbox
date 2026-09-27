@@ -20,7 +20,7 @@ export function Skeleton ({
 }: SkeletonProps): JSX.Element {
   const classes = clsx(
     styles.skeleton,
-    styles[`skeleton${variant[0].toUpperCase()}${variant.slice(1)}`],
+    styles[`skeleton${variant.charAt(0).toUpperCase()}${variant.slice(1)}`],
     className
   )
 

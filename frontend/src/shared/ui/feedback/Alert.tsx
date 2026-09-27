@@ -27,7 +27,7 @@ export function Alert ({
 }: AlertProps): JSX.Element {
   const classes = clsx(
     styles.alert,
-    styles[`alert${tone[0].toUpperCase()}${tone.slice(1)}`],
+    styles[`alert${tone.charAt(0).toUpperCase()}${tone.slice(1)}`],
     className
   )
 

@@ -18,7 +18,7 @@ export function Spinner ({
 }: SpinnerProps): JSX.Element {
   return (
     <span
-      className={clsx(styles.spinner, styles[`spinner${size[0].toUpperCase()}${size.slice(1)}`], className)}
+      className={clsx(styles.spinner, styles[`spinner${size.charAt(0).toUpperCase()}${size.slice(1)}`], className)}
       role='status'
       aria-label={label}
     />

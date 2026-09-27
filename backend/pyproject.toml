@@ -90,20 +90,10 @@ lint.select = [ "E",     # Error
 	"UP",	 # Python updates
 ]
 lint.ignore = [
-    "D105",    # Missing docstring in magic method
-    "D107",    # Missing docstring in __init__
     "B008",    # Do not perform function calls in argument defaults
-    "D211",    # No blank lines allowed before class docstring
-    "D212",    # Multi-line docstring summary should start at the first line
-    "D401",    # First line should be in imperative mood
     "D104",    # Missing docstring in public package
     "D100",    # Missing docstring in public module
-    "D202",    # No blank lines allowed after function docstring
     "ANN401",  # typing.Any are disallowed in `**kwargs
-    "PLR0913", # Too many arguments for function call
-    "PLR0917", # Too many positional arguments (companion of PLR0913)
-    "D106",    # Missing docstring in public nested class
-    "UP043",   # Unnecessary default argument specified (conflicts with mypy).
 ]
 exclude = [
     "backend/db/migrations",
@@ -123,7 +113,7 @@ line-length = 88
 ]
 
 [tool.ruff.lint.pydocstyle]
-convention = "pep257"
+convention = "google"
 ignore-decorators = ["typing.overload"]
 
 [tool.ruff.lint.pylint]
@@ -134,4 +124,3 @@ extend-immutable-calls = [
   "fastapi.Depends",
   "fastapi.Query",
 ]
-

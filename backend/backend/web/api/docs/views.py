@@ -11,11 +11,10 @@ router = APIRouter()
 
 @router.get("/docs", include_in_schema=False)
 async def swagger_ui_html(request: Request) -> HTMLResponse:
-    """
-    Swagger UI.
+    """Render the self-hosted Swagger UI page.
 
     Args:
-        request: current request.
+        request: Current request (provides the app title).
 
     Returns:
         Rendered swagger UI.
@@ -32,22 +31,20 @@ async def swagger_ui_html(request: Request) -> HTMLResponse:
 
 @router.get("/swagger-redirect", include_in_schema=False)
 async def swagger_ui_redirect() -> HTMLResponse:
-    """
-    Redirect to swagger.
+    """Serve the Swagger UI oauth2 redirect page.
 
     Returns:
-        Redirect.
+        Redirect page HTML.
     """
     return get_swagger_ui_oauth2_redirect_html()
 
 
 @router.get("/redoc", include_in_schema=False)
 async def redoc_html(request: Request) -> HTMLResponse:
-    """
-    Redoc UI.
+    """Render the self-hosted Redoc UI page.
 
     Args:
-        request: current request.
+        request: Current request (provides the app title).
 
     Returns:
         Rendered redoc UI.

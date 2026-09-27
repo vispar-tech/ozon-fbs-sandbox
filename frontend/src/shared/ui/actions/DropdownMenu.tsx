@@ -101,13 +101,13 @@ export function DropdownMenu ({ trigger, items, onOpenChange }: DropdownMenuProp
     }
     const currentIndex = getActiveItemIndex(items)
     if (currentIndex === NO_ACTIVE_ITEM_INDEX) {
-      items[event.key === 'ArrowDown' ? 0 : items.length - 1].focus()
+      focusItem(items[event.key === 'ArrowDown' ? 0 : items.length - 1])
       return
     }
     const nextIndex = event.key === 'ArrowDown'
       ? (currentIndex + 1) % items.length
       : (currentIndex - 1 + items.length) % items.length
-    items[nextIndex].focus()
+    focusItem(items[nextIndex])
   }
 
   function handleItemSelect (item: DropdownMenuItem): void {
@@ -150,6 +150,13 @@ export function DropdownMenu ({ trigger, items, onOpenChange }: DropdownMenuProp
 function getActiveItemIndex (items: HTMLButtonElement[]): number {
   const { activeElement } = document
   return activeElement instanceof HTMLButtonElement ? items.indexOf(activeElement) : NO_ACTIVE_ITEM_INDEX
+}
+
+function focusItem (item: HTMLButtonElement | undefined): void {
+  if (item === undefined) {
+    return
+  }
+  item.focus()
 }
 
 function renderTrigger (trigger: ReactNode, open: boolean, onClick: () => void): ReactNode {

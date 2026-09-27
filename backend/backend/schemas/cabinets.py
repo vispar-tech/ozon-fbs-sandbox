@@ -1,13 +1,34 @@
 """Cabinet DTO schemas."""
 
 import uuid
+from typing import Annotated
 
-from pydantic import field_validator
+from pydantic import AfterValidator
 
 from backend.db.models.roles import Roles
 from backend.db.models.seller_info import SellerInfo
 from backend.schemas.base import ApiModel
 from backend.schemas.dates import IsoMsZ
+
+
+def _name_not_blank(value: str) -> str:
+    """Reject a blank name with ValueError.
+
+    Args:
+        value: Raw name.
+
+    Returns:
+        The name when it contains non-whitespace characters.
+
+    Raises:
+        ValueError: When the name is blank.
+    """
+    if not value.strip():
+        raise ValueError("name must be a non-empty string")
+    return value
+
+
+NonBlankName = Annotated[str, AfterValidator(_name_not_blank)]
 
 
 class CabinetSummary(ApiModel):
@@ -25,27 +46,8 @@ class CabinetSummary(ApiModel):
 class CreateCabinetInput(ApiModel):
     """Body of ``POST /cabinets``."""
 
-    name: str  # trim != ''
+    name: NonBlankName  # trim != ''
     demo: bool = False  # apply demo fixture on create
-
-    @field_validator("name")
-    @classmethod
-    def _name_not_blank(cls, value: str) -> str:
-        """
-        Reject blank names.
-
-        Args:
-            value: raw name.
-
-        Returns:
-            The name when it contains non-whitespace characters.
-
-        Raises:
-            ValueError: when the name is blank.
-        """
-        if not value.strip():
-            raise ValueError("name must be a non-empty string")
-        return value
 
 
 class UpdateCabinetInput(ApiModel):
@@ -56,25 +58,6 @@ class UpdateCabinetInput(ApiModel):
     empty-body 400/3.
     """
 
-    name: str | None = None  # trim != '' if set
+    name: NonBlankName | None = None  # trim != '' if set
     seller_info: SellerInfo | None = None
     roles: Roles | None = None
-
-    @field_validator("name")
-    @classmethod
-    def _name_not_blank(cls, value: str | None) -> str | None:
-        """
-        Reject blank names.
-
-        Args:
-            value: raw name.
-
-        Returns:
-            The name when it contains non-whitespace characters.
-
-        Raises:
-            ValueError: when the name is blank.
-        """
-        if value is not None and not value.strip():
-            raise ValueError("name must be a non-empty string")
-        return value

@@ -2,7 +2,6 @@
 
 from typing import Any, TypeVar
 
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.db.base import Base
@@ -14,53 +13,29 @@ class BaseRepository[ModelType: Base]:
     """Base repository with common CRUD operations."""
 
     def __init__(self, session: AsyncSession, model: type[ModelType]) -> None:
-        """
-        Initialize repository.
-
-        Args:
-            session: database session.
-            model: SQLAlchemy model class.
-        """
+        """Bind the repository to a session and its model type."""
         self.session = session
         self.model = model
 
     async def get(self, obj_id: Any) -> ModelType | None:
-        """
-        Get object by primary key.
+        """Get an object by primary key.
 
         Args:
-            obj_id: primary key value.
+            obj_id: Primary key value.
 
         Returns:
-            Object or None.
+            The object, or ``None`` when absent.
         """
         return await self.session.get(self.model, obj_id)
 
-    async def get_multi(self, *, offset: int = 0, limit: int = 100) -> list[ModelType]:
-        """
-        Get objects with pagination.
-
-        Args:
-            offset: number of objects to skip.
-            limit: maximum number of objects to return.
-
-        Returns:
-            List of objects.
-        """
-        result = await self.session.scalars(
-            select(self.model).offset(offset).limit(limit),
-        )
-        return list(result)
-
     async def create(self, **values: Any) -> ModelType:
-        """
-        Create object.
+        """Create an object from the given field values.
 
         Args:
-            values: model field values.
+            values: Model field values.
 
         Returns:
-            Created object.
+            The created object, flushed (not committed).
         """
         obj = self.model(**values)  # type: ignore[call-arg]
         self.session.add(obj)
@@ -69,10 +44,9 @@ class BaseRepository[ModelType: Base]:
         return obj
 
     async def remove(self, obj: ModelType) -> None:
-        """
-        Remove object.
+        """Remove an object from the session (flush is left to the caller).
 
         Args:
-            obj: object to remove.
+            obj: Object to delete.
         """
         await self.session.delete(obj)

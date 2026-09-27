@@ -4,13 +4,7 @@ from starlette import status
 
 
 async def test_health(client: AsyncClient, fastapi_app: FastAPI) -> None:
-    """
-    Checks the health endpoint.
-
-    Args:
-        client: client for the app.
-        fastapi_app: current FastAPI application.
-    """
+    """GET on the health endpoint answers 200."""
     url = fastapi_app.url_path_for("health_check")
     response = await client.get(url)
     assert response.status_code == status.HTTP_200_OK

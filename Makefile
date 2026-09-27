@@ -53,14 +53,14 @@ generate-api-types: ## Сгенерировать типы backend API из Open
 	cd backend && PYTHONPATH=. poetry run python scripts/dump_openapi.py .openapi.json
 	cd frontend && pnpm generate:api-types
 
-docker-up: ## Собрать и поднять prod-стек (frontend :8080 → backend :3000)
-	docker compose up --build
+docker-up: ## Собрать и поднять prod-стек в фоне (frontend :8080 → backend :3000)
+	docker compose -f docker-compose.yml up -d --build
 
-docker-dev-up: ## Собрать и поднять dev-стек (reload + migrator + изолированная БД)
-	docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+docker-dev-up: ## Собрать и поднять dev-стек в фоне (reload + migrator + изолированная БД)
+	docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
 
 docker-down: ## Остановить prod-стек
-	docker compose down
+	docker compose -f docker-compose.yml down
 
 docker-dev-down: ## Остановить dev-стек
 	docker compose -f docker-compose.yml -f docker-compose.dev.yml down

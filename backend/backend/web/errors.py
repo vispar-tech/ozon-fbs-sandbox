@@ -17,11 +17,10 @@ class PrettyJSONResponse(JSONResponse):
     """JSON response rendered as pretty-printed UTF-8 JSON."""
 
     def render(self, content: Any) -> bytes:
-        """
-        Render the response body.
+        """Render the body as UTF-8 JSON.
 
         Args:
-            content: serializable response content.
+            content: Serializable response content.
 
         Returns:
             JSON bytes (ensure_ascii=False, indent=2, no NaN).
@@ -46,13 +45,7 @@ class OzonHttpError(Exception):
     """HTTP error carrying an OzonError body (status_code + error)."""
 
     def __init__(self, status_code: int, error: OzonError) -> None:
-        """
-        Initialize the error.
-
-        Args:
-            status_code: HTTP status code of the response.
-            error: Ozon error body.
-        """
+        """Use the error message as the exception text; keep status and body."""
         super().__init__(error.message)
         self.status_code = status_code
         self.error = error
@@ -81,9 +74,7 @@ INVALID_JSON_CONTENT_TYPE_ERROR = OzonError(
 )
 
 # HTTP statuses (parity with ozon-errors.ts)
-OZON_STATUS_OK = 200
 OZON_STATUS_CREATED = 201
-OZON_STATUS_NO_CONTENT = 204
 OZON_STATUS_BAD_REQUEST = 400
 OZON_STATUS_UNAUTHORIZED = 401
 OZON_STATUS_NOT_FOUND = 404
@@ -97,7 +88,7 @@ def _error_response(status_code: int, error: OzonError) -> dict[str, Any]:
 
     Args:
         status_code: HTTP status code of the response.
-        error: representative Ozon error body.
+        error: Representative Ozon error body.
 
     Returns:
         OpenAPI response entry with the OzonError model.
@@ -138,7 +129,7 @@ def _map_http_error(status_code: int) -> tuple[OzonError, int]:
     405 is reported as 404/5 (parity with the legacy notFound handler).
 
     Args:
-        status_code: original HTTP status code.
+        status_code: Original HTTP status code.
 
     Returns:
         Pair of Ozon error and response status code.
@@ -160,8 +151,8 @@ async def _ozon_http_error_handler(request: Request, exc: OzonHttpError) -> Resp
     """Render OzonHttpError as its OzonError body.
 
     Args:
-        request: current request.
-        exc: raised error.
+        request: Current request.
+        exc: Raised error.
 
     Returns:
         JSON response with the original status code.
@@ -177,8 +168,8 @@ async def _validation_error_handler(
     """Render body/path validation failures as 400/3.
 
     Args:
-        request: current request.
-        exc: validation error.
+        request: Current request.
+        exc: Validation error.
 
     Returns:
         JSON response with the invalid request body error.
@@ -195,8 +186,8 @@ async def _cabinet_not_found_handler(
     """Render a missing cabinet as 404/5.
 
     Args:
-        request: current request.
-        exc: raised error.
+        request: Current request.
+        exc: Raised error.
 
     Returns:
         JSON response with the not found error.
@@ -212,8 +203,8 @@ async def _http_exception_handler(
     """Render HTTPException with the Ozon status/error mapping.
 
     Args:
-        request: current request.
-        exc: raised HTTP exception.
+        request: Current request.
+        exc: Raised HTTP exception.
 
     Returns:
         JSON response with the mapped Ozon error body.
@@ -226,8 +217,8 @@ async def _unhandled_exception_handler(request: Request, exc: Exception) -> Resp
     """Render unhandled exceptions as 500/13.
 
     Args:
-        request: current request.
-        exc: raised exception.
+        request: Current request.
+        exc: Raised exception.
 
     Returns:
         JSON response with the internal error body.

@@ -15,13 +15,10 @@ APP_ROOT = Path(__file__).parent.parent
 
 
 def get_app() -> FastAPI:
-    """
-    Get FastAPI application.
-
-    This is the main constructor of an application.
+    """Build the main FastAPI application.
 
     Returns:
-        Application.
+        Configured application.
     """
     configure_logging()
     app = FastAPI(
@@ -35,12 +32,11 @@ def get_app() -> FastAPI:
     register_exception_handlers(app)
     app.add_middleware(RequireJsonMiddleware)
 
-    # Main router for the API.
+    # App routes under the /api prefix.
     app.include_router(router=api_router, prefix="/api")
-    # Ozon seller routes (/v1/*) are served at the app root.
+    # Ozon seller routes (/v*/*) are served at the app root.
     app.include_router(router=root_router)
-    # Adds static directory.
-    # This directory is used to access swagger files.
+    # Self-hosted swagger-ui/redoc assets.
     app.mount("/static", StaticFiles(directory=APP_ROOT / "static"), name="static")
 
     def _custom_openapi() -> dict[str, Any]:

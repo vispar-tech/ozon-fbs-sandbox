@@ -229,7 +229,7 @@ interface TableBodyProps<T> {
   selectable: boolean
   selectedKeys: Set<string>
   rowKey: (row: T, index: number) => string
-  rowDisabled?: (row: T) => boolean
+  rowDisabled?: ((row: T) => boolean) | undefined
   emptyMessage: string
   colSpan: number
   onRowToggle: (key: string) => void

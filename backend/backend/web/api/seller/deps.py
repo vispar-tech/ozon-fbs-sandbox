@@ -2,7 +2,8 @@
 
 from typing import Annotated
 
-from fastapi import Depends, Header, Request
+from fastapi import Depends, Request
+from fastapi.security import APIKeyHeader as ApiKeyHeaderScheme
 
 from backend.db.models.cabinet import Cabinet
 from backend.db.repositories.cabinets import CabinetRepository
@@ -19,11 +20,19 @@ HEADER_CLIENT_ID = "Client-Id"
 HEADER_API_KEY = "Api-Key"
 HEADER_CONTENT_TYPE = "Content-Type"
 
-# defaults on the parameters (not inside Header) keep the headers optional
-# so missing values reach the four-step auth (otherwise FastAPI answers
-# 400/3 before the handler runs)
-ClientIdHeader = Annotated[str | None, Header(alias=HEADER_CLIENT_ID)]
-ApiKeyHeader = Annotated[str | None, Header(alias=HEADER_API_KEY)]
+_client_id_scheme = ApiKeyHeaderScheme(
+    name=HEADER_CLIENT_ID,
+    scheme_name="ClientIdHeader",
+    auto_error=False,
+)
+_api_key_scheme = ApiKeyHeaderScheme(
+    name=HEADER_API_KEY,
+    scheme_name="ApiKeyHeader",
+    auto_error=False,
+)
+
+ClientIdHeader = Annotated[str | None, Depends(_client_id_scheme)]
+ApiKeyHeader = Annotated[str | None, Depends(_api_key_scheme)]
 CabinetRepoDep = Annotated[CabinetRepository, Depends(get_cabinet_repo)]
 
 
@@ -33,8 +42,7 @@ async def seller_auth(
     client_id: ClientIdHeader = None,
     api_key: ApiKeyHeader = None,
 ) -> Cabinet:
-    """
-    Authenticate a seller request in the Ozon four-step order.
+    """Authenticate a seller request in the Ozon four-step order.
 
     1. missing Client-Id/Api-Key headers -> 401/16;
     2. non-JSON Content-Type -> 400/4;
@@ -42,8 +50,8 @@ async def seller_auth(
     4. unknown client, wrong key or expired roles -> 404/5.
 
     Args:
-        request: current request.
-        repo: cabinet repository.
+        request: Current request (Content-Type header source).
+        repo: Cabinet repository.
         client_id: Client-Id header value.
         api_key: Api-Key header value.
 
@@ -51,7 +59,7 @@ async def seller_auth(
         Authenticated cabinet.
 
     Raises:
-        OzonHttpError: when any authentication step fails.
+        OzonHttpError: When any authentication step fails.
     """
     if client_id is None or api_key is None:
         raise OzonHttpError(401, MISSING_HEADERS_ERROR)

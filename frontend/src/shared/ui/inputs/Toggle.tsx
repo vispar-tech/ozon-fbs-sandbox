@@ -6,9 +6,9 @@ import styles from './Toggle.module.scss'
 interface ToggleProps {
   checked: boolean
   onChange: (checked: boolean) => void
-  label?: string
-  disabled?: boolean
-  className?: string
+  label?: string | undefined
+  disabled?: boolean | undefined
+  className?: string | undefined
 }
 
 export function Toggle ({

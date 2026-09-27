@@ -23,17 +23,11 @@ class FixtureService:
     """Reads prepared datasets from JSON storage to fill demo data."""
 
     def __init__(self, storage_dir: Path) -> None:
-        """
-        Initialize the service.
-
-        Args:
-            storage_dir: directory with fixture JSON files.
-        """
+        """Locate the fixture JSON files under ``storage_dir``."""
         self._storage_dir = storage_dir
 
     def load_demo_cabinet(self) -> Fixtures:
-        """
-        Load the demo cabinet fixture set.
+        """Load the demo cabinet fixture set.
 
         Returns:
             Validated fixtures.
@@ -41,8 +35,7 @@ class FixtureService:
         return self._load("demo-cabinet.json", Fixtures)
 
     def load_products_list(self) -> ProductList:
-        """
-        Load the v3 product list fixture.
+        """Load the v3 product list fixture.
 
         Returns:
             Validated product list response.
@@ -50,8 +43,7 @@ class FixtureService:
         return self._load("v3-product-list.json", ProductList)
 
     def load_products_attributes(self) -> ProductAttributes:
-        """
-        Load the v4 product attributes fixture.
+        """Load the v4 product attributes fixture.
 
         Returns:
             Validated product attributes response.
@@ -61,12 +53,11 @@ class FixtureService:
     def _load[FixtureT: BaseModel](
         self, name: str, fixture_type: type[FixtureT]
     ) -> FixtureT:
-        """
-        Load and validate a single fixture file.
+        """Load and validate a single fixture file.
 
         Args:
-            name: file name inside the storage directory.
-            fixture_type: expected fixture model.
+            name: File name inside the storage directory.
+            fixture_type: Expected fixture model.
 
         Returns:
             Validated fixture.

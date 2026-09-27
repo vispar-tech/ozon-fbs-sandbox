@@ -27,7 +27,7 @@ export function Card ({
 }: CardProps): JSX.Element {
   const classes = clsx(
     styles.card,
-    styles[`card${elevation[0].toUpperCase()}${elevation.slice(1)}`],
+    styles[`card${elevation.charAt(0).toUpperCase()}${elevation.slice(1)}`],
     className
   )
 

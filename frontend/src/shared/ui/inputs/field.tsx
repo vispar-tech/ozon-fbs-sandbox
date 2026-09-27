@@ -30,7 +30,7 @@ interface BuildFieldClassesOptions {
 export function buildFieldClasses ({ styles, base, size, hasError, className }: BuildFieldClassesOptions): string {
   return clsx(
     styles[base],
-    size !== 'md' && styles[`${base}${size[0].toUpperCase()}${size.slice(1)}`],
+    size !== 'md' && styles[`${base}${size.charAt(0).toUpperCase()}${size.slice(1)}`],
     hasError && styles[`${base}Error`],
     className.length > 0 && className
   )

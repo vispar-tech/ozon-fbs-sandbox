@@ -17,11 +17,10 @@ router = APIRouter(prefix="/v1", tags=["seller"])
 
 @router.post("/seller/info", responses=SELLER_ERROR_RESPONSES)
 async def seller_info(cabinet: SellerCabinetDep) -> SellerInfo:
-    """
-    Return the seller info of the authenticated cabinet.
+    """Return the seller info of the authenticated cabinet.
 
     Args:
-        cabinet: authenticated cabinet.
+        cabinet: Authenticated cabinet.
 
     Returns:
         Seller info fixture.
@@ -31,11 +30,10 @@ async def seller_info(cabinet: SellerCabinetDep) -> SellerInfo:
 
 @router.post("/roles", responses=SELLER_ERROR_RESPONSES)
 async def roles(cabinet: SellerCabinetDep) -> Roles:
-    """
-    Return the roles of the authenticated cabinet.
+    """Return the roles of the authenticated cabinet.
 
     Args:
-        cabinet: authenticated cabinet.
+        cabinet: Authenticated cabinet.
 
     Returns:
         Roles fixture.

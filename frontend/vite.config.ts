@@ -17,7 +17,10 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/api': 'http://localhost:3000'
+      '/api': 'http://localhost:3000',
+      '/static': 'http://localhost:3000',
+      // ключ с ^ — RegExp: правило seller-контура совпадает с nginx
+      '^/v[0-9]+/': 'http://localhost:3000'
     }
   }
 })

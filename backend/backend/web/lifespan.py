@@ -8,15 +8,10 @@ from backend.settings import settings
 
 
 def _setup_db(app: FastAPI) -> None:  # pragma: no cover
-    """
-    Creates connection to the database.
-
-    This function creates SQLAlchemy engine instance,
-    session_factory for creating sessions
-    and stores them in the application's state property.
+    """Create the SQLAlchemy engine and session factory, stored on app.state.
 
     Args:
-        app: fastAPI application.
+        app: FastAPI application.
     """
     engine = create_async_engine(str(settings.db_url), echo=settings.db_echo)
     session_factory = async_sessionmaker(
@@ -30,20 +25,15 @@ def _setup_db(app: FastAPI) -> None:  # pragma: no cover
 @asynccontextmanager
 async def lifespan_setup(
     app: FastAPI,
-) -> AsyncGenerator[None, None]:  # pragma: no cover
-    """
-    Actions to run on application startup.
-
-    This function uses fastAPI app to store data
-    in the state, such as db_engine.
+) -> AsyncGenerator[None]:  # pragma: no cover
+    """Set up the database on startup; dispose the engine on shutdown.
 
     Args:
-        app: the fastAPI application.
+        app: FastAPI application.
 
     Returns:
-        Function that actually performs actions.
+        Async generator: nothing on startup, engine disposal on shutdown.
     """
-
     _setup_db(app)
 
     yield

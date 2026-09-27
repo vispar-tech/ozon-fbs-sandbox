@@ -16,22 +16,14 @@ class LogLevel(enum.StrEnum):
 
 
 class Settings(BaseSettings):
-    """
-    Application settings.
-
-    These parameters can be configured
-    with environment variables.
-    """
+    """Application settings, configurable via environment variables."""
 
     host: str = "127.0.0.1"
     port: int = 3000
-    # quantity of workers for uvicorn
     workers_count: int = 1
-    # Enable uvicorn reloading
     reload: bool = False
 
     log_level: LogLevel = LogLevel.INFO
-    # Variables for the database
     db_host: str = "localhost"
     db_port: int = 5432
     db_user: str = "ozon_fbs_sandbox"
@@ -41,11 +33,10 @@ class Settings(BaseSettings):
 
     @property
     def db_url(self) -> URL:
-        """
-        Assemble database URL from settings.
+        """Assemble the database URL from settings.
 
         Returns:
-            Database URL.
+            URL as ``postgresql+asyncpg://`` plus configured host/port/db.
         """
         return URL.build(
             scheme="postgresql+asyncpg",

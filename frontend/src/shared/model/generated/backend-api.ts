@@ -13,9 +13,7 @@ export interface paths {
         };
         /**
          * Health Check
-         * @description Checks the health of a project.
-         *
-         *     It returns 200 if the project is healthy.
+         * @description Answer 200 when the service is healthy.
          */
         get: operations["health_check_api_health_get"];
         put?: never;
@@ -38,7 +36,7 @@ export interface paths {
          * @description List all cabinets.
          *
          *     Args:
-         *         service: cabinet service.
+         *         service: Cabinet service.
          *
          *     Returns:
          *         List of cabinet summaries.
@@ -50,11 +48,11 @@ export interface paths {
          * @description Create a cabinet, optionally filled with the demo fixture set.
          *
          *     Args:
-         *         body: create payload.
-         *         service: cabinet service.
+         *         body: Create payload.
+         *         service: Cabinet service.
          *
          *     Returns:
-         *         Created cabinet.
+         *         The created cabinet.
          */
         post: operations["create_cabinet_api_cabinets_post"];
         delete?: never;
@@ -75,8 +73,8 @@ export interface paths {
          * @description Get a cabinet by client id.
          *
          *     Args:
-         *         client_id: cabinet client id (positive integer).
-         *         service: cabinet service.
+         *         client_id: Cabinet client id (positive integer).
+         *         service: Cabinet service.
          *
          *     Returns:
          *         The cabinet.
@@ -89,8 +87,8 @@ export interface paths {
          * @description Delete a cabinet by client id.
          *
          *     Args:
-         *         client_id: cabinet client id (positive integer).
-         *         service: cabinet service.
+         *         client_id: Cabinet client id (positive integer).
+         *         service: Cabinet service.
          */
         delete: operations["delete_cabinet_api_cabinets__client_id__delete"];
         options?: never;
@@ -104,15 +102,15 @@ export interface paths {
          *     cabinet answers 400/3.
          *
          *     Args:
-         *         client_id: cabinet client id (positive integer).
-         *         body: unified patch payload.
-         *         service: cabinet service.
+         *         client_id: Cabinet client id (positive integer).
+         *         body: Unified patch payload.
+         *         service: Cabinet service.
          *
          *     Returns:
-         *         Updated cabinet.
+         *         The updated cabinet.
          *
          *     Raises:
-         *         OzonHttpError: when the body has no fields set.
+         *         OzonHttpError: When the body has no fields set.
          */
         patch: operations["update_cabinet_api_cabinets__client_id__patch"];
         trace?: never;
@@ -131,7 +129,7 @@ export interface paths {
          * @description Return the seller info of the authenticated cabinet.
          *
          *     Args:
-         *         cabinet: authenticated cabinet.
+         *         cabinet: Authenticated cabinet.
          *
          *     Returns:
          *         Seller info fixture.
@@ -157,7 +155,7 @@ export interface paths {
          * @description Return the roles of the authenticated cabinet.
          *
          *     Args:
-         *         cabinet: authenticated cabinet.
+         *         cabinet: Authenticated cabinet.
          *
          *     Returns:
          *         Roles fixture.
@@ -183,9 +181,9 @@ export interface paths {
          * @description Return the product list fixture, ignoring filters and pagination.
          *
          *     Args:
-         *         body: product list request payload.
-         *         cabinet: authenticated cabinet.
-         *         fixtures: fixture service.
+         *         body: Product list request payload.
+         *         cabinet: Authenticated cabinet.
+         *         fixtures: Fixture service.
          *
          *     Returns:
          *         Complete product list fixture.
@@ -211,9 +209,9 @@ export interface paths {
          * @description Return the product attributes fixture, ignoring filters and sorting.
          *
          *     Args:
-         *         body: product attributes request payload.
-         *         cabinet: authenticated cabinet.
-         *         fixtures: fixture service.
+         *         body: Product attributes request payload.
+         *         cabinet: Authenticated cabinet.
+         *         fixtures: Fixture service.
          *
          *     Returns:
          *         Complete product attributes fixture.
@@ -961,10 +959,7 @@ export interface operations {
     seller_info_v1_seller_info_post: {
         parameters: {
             query?: never;
-            header?: {
-                "Client-Id"?: string | null;
-                "Api-Key"?: string | null;
-            };
+            header?: never;
             path?: never;
             cookie?: never;
         };
@@ -1020,10 +1015,7 @@ export interface operations {
     roles_v1_roles_post: {
         parameters: {
             query?: never;
-            header?: {
-                "Client-Id"?: string | null;
-                "Api-Key"?: string | null;
-            };
+            header?: never;
             path?: never;
             cookie?: never;
         };
@@ -1079,10 +1071,7 @@ export interface operations {
     get_product_list_v3_product_list_post: {
         parameters: {
             query?: never;
-            header?: {
-                "Client-Id"?: string | null;
-                "Api-Key"?: string | null;
-            };
+            header?: never;
             path?: never;
             cookie?: never;
         };
@@ -1142,10 +1131,7 @@ export interface operations {
     get_product_attributes_v4_product_info_attributes_post: {
         parameters: {
             query?: never;
-            header?: {
-                "Client-Id"?: string | null;
-                "Api-Key"?: string | null;
-            };
+            header?: never;
             path?: never;
             cookie?: never;
         };

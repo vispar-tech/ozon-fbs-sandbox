@@ -8,14 +8,14 @@ type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'link'
 export type ButtonSize = 'sm' | 'md' | 'lg'
 
 export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {
-  variant?: ButtonVariant
-  size?: ButtonSize
-  loading?: boolean
-  icon?: ReactNode
-  iconSide?: 'left' | 'right'
-  children?: ReactNode
-  to?: To
-  ref?: Ref<HTMLButtonElement>
+  variant?: ButtonVariant | undefined
+  size?: ButtonSize | undefined
+  loading?: boolean | undefined
+  icon?: ReactNode | undefined
+  iconSide?: 'left' | 'right' | undefined
+  children?: ReactNode | undefined
+  to?: To | undefined
+  ref?: Ref<HTMLButtonElement> | undefined
 }
 
 interface ButtonLinkProps {
@@ -86,13 +86,13 @@ function buildButtonClasses (options: {
   loading: boolean
   isIconOnly: boolean
   hasIcon: boolean
-  iconSide?: 'left' | 'right'
-  className?: string
+  iconSide?: 'left' | 'right' | undefined
+  className?: string | undefined
 }): string {
   return clsx(
     styles.btn,
-    styles[`btn${options.variant[0].toUpperCase()}${options.variant.slice(1)}`],
-    styles[`btn${options.size[0].toUpperCase()}${options.size.slice(1)}`],
+    styles[`btn${options.variant.charAt(0).toUpperCase()}${options.variant.slice(1)}`],
+    styles[`btn${options.size.charAt(0).toUpperCase()}${options.size.slice(1)}`],
     options.loading && styles.btnLoading,
     options.isIconOnly && styles.btnIcon,
     options.hasIcon && (options.iconSide === 'right' ? styles.btnIconRight : styles.btnHasIcon),

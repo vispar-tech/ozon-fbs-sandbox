@@ -17,9 +17,7 @@ def main() -> None:
             factory=True,
         )
     else:
-        # We choose gunicorn only if reload
-        # option is not used, because reload
-        # feature doesn't work with gunicorn workers.
+        # gunicorn only without reload: its workers don't support reload
         GunicornApplication(
             "backend.web.application:get_app",
             host=settings.host,

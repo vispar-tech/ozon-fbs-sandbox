@@ -12,7 +12,7 @@ interface BreadcrumbsProps {
   items: BreadcrumbItem[]
   separator?: ReactNode
   className?: string
-  renderLink?: (item: BreadcrumbItem, linkClassName: string) => ReactNode
+  renderLink?: (item: BreadcrumbItem, linkClassName: string | undefined) => ReactNode
 }
 
 export function Breadcrumbs ({

@@ -101,9 +101,9 @@ export function ToggleDemo ({ label }: { label: string }): JSX.Element {
 
 interface TokenScaleDemoProps {
   items: readonly string[]
-  gridClass: string
-  itemClass: string
-  labelClass: string
+  gridClass: string | undefined
+  itemClass: string | undefined
+  labelClass: string | undefined
   renderPreview: (item: string) => JSX.Element
 }
 
