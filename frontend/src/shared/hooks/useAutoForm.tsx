@@ -96,7 +96,7 @@ export function useAutoForm<T extends Record<string, unknown> = Record<string, u
   }, [fields, initialValues])
 
   function reportSubmitError (error: unknown): void {
-    const message = error instanceof Error ? error.message : 'Submission failed'
+    const message = error instanceof Error ? error.message : 'Ошибка отправки'
     setSubmitError(message)
     console.error(error) // eslint-disable-line no-console -- intentional error logging
   }
@@ -175,15 +175,15 @@ function buildFieldSchema (field: FieldDefinition): z.ZodType {
       return buildNumberSchema(field, field.required === true)
     case 'email':
       return field.required === true
-        ? z.string().min(1, 'Required').pipe(z.email({ message: 'Invalid email' }))
-        : z.string().pipe(z.email({ message: 'Invalid email' })).optional().or(z.literal(''))
+        ? z.string().min(1, 'Обязательное поле').pipe(z.email({ message: 'Некорректный email' }))
+        : z.string().pipe(z.email({ message: 'Некорректный email' })).optional().or(z.literal(''))
     case 'toggle':
       return z.boolean()
     case 'select':
       return buildEnumSchema(field.options?.map((o) => o.value) ?? [], field.required === true)
     default:
       return field.required === true
-        ? z.string().min(1, 'Required')
+        ? z.string().min(1, 'Обязательное поле')
         : z.string().optional()
   }
 }
@@ -226,12 +226,12 @@ function validateWithZod (
 }
 
 function buildNumberSchema (field: FieldDefinition, required: boolean): z.ZodType {
-  let inner = z.coerce.number(required ? { error: 'Required' } : undefined)
+  let inner = z.coerce.number(required ? { error: 'Обязательное поле' } : undefined)
   if (field.min !== undefined) {
-    inner = inner.min(field.min, { message: `Minimum value is ${String(field.min)}` })
+    inner = inner.min(field.min, { message: `Минимальное значение: ${String(field.min)}` })
   }
   if (field.max !== undefined) {
-    inner = inner.max(field.max, { message: `Maximum value is ${String(field.max)}` })
+    inner = inner.max(field.max, { message: `Максимальное значение: ${String(field.max)}` })
   }
   return z.preprocess((v) => v === '' ? undefined : v, required ? inner : inner.optional())
 }
@@ -242,6 +242,6 @@ function buildEnumSchema (optionValues: string[], required: boolean): z.ZodType 
   }
   const entries = Object.fromEntries(optionValues.map((v) => [v, v]))
   return required
-    ? z.preprocess((v) => v === '' ? undefined : v, z.enum(entries, { error: 'Required' }))
+    ? z.preprocess((v) => v === '' ? undefined : v, z.enum(entries, { error: 'Обязательное поле' }))
     : z.preprocess((v) => v === '' ? undefined : v, z.enum(entries).optional())
 }

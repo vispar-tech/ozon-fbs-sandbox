@@ -13,6 +13,9 @@ from backend.web.errors import (
     INVALID_CONTENT_TYPE_ERROR,
     INVALID_KEY_ERROR,
     MISSING_HEADERS_ERROR,
+    OZON_STATUS_BAD_REQUEST,
+    OZON_STATUS_NOT_FOUND,
+    OZON_STATUS_UNAUTHORIZED,
     OzonHttpError,
 )
 
@@ -62,16 +65,16 @@ async def seller_auth(
         OzonHttpError: When any authentication step fails.
     """
     if client_id is None or api_key is None:
-        raise OzonHttpError(401, MISSING_HEADERS_ERROR)
+        raise OzonHttpError(OZON_STATUS_UNAUTHORIZED, MISSING_HEADERS_ERROR)
     if request.headers.get(HEADER_CONTENT_TYPE) != "application/json":
-        raise OzonHttpError(400, INVALID_CONTENT_TYPE_ERROR)
+        raise OzonHttpError(OZON_STATUS_BAD_REQUEST, INVALID_CONTENT_TYPE_ERROR)
     try:
         parsed = int(client_id)
         if parsed <= 0:
             raise ValueError
     except ValueError:
-        raise OzonHttpError(400, INVALID_CLIENT_ID_ERROR) from None
+        raise OzonHttpError(OZON_STATUS_BAD_REQUEST, INVALID_CLIENT_ID_ERROR) from None
     cabinet = await repo.get_by_id(parsed)
     if cabinet is None or str(cabinet.api_key) != api_key or cabinet.is_expired():
-        raise OzonHttpError(404, INVALID_KEY_ERROR)
+        raise OzonHttpError(OZON_STATUS_NOT_FOUND, INVALID_KEY_ERROR)
     return cabinet

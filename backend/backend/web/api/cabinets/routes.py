@@ -15,6 +15,7 @@ from backend.web.api.deps import get_cabinet_service
 from backend.web.errors import (
     ADMIN_ERROR_RESPONSES,
     INVALID_REQUEST_BODY_ERROR,
+    OZON_STATUS_BAD_REQUEST,
     OzonHttpError,
 )
 
@@ -102,7 +103,7 @@ async def update_cabinet(
     """
     cabinet = await service.get_by_id(client_id)
     if body.model_dump(exclude_unset=True, exclude_none=True) == {}:
-        raise OzonHttpError(400, INVALID_REQUEST_BODY_ERROR)
+        raise OzonHttpError(OZON_STATUS_BAD_REQUEST, INVALID_REQUEST_BODY_ERROR)
     return await service.update(
         cabinet,
         name=body.name,

@@ -6,9 +6,11 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { EditCabinetModal } from './EditCabinetModal.js'
 import { FixturesTab } from './FixturesTab.js'
 import { OverviewTab } from './OverviewTab.js'
+import { RequestsTab } from './RequestsTab.js'
 import styles from './SellerDetails.module.scss'
 
 import { ApiError, deleteCabinet, getCabinet } from '@/shared/api/index.js'
+import { errorMessageOr } from '@/shared/lib/index.js'
 import type { CabinetSummary } from '@/shared/model/index.js'
 import { Button, Icon, IconButton } from '@/shared/ui/actions/index.js'
 import { Tabs } from '@/shared/ui/data/index.js'
@@ -19,7 +21,8 @@ const NOT_FOUND = 404
 
 const TABS = [
   { key: 'overview', label: 'Обзор' },
-  { key: 'fixtures', label: 'Фикстуры' }
+  { key: 'fixtures', label: 'Фикстуры' },
+  { key: 'requests', label: 'Запросы' }
 ]
 
 export function SellerDetails (): JSX.Element {
@@ -40,8 +43,7 @@ export function SellerDetails (): JSX.Element {
     if (err instanceof ApiError && err.status === NOT_FOUND) {
       setNotFound(true)
     } else {
-      const message = err instanceof ApiError ? err.message : 'Не удалось загрузить продавца'
-      setError(message)
+      setError(errorMessageOr(err, 'Не удалось загрузить продавца'))
     }
   }, [])
 
@@ -88,8 +90,7 @@ export function SellerDetails (): JSX.Element {
       showToast({ tone: 'success', title: 'Продавец удалён' })
       void navigate('/')
     } catch (err) {
-      const message = err instanceof ApiError ? err.message : 'Не удалось удалить'
-      showToast({ tone: 'danger', title: 'Не удалось удалить', description: message })
+      showToast({ tone: 'danger', title: 'Не удалось удалить', description: errorMessageOr(err, 'Не удалось удалить') })
     } finally {
       setDeleting(false)
     }
@@ -147,6 +148,7 @@ export function SellerDetails (): JSX.Element {
       <Tabs tabs={TABS}>
         <OverviewTab cabinet={cabinet} />
         <FixturesTab key={cabinet.client_id} cabinet={cabinet} onUpdated={() => { void loadCabinet({ silent: true }) }} />
+        <RequestsTab key={cabinet.client_id} cabinet={cabinet} />
       </Tabs>
       <EditCabinetModal
         open={editOpen}
