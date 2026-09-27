@@ -23,8 +23,8 @@ export function Badge ({
 }: BadgeProps): JSX.Element {
   const classes = clsx(
     styles.badge,
-    styles[`badge${variant[0].toUpperCase()}${variant.slice(1)}`],
-    size !== 'md' && styles[`badge${size[0].toUpperCase()}${size.slice(1)}`],
+    styles[`badge${variant.charAt(0).toUpperCase()}${variant.slice(1)}`],
+    size !== 'md' && styles[`badge${size.charAt(0).toUpperCase()}${size.slice(1)}`],
     className
   )
 

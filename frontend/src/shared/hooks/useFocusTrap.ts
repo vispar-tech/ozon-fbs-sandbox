@@ -25,20 +25,23 @@ export function useFocusTrap (ref: RefObject<HTMLElement | null>, active = true)
         return
       }
       const focusable = getFocusableElements(container)
-      if (focusable.length === 0) {
+      const first = focusable.at(0)
+      const last = focusable.at(focusable.length - 1)
+      if (first === undefined || last === undefined) {
+        // Nothing focusable inside — block Tab so focus cannot leave the container
         event.preventDefault()
         return
       }
       const { activeElement: active } = document
       const isInside = container.contains(active)
       if (event.shiftKey) {
-        if (active === focusable[0] || !isInside) {
+        if (active === first || !isInside) {
           event.preventDefault()
-          focusable[focusable.length - 1].focus()
+          last.focus()
         }
-      } else if (active === focusable[focusable.length - 1] || !isInside) {
+      } else if (active === last || !isInside) {
         event.preventDefault()
-        focusable[0].focus()
+        first.focus()
       }
     }
 

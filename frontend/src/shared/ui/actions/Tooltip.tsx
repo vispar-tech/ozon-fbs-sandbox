@@ -34,7 +34,7 @@ export function Tooltip ({
         <span
           id={tooltipId}
           role='tooltip'
-          className={clsx(styles.tooltip, styles[`tooltip${position[0].toUpperCase()}${position.slice(1)}`])}
+          className={clsx(styles.tooltip, styles[`tooltip${position.charAt(0).toUpperCase()}${position.slice(1)}`])}
         >
           {content}
         </span>
@@ -44,7 +44,7 @@ export function Tooltip ({
 }
 
 function withDescribedBy (node: ReactNode, describedBy: string | undefined): ReactNode {
-  if (!isValidElement<{ 'aria-describedby'?: string }>(node)) {
+  if (!isValidElement<{ 'aria-describedby'?: string | undefined }>(node)) {
     return node
   }
   const { props: { 'aria-describedby': existing } } = node

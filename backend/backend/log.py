@@ -7,22 +7,16 @@ from backend.settings import settings
 
 
 class InterceptHandler(logging.Handler):
-    """
-    Default handler from examples in loguru documentation.
+    """Forward stdlib log records to loguru (pattern from the loguru docs).
 
-    This handler intercepts all log requests and
-    passes them to loguru.
-
-    For more info see:
     https://loguru.readthedocs.io/en/stable/overview.html#entirely-compatible-with-standard-logging
     """
 
     def emit(self, record: logging.LogRecord) -> None:  # pragma: no cover
-        """
-        Propagates logs to loguru.
+        """Propagate a log record to loguru.
 
         Args:
-            record: record to log.
+            record: Stdlib log record to forward.
         """
         try:
             level: str | int = logger.level(record.levelname).name
@@ -42,7 +36,7 @@ class InterceptHandler(logging.Handler):
 
 
 def configure_logging() -> None:  # pragma: no cover
-    """Configures logging."""
+    """Route stdlib and uvicorn logging through loguru."""
     intercept_handler = InterceptHandler()
 
     logging.basicConfig(handlers=[intercept_handler], level=logging.NOTSET)
@@ -55,7 +49,6 @@ def configure_logging() -> None:  # pragma: no cover
     logging.getLogger("uvicorn").handlers = [intercept_handler]
     logging.getLogger("uvicorn.access").handlers = [intercept_handler]
 
-    # set logs output, level and format
     logger.remove()
     logger.add(
         sys.stdout,

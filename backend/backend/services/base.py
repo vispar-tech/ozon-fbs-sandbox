@@ -1,22 +1,13 @@
 """Base service composing a repository."""
 
-from typing import Any, TypeVar
+from typing import Any
 
-from backend.db.base import Base
 from backend.db.repositories.base import BaseRepository
 
-ModelType = TypeVar("ModelType", bound=Base)
-RepoType = TypeVar("RepoType", bound=BaseRepository[Any])
 
-
-class BaseService[ModelType: Base, RepoType: BaseRepository[Any]]:
+class BaseService[RepoType: BaseRepository[Any]]:
     """Base service with common operations over a repository."""
 
     def __init__(self, repository: RepoType) -> None:
-        """
-        Initialize service.
-
-        Args:
-            repository: repository for the model.
-        """
+        """Expose the repository as the service's single data source."""
         self.repository = repository

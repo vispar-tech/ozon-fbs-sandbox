@@ -14,11 +14,10 @@ SessionDep = Annotated[AsyncSession, Depends(get_db_session)]
 
 
 def get_cabinet_repo(session: SessionDep) -> CabinetRepository:
-    """
-    Build the cabinet repository for the current session.
+    """Build the cabinet repository for the current session.
 
     Args:
-        session: current database session.
+        session: Current database session.
 
     Returns:
         Cabinet repository.
@@ -27,8 +26,7 @@ def get_cabinet_repo(session: SessionDep) -> CabinetRepository:
 
 
 def get_fixture_service() -> FixtureService:
-    """
-    Build the fixture service over the JSON storage.
+    """Build the fixture service over the JSON storage.
 
     Returns:
         Fixture service.
@@ -43,12 +41,11 @@ FixtureServiceDep = Annotated[FixtureService, Depends(get_fixture_service)]
 def get_cabinet_service(
     repo: CabinetRepoDep, fixtures: FixtureServiceDep
 ) -> CabinetService:
-    """
-    Build the cabinet service.
+    """Build the cabinet service.
 
     Args:
-        repo: cabinet repository.
-        fixtures: fixture service.
+        repo: Cabinet repository.
+        fixtures: Fixture service.
 
     Returns:
         Cabinet service.

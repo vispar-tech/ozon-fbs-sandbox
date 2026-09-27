@@ -26,13 +26,12 @@ async def get_product_list(
     cabinet: SellerCabinetDep,
     fixtures: FixtureServiceDep,
 ) -> ProductList:
-    """
-    Return the product list fixture, ignoring filters and pagination.
+    """Return the product list fixture, ignoring filters and pagination.
 
     Args:
-        body: product list request payload.
-        cabinet: authenticated cabinet.
-        fixtures: fixture service.
+        body: Product list request payload.
+        cabinet: Authenticated cabinet.
+        fixtures: Fixture service.
 
     Returns:
         Complete product list fixture.
@@ -46,13 +45,12 @@ async def get_product_attributes(
     cabinet: SellerCabinetDep,
     fixtures: FixtureServiceDep,
 ) -> ProductAttributes:
-    """
-    Return the product attributes fixture, ignoring filters and sorting.
+    """Return the product attributes fixture, ignoring filters and sorting.
 
     Args:
-        body: product attributes request payload.
-        cabinet: authenticated cabinet.
-        fixtures: fixture service.
+        body: Product attributes request payload.
+        cabinet: Authenticated cabinet.
+        fixtures: Fixture service.
 
     Returns:
         Complete product attributes fixture.

@@ -7,12 +7,12 @@ import styles from './Input.module.scss'
 type InputSize = 'sm' | 'md' | 'lg'
 
 interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
-  size?: InputSize
-  label?: string
-  required?: boolean
-  error?: string
-  hint?: string
-  ref?: Ref<HTMLInputElement>
+  size?: InputSize | undefined
+  label?: string | undefined
+  required?: boolean | undefined
+  error?: string | undefined
+  hint?: string | undefined
+  ref?: Ref<HTMLInputElement> | undefined
 }
 
 export function Input ({

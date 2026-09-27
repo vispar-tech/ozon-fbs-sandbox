@@ -11,13 +11,7 @@ except ImportError:
 
 
 class UvicornWorker(BaseUvicornWorker):
-    """
-    Configuration for uvicorn workers.
-
-    This class is subclassing UvicornWorker and defines
-    some parameters class-wide, because it's impossible,
-    to pass these parameters through gunicorn.
-    """
+    """Uvicorn worker with class-wide config gunicorn can't pass through."""
 
     CONFIG_KWARGS: dict[str, Any] = {  # typing: ignore  # noqa: RUF012
         "loop": "uvloop" if uvloop is not None else "asyncio",
@@ -29,12 +23,7 @@ class UvicornWorker(BaseUvicornWorker):
 
 
 class GunicornApplication(BaseApplication):
-    """
-    Custom gunicorn application.
-
-    This class is used to start guncicorn
-    with custom uvicorn workers.
-    """
+    """Gunicorn application that runs the app with custom uvicorn workers."""
 
     def __init__(
         self,
@@ -44,6 +33,7 @@ class GunicornApplication(BaseApplication):
         workers: int,
         **kwargs: Any,
     ) -> None:
+        """Record the run settings gunicorn's ``load_config`` applies."""
         self.options = {
             "bind": f"{host}:{port}",
             "workers": workers,
@@ -54,27 +44,15 @@ class GunicornApplication(BaseApplication):
         super().__init__()
 
     def load_config(self) -> None:
-        """
-        Load config for web server.
-
-        This function is used to set parameters to gunicorn
-        main process. It only sets parameters that
-        gunicorn can handle. If you pass unknown
-        parameter to it, it crash with error.
-        """
+        """Pass the known options to gunicorn (unknown settings would crash it)."""
         for key, value in self.options.items():
             if key in self.cfg.settings and value is not None:
                 self.cfg.set(key.lower(), value)
 
     def load(self) -> str:
-        """
-        Load actual application.
-
-        Gunicorn loads application based on this
-        function's returns. We return python's path to
-        the app's factory.
+        """Return the python path of the app factory, which gunicorn loads.
 
         Returns:
-            Python path to app factory.
+            Python path to the app factory.
         """
         return import_app(self.app)

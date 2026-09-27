@@ -25,11 +25,10 @@ router = APIRouter(prefix="/cabinets", tags=["cabinets"])
 
 @router.get("", response_model=list[CabinetSummary], responses=ADMIN_ERROR_RESPONSES)
 async def list_cabinets(service: CabinetServiceDep) -> list[Cabinet]:
-    """
-    List all cabinets.
+    """List all cabinets.
 
     Args:
-        service: cabinet service.
+        service: Cabinet service.
 
     Returns:
         List of cabinet summaries.
@@ -46,15 +45,14 @@ async def list_cabinets(service: CabinetServiceDep) -> list[Cabinet]:
 async def create_cabinet(
     body: CreateCabinetInput, service: CabinetServiceDep
 ) -> Cabinet:
-    """
-    Create a cabinet, optionally filled with the demo fixture set.
+    """Create a cabinet, optionally filled with the demo fixture set.
 
     Args:
-        body: create payload.
-        service: cabinet service.
+        body: Create payload.
+        service: Cabinet service.
 
     Returns:
-        Created cabinet.
+        The created cabinet.
     """
     return await service.create(body.name, demo=body.demo)
 
@@ -65,12 +63,11 @@ async def create_cabinet(
 async def get_cabinet(
     client_id: Annotated[int, Path(gt=0)], service: CabinetServiceDep
 ) -> Cabinet:
-    """
-    Get a cabinet by client id.
+    """Get a cabinet by client id.
 
     Args:
-        client_id: cabinet client id (positive integer).
-        service: cabinet service.
+        client_id: Cabinet client id (positive integer).
+        service: Cabinet service.
 
     Returns:
         The cabinet.
@@ -86,23 +83,22 @@ async def update_cabinet(
     body: UpdateCabinetInput,
     service: CabinetServiceDep,
 ) -> Cabinet:
-    """
-    Update name, seller info and/or roles of a cabinet.
+    """Update name, seller info and/or roles of a cabinet.
 
     Existence is checked before the "at least one field" rule, so a
     missing cabinet answers 404/5 and an empty body on an existing
     cabinet answers 400/3.
 
     Args:
-        client_id: cabinet client id (positive integer).
-        body: unified patch payload.
-        service: cabinet service.
+        client_id: Cabinet client id (positive integer).
+        body: Unified patch payload.
+        service: Cabinet service.
 
     Returns:
-        Updated cabinet.
+        The updated cabinet.
 
     Raises:
-        OzonHttpError: when the body has no fields set.
+        OzonHttpError: When the body has no fields set.
     """
     cabinet = await service.get_by_id(client_id)
     if body.model_dump(exclude_unset=True, exclude_none=True) == {}:
@@ -123,11 +119,10 @@ async def update_cabinet(
 async def delete_cabinet(
     client_id: Annotated[int, Path(gt=0)], service: CabinetServiceDep
 ) -> None:
-    """
-    Delete a cabinet by client id.
+    """Delete a cabinet by client id.
 
     Args:
-        client_id: cabinet client id (positive integer).
-        service: cabinet service.
+        client_id: Cabinet client id (positive integer).
+        service: Cabinet service.
     """
     await service.delete(client_id)

@@ -26,18 +26,18 @@ export interface SelectProps<T extends string = string> {
   value: T
   onChange: (value: T) => void
   options: Array<SelectOption<T>>
-  size?: SelectSize
-  label?: string
-  ariaLabel?: string
-  required?: boolean
-  error?: string
-  hint?: string
-  placeholder?: string
-  disabled?: boolean
-  searchable?: boolean
-  id?: string
-  className?: string
-  ref?: Ref<HTMLButtonElement>
+  size?: SelectSize | undefined
+  label?: string | undefined
+  ariaLabel?: string | undefined
+  required?: boolean | undefined
+  error?: string | undefined
+  hint?: string | undefined
+  placeholder?: string | undefined
+  disabled?: boolean | undefined
+  searchable?: boolean | undefined
+  id?: string | undefined
+  className?: string | undefined
+  ref?: Ref<HTMLButtonElement> | undefined
 }
 
 export function Select<T extends string = string> ({
@@ -258,7 +258,7 @@ function buildDisplayText<T extends string = string> (selectedOption: SelectOpti
   return selectedOption?.label ?? placeholder
 }
 
-function buildLabelClasses (required: boolean): string {
+function buildLabelClasses (required: boolean): string | undefined {
   return required ? `${fieldStyles.label} ${fieldStyles.labelRequired}` : fieldStyles.label
 }
 
@@ -294,7 +294,7 @@ function handleSearchKeyDown (event: KeyboardEvent<HTMLInputElement>, panelRef: 
   if (items.length === 0) {
     return
   }
-  items[0].click()
+  items[0]?.click()
 }
 
 function filterOptions<T extends string = string> (options: Array<SelectOption<T>>, searchable: boolean, query: string): Array<SelectOption<T>> {

@@ -16,12 +16,7 @@ class CabinetRepository(BaseRepository[Cabinet]):
     """CRUD operations over the ``cabinets`` table."""
 
     def __init__(self, session: AsyncSession) -> None:
-        """
-        Initialize repository.
-
-        Args:
-            session: database session.
-        """
+        """Bind the repository to a session and the ``Cabinet`` model."""
         super().__init__(session, Cabinet)
 
     async def create(  # type: ignore[override]
@@ -32,17 +27,16 @@ class CabinetRepository(BaseRepository[Cabinet]):
         seller_info: SellerInfo,
         roles: Roles,
     ) -> Cabinet:
-        """
-        Create a cabinet with fresh timestamps.
+        """Create a cabinet with fresh timestamps.
 
         Args:
-            name: cabinet display name.
-            api_key: generated API key.
-            seller_info: seller info fixture.
-            roles: roles fixture.
+            name: Cabinet display name.
+            api_key: Generated API key.
+            seller_info: Seller info fixture.
+            roles: Roles fixture.
 
         Returns:
-            Created cabinet.
+            The created cabinet.
         """
         now = datetime.now(UTC)
         return await super().create(
@@ -55,23 +49,21 @@ class CabinetRepository(BaseRepository[Cabinet]):
         )
 
     async def get_by_id(self, client_id: int) -> Cabinet | None:
-        """
-        Get cabinet by client id.
+        """Get a cabinet by client id.
 
         Args:
-            client_id: cabinet client id (primary key).
+            client_id: Cabinet client id (primary key).
 
         Returns:
-            Cabinet or None.
+            The cabinet, or ``None`` when absent.
         """
         return await self.get(client_id)
 
     async def list(self) -> list[Cabinet]:
-        """
-        List all cabinets ordered by client id.
+        """List all cabinets ordered by client id.
 
         Returns:
-            List of cabinets.
+            Cabinets ordered by client id.
         """
         result = await self.session.scalars(
             select(self.model).order_by(self.model.client_id),
@@ -86,17 +78,16 @@ class CabinetRepository(BaseRepository[Cabinet]):
         seller_info: SellerInfo | None = None,
         roles: Roles | None = None,
     ) -> Cabinet:
-        """
-        Update the given cabinet fields and bump ``updated_at``.
+        """Update the given cabinet fields and bump ``updated_at``.
 
         Args:
-            cabinet: cabinet to update.
-            name: new name when set.
-            seller_info: new seller info when set.
-            roles: new roles when set.
+            cabinet: Cabinet to update in place.
+            name: New name when set.
+            seller_info: New seller info when set.
+            roles: New roles when set.
 
         Returns:
-            Updated cabinet.
+            The updated cabinet.
         """
         if name is not None:
             cabinet.name = name
@@ -110,11 +101,10 @@ class CabinetRepository(BaseRepository[Cabinet]):
         return cabinet
 
     async def delete(self, cabinet: Cabinet) -> None:
-        """
-        Delete the cabinet.
+        """Delete the cabinet and flush.
 
         Args:
-            cabinet: cabinet to delete.
+            cabinet: Cabinet to delete.
         """
         await self.remove(cabinet)
         await self.session.flush()

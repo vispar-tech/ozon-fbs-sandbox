@@ -9,12 +9,12 @@ const DEFAULT_ROWS = 4
 type TextareaSize = 'sm' | 'md' | 'lg'
 
 interface TextareaProps extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'size'> {
-  size?: TextareaSize
-  label?: string
-  required?: boolean
-  error?: string
-  hint?: string
-  ref?: Ref<HTMLTextAreaElement>
+  size?: TextareaSize | undefined
+  label?: string | undefined
+  required?: boolean | undefined
+  error?: string | undefined
+  hint?: string | undefined
+  ref?: Ref<HTMLTextAreaElement> | undefined
 }
 
 export function Textarea ({

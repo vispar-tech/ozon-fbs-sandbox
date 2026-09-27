@@ -7,14 +7,13 @@ from pydantic import BeforeValidator, PlainSerializer, WithJsonSchema
 
 
 def to_iso_ms_z(dt: datetime) -> str:
-    """
-    Format datetime as iso-ms-Z string (UTC, millisecond precision).
+    """Format as iso-ms-Z (UTC, ms precision).
 
     Args:
-        dt: datetime to format.
+        dt: Datetime to format.
 
     Returns:
-        iso-ms-Z string, e.g. ``2024-01-01T00:00:00.000Z``.
+        Iso-ms-Z string, e.g. ``2024-01-01T00:00:00.000Z``.
     """
     return dt.astimezone(UTC).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
 
@@ -23,7 +22,7 @@ def _empty_str_to_none(value: object) -> object:
     """Map TS empty state ``''`` to ``None`` on validation.
 
     Args:
-        value: raw value from JSON.
+        value: Raw value from JSON.
 
     Returns:
         ``None`` for ``''``, the value unchanged otherwise.
@@ -38,10 +37,10 @@ def _iso_ms_z_or_empty(dt: datetime | None) -> str:
     missing date stays a plain string on both sides.
 
     Args:
-        dt: datetime or None.
+        dt: Datetime or ``None``.
 
     Returns:
-        iso-ms-Z string or ``''``.
+        Iso-ms-Z string, or ``''`` for ``None``.
     """
     return "" if dt is None else to_iso_ms_z(dt)
 

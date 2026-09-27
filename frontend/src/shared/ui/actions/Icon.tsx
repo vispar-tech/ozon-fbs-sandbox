@@ -9,9 +9,9 @@ type IconComponent = ComponentType<SVGProps<SVGSVGElement>>
 
 interface IconProps {
   icon: IconComponent
-  variant?: IconVariant
-  size?: IconSize
-  className?: string
+  variant?: IconVariant | undefined
+  size?: IconSize | undefined
+  className?: string | undefined
 }
 
 export function Icon ({
@@ -21,7 +21,7 @@ export function Icon ({
   className = ''
 }: IconProps): JSX.Element {
   return (
-    <span className={clsx(styles.icon, variant !== undefined && styles[`icon${variant[0].toUpperCase()}${variant.slice(1)}`], styles[`icon${size[0].toUpperCase()}${size.slice(1)}`], className)}>
+    <span className={clsx(styles.icon, variant !== undefined && styles[`icon${variant.charAt(0).toUpperCase()}${variant.slice(1)}`], styles[`icon${size.charAt(0).toUpperCase()}${size.slice(1)}`], className)}>
       <IconComponent aria-hidden='true' />
     </span>
   )

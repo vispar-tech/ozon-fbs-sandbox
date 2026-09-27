@@ -7,7 +7,7 @@ from httpx import AsyncClient
 
 from backend.schemas.products import ProductComplexAttributeValue
 from backend.services.fixtures import FIXTURES_DIR, FixtureService
-from tests.conftest import _auth, _create
+from tests.conftest import auth_headers, create_cabinet
 
 V3_LIST = "v3-product-list.json"
 V4_ATTRIBUTES = "v4-product-info-attributes.json"
@@ -31,12 +31,8 @@ def test_fixture_files_round_trip_through_dto() -> None:
         assert dump == raw
 
 
-async def test_endpoints_require_seller_auth(client: AsyncClient) -> None:
-    """Product endpoints answer 401/16 without the seller headers.
-
-    Args:
-        client: client for the app.
-    """
+async def test_endpoints_require_seller_auth_headers(client: AsyncClient) -> None:
+    """Product endpoints answer 401/16 without the seller headers."""
     for path in ("/v3/product/list", "/v4/product/info/attributes"):
         response = await client.post(path, json={})
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
@@ -44,13 +40,9 @@ async def test_endpoints_require_seller_auth(client: AsyncClient) -> None:
 
 
 async def test_filters_and_sorting_are_ignored(client: AsyncClient) -> None:
-    """Filter, pagination and sorting payloads are accepted, not applied.
-
-    Args:
-        client: client for the app.
-    """
-    created = await _create(client, name="filtered")
-    headers = _auth(created)
+    """Filter, pagination and sorting payloads are accepted, not applied."""
+    created = await create_cabinet(client, name="filtered")
+    headers = auth_headers(created)
 
     v3_payload = {
         "filter": {"visibility": "ALL", "offer_id": ["demo-dress-yuka"]},
@@ -82,12 +74,8 @@ async def test_filters_and_sorting_are_ignored(client: AsyncClient) -> None:
 async def test_records_stay_synchronized_between_contours(
     client: AsyncClient,
 ) -> None:
-    """Each v3 item matches exactly one v4 card by id, sku and offer_id.
-
-    Args:
-        client: client for the app.
-    """
-    headers = _auth(await _create(client, name="synced products"))
+    """Each v3 item matches exactly one v4 card by id, sku and offer_id."""
+    headers = auth_headers(await create_cabinet(client, name="synced products"))
     v3 = await client.post("/v3/product/list", json={}, headers=headers)
     v4 = await client.post("/v4/product/info/attributes", json={}, headers=headers)
     items, cards = v3.json()["result"]["items"], v4.json()["result"]
@@ -98,16 +86,12 @@ async def test_records_stay_synchronized_between_contours(
 
 
 async def test_filter_visibility_must_match_schema_enum(client: AsyncClient) -> None:
-    """A non-enum ``visibility`` filter answers 400/3 on both product routes.
-
-    Args:
-        client: client for the app.
-    """
-    created = await _create(client, name="bad visibility")
+    """A non-enum ``visibility`` filter answers 400/3 on both product routes."""
+    created = await create_cabinet(client, name="bad visibility")
     payload = {"filter": {"visibility": "BOGUS"}}
     expected = {"code": 3, "message": "Invalid request body", "details": []}
     for path in ("/v3/product/list", "/v4/product/info/attributes"):
-        response = await client.post(path, json=payload, headers=_auth(created))
+        response = await client.post(path, json=payload, headers=auth_headers(created))
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.json() == expected
 

@@ -88,7 +88,7 @@ export function Modal ({
 
   const dialogClasses = clsx(
     styles.modal,
-    styles[`modal${size[0].toUpperCase()}${size.slice(1)}`],
+    styles[`modal${size.charAt(0).toUpperCase()}${size.slice(1)}`],
     className
   )
 

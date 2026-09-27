@@ -99,44 +99,43 @@ export function AdminDashboard (): JSX.Element {
     )
   }
 
-  if (cabinets.length === 0) {
-    return (
-      <div className={styles.page}>
-        <EmptyState
-          icon={<Icon icon={CubeIcon} size='lg' />}
-          title='Продавцов пока нет'
-          description='Создайте первый кабинет продавца, чтобы начать тестировать Ozon Seller API в песочнице.'
-          action={<Button icon={<Icon icon={PlusIcon} />} onClick={() => { setCreateOpen(true) }}>Создать продавца</Button>}
-        />
-        <CreateCabinetModal open={createOpen} onClose={() => { setCreateOpen(false) }} onCreated={handleCreated} />
-      </div>
-    )
-  }
-
   return (
     <div className={styles.page}>
-      <div className={styles.toolbar}>
-        <h1 className={styles.title}>Продавцы</h1>
-        <Button icon={<Icon icon={PlusIcon} />} onClick={() => { setCreateOpen(true) }}>Создать продавца</Button>
-      </div>
-      <Table
-        columns={columns}
-        data={cabinets}
-        rowKey={(row) => String(row.client_id)}
-        compact
-        sticky
-        maxHeight='calc(100svh - 200px)'
-      />
+      {cabinets.length === 0
+        ? (
+            <EmptyState
+              icon={<Icon icon={CubeIcon} size='lg' />}
+              title='Продавцов пока нет'
+              description='Создайте первый кабинет продавца, чтобы начать тестировать Ozon Seller API в песочнице.'
+              action={<Button icon={<Icon icon={PlusIcon} />} onClick={() => { setCreateOpen(true) }}>Создать продавца</Button>}
+            />
+          )
+        : (
+            <>
+              <div className={styles.toolbar}>
+                <h1 className={styles.title}>Продавцы</h1>
+                <Button icon={<Icon icon={PlusIcon} />} onClick={() => { setCreateOpen(true) }}>Создать продавца</Button>
+              </div>
+              <Table
+                columns={columns}
+                data={cabinets}
+                rowKey={(row) => String(row.client_id)}
+                compact
+                sticky
+                maxHeight='calc(100svh - 200px)'
+              />
+              <ConfirmDialog
+                open={deleteTarget !== null}
+                onClose={() => { setDeleteTarget(null) }}
+                onConfirm={() => { void handleDelete() }}
+                title='Удалить продавца'
+                description={`Удалить продавца «${deleteTarget?.name ?? ''}»? Это действие необратимо.`}
+                confirmLabel='Удалить'
+                pending={deleting}
+              />
+            </>
+          )}
       <CreateCabinetModal open={createOpen} onClose={() => { setCreateOpen(false) }} onCreated={handleCreated} />
-      <ConfirmDialog
-        open={deleteTarget !== null}
-        onClose={() => { setDeleteTarget(null) }}
-        onConfirm={() => { void handleDelete() }}
-        title='Удалить продавца'
-        description={`Удалить продавца «${deleteTarget?.name ?? ''}»? Это действие необратимо.`}
-        confirmLabel='Удалить'
-        pending={deleting}
-      />
     </div>
   )
 }

@@ -1,17 +1,14 @@
 """Seller contour tests (``/v1/*``, Ozon auth contract)."""
 
+import pytest
 from fastapi import status
 from httpx import AsyncClient
 
-from tests.conftest import CT_JSON, _auth, _create
+from tests.conftest import CT_JSON, auth_headers, create_cabinet
 
 
 async def test_missing_headers_returns_401(client: AsyncClient) -> None:
-    """Missing Client-Id/Api-Key answers 401/16.
-
-    Args:
-        client: client for the app.
-    """
+    """Missing Client-Id/Api-Key answers 401/16."""
     response = await client.post("/v1/seller/info")
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
     assert response.json() == {
@@ -22,11 +19,7 @@ async def test_missing_headers_returns_401(client: AsyncClient) -> None:
 
 
 async def test_invalid_content_type_returns_400(client: AsyncClient) -> None:
-    """Non-JSON Content-Type answers 400/4 (charset included).
-
-    Args:
-        client: client for the app.
-    """
+    """Non-JSON Content-Type answers 400/4."""
     headers = {"Client-Id": "1", "Api-Key": "x", "content-type": "text/plain"}
     response = await client.post("/v1/seller/info", content="{}", headers=headers)
     assert response.status_code == status.HTTP_400_BAD_REQUEST
@@ -38,11 +31,7 @@ async def test_invalid_content_type_returns_400(client: AsyncClient) -> None:
 
 
 async def test_charset_content_type_is_strict(client: AsyncClient) -> None:
-    """Content-Type with charset suffix is rejected (blueprint strict check).
-
-    Args:
-        client: client for the app.
-    """
+    """Content-Type with a charset suffix is rejected (exact-match check)."""
     headers = {
         "Client-Id": "1",
         "Api-Key": "x",
@@ -54,11 +43,7 @@ async def test_charset_content_type_is_strict(client: AsyncClient) -> None:
 
 
 async def test_invalid_client_id_returns_400(client: AsyncClient) -> None:
-    """Non-integer or non-positive Client-Id answers 400/3.
-
-    Args:
-        client: client for the app.
-    """
+    """Non-integer or non-positive Client-Id answers 400/3."""
     for value in ("abc", "0", "-5"):
         headers = {"Client-Id": value, "Api-Key": "x", **CT_JSON}
         response = await client.post("/v1/roles", json={}, headers=headers)
@@ -71,12 +56,8 @@ async def test_invalid_client_id_returns_400(client: AsyncClient) -> None:
 
 
 async def test_unknown_key_returns_404(client: AsyncClient) -> None:
-    """Unknown client or wrong Api-Key answers 404/5.
-
-    Args:
-        client: client for the app.
-    """
-    created = await _create(client, name="auth me")
+    """Unknown client or wrong Api-Key answers 404/5."""
+    created = await create_cabinet(client, name="auth me")
 
     headers = {"Client-Id": "999999", "Api-Key": created["api_key"], **CT_JSON}
     response = await client.post("/v1/roles", json={}, headers=headers)
@@ -87,19 +68,15 @@ async def test_unknown_key_returns_404(client: AsyncClient) -> None:
         "details": [],
     }
 
-    headers = {**_auth(created), "Api-Key": "wrong-key"}
+    headers = {**auth_headers(created), "Api-Key": "wrong-key"}
     response = await client.post("/v1/roles", json={}, headers=headers)
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert response.json()["code"] == 5
 
 
 async def test_expired_roles_return_404(client: AsyncClient) -> None:
-    """Expired roles answer 404/5 like a wrong key.
-
-    Args:
-        client: client for the app.
-    """
-    created = await _create(client, name="expired")
+    """Expired roles answer 404/5 like a wrong key."""
+    created = await create_cabinet(client, name="expired")
     client_id = created["client_id"]
     response = await client.patch(
         f"/api/cabinets/{client_id}",
@@ -107,19 +84,17 @@ async def test_expired_roles_return_404(client: AsyncClient) -> None:
     )
     assert response.status_code == status.HTTP_200_OK
 
-    response = await client.post("/v1/roles", json={}, headers=_auth(created))
+    response = await client.post("/v1/roles", json={}, headers=auth_headers(created))
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert response.json()["code"] == 5
 
 
 async def test_seller_info_returns_empty_fixture(client: AsyncClient) -> None:
-    """Authenticated POST /v1/seller/info returns the empty fixture set.
-
-    Args:
-        client: client for the app.
-    """
-    created = await _create(client, name="empty seller")
-    response = await client.post("/v1/seller/info", json={}, headers=_auth(created))
+    """Authenticated POST /v1/seller/info returns the empty fixture set."""
+    created = await create_cabinet(client, name="empty seller")
+    response = await client.post(
+        "/v1/seller/info", json={}, headers=auth_headers(created)
+    )
     assert response.status_code == status.HTTP_200_OK
     assert response.json() == {
         "company": {
@@ -138,26 +113,20 @@ async def test_seller_info_returns_empty_fixture(client: AsyncClient) -> None:
 
 
 async def test_roles_returns_empty_roles(client: AsyncClient) -> None:
-    """Authenticated POST /v1/roles returns the TS empty state.
-
-    Args:
-        client: client for the app.
-    """
-    created = await _create(client, name="empty roles")
-    response = await client.post("/v1/roles", json={}, headers=_auth(created))
+    """Authenticated POST /v1/roles returns the TS empty state."""
+    created = await create_cabinet(client, name="empty roles")
+    response = await client.post("/v1/roles", json={}, headers=auth_headers(created))
     assert response.status_code == status.HTTP_200_OK
     assert response.json() == {"expires_at": "", "roles": []}
 
 
 async def test_demo_cabinet_serves_romashka(client: AsyncClient) -> None:
-    """Demo cabinet serves romashka data through the seller contour.
+    """Demo cabinet serves romashka data through the seller contour."""
+    created = await create_cabinet(client, name="demo seller", demo=True)
 
-    Args:
-        client: client for the app.
-    """
-    created = await _create(client, name="demo seller", demo=True)
-
-    response = await client.post("/v1/seller/info", json={}, headers=_auth(created))
+    response = await client.post(
+        "/v1/seller/info", json={}, headers=auth_headers(created)
+    )
     assert response.status_code == status.HTTP_200_OK
     info = response.json()
     assert info["company"]["name"] == "ООО 'Ромашка'"
@@ -166,7 +135,7 @@ async def test_demo_cabinet_serves_romashka(client: AsyncClient) -> None:
     )
     assert info["ratings"][0]["current_value"]["value"] == 85
 
-    response = await client.post("/v1/roles", json={}, headers=_auth(created))
+    response = await client.post("/v1/roles", json={}, headers=auth_headers(created))
     assert response.status_code == status.HTTP_200_OK
     roles = response.json()
     assert roles["expires_at"] == "2027-09-23T07:10:19.422Z"
@@ -174,12 +143,28 @@ async def test_demo_cabinet_serves_romashka(client: AsyncClient) -> None:
 
 
 async def test_broken_body_is_ignored(client: AsyncClient) -> None:
-    """Broken body with a valid Content-Type still answers 200.
-
-    Args:
-        client: client for the app.
-    """
-    created = await _create(client, name="broken body")
-    response = await client.post("/v1/roles", content="{broken", headers=_auth(created))
+    """Broken body with a valid Content-Type still answers 200."""
+    created = await create_cabinet(client, name="broken body")
+    response = await client.post(
+        "/v1/roles", content="{broken", headers=auth_headers(created)
+    )
     assert response.status_code == status.HTTP_200_OK
     assert response.json() == {"expires_at": "", "roles": []}
+
+
+@pytest.mark.parametrize("header", ("Client-Id", "Api-Key"))
+async def test_empty_auth_header_returns_401(client: AsyncClient, header: str) -> None:
+    """An empty Client-Id/Api-Key header counts as missing and answers 401/16.
+
+    The security scheme resolves an empty value to ``None``, so step 1
+    fires for both headers (previously 400/3 for Client-Id and 404/5 for
+    Api-Key).
+    """
+    headers = {"Client-Id": "1", "Api-Key": "x", header: "", **CT_JSON}
+    response = await client.post("/v1/roles", json={}, headers=headers)
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+    assert response.json() == {
+        "code": 16,
+        "message": "Client-Id and Api-Key headers are required",
+        "details": [],
+    }

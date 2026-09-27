@@ -18,10 +18,10 @@ def _is_json_content_type(header: str | None) -> bool:
     """Check that the Content-Type media type is JSON (charset tolerated).
 
     Args:
-        header: raw Content-Type header value.
+        header: Raw Content-Type header value.
 
     Returns:
-        True for ``application/json`` media type.
+        ``True`` for an ``application/json`` media type.
     """
     if header is None:
         return False
@@ -39,12 +39,11 @@ class RequireJsonMiddleware(BaseHTTPMiddleware):
     async def dispatch(
         self, request: Request, call_next: RequestResponseEndpoint
     ) -> Response:
-        """
-        Validate the Content-Type of admin write requests.
+        """Validate the Content-Type of admin write requests.
 
         Args:
-            request: current request.
-            call_next: next middleware in the chain.
+            request: Current request.
+            call_next: Next middleware in the chain.
 
         Returns:
             Error response or the downstream response.

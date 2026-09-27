@@ -23,7 +23,7 @@ jobs:
     outputs:
       frontend: ${{ steps.out.outputs.frontend }}
       docker: ${{ steps.out.outputs.docker }}
-      python-backend: ${{ steps.out.outputs.python-backend }}
+      backend: ${{ steps.out.outputs.backend }}
     steps:
       - uses: actions/checkout@v7
       - uses: dorny/paths-filter@v4
@@ -33,24 +33,30 @@ jobs:
           filters: |
             frontend:
               - 'frontend/**'
+              - '.github/**'
+              - 'Makefile'
             docker:
               - 'backend/Dockerfile'
               - 'frontend/Dockerfile'
               - 'docker-compose.yml'
               - 'docker-compose.dev.yml'
               - 'frontend/nginx.conf'
-            python-backend:
+              - '.github/**'
+              - 'Makefile'
+            backend:
               - 'backend/**'
+              - '.github/**'
+              - 'Makefile'
       - id: out
         run: |
           if [ "${{ github.event_name }}" != "pull_request" ]; then
             echo "frontend=true" >> "$GITHUB_OUTPUT"
             echo "docker=true" >> "$GITHUB_OUTPUT"
-            echo "python-backend=true" >> "$GITHUB_OUTPUT"
+            echo "backend=true" >> "$GITHUB_OUTPUT"
           else
             echo "frontend=${{ steps.filter.outputs.frontend }}" >> "$GITHUB_OUTPUT"
             echo "docker=${{ steps.filter.outputs.docker }}" >> "$GITHUB_OUTPUT"
-            echo "python-backend=${{ steps.filter.outputs.python-backend }}" >> "$GITHUB_OUTPUT"
+            echo "backend=${{ steps.filter.outputs.backend }}" >> "$GITHUB_OUTPUT"
           fi
 
   frontend:
@@ -79,7 +85,7 @@ jobs:
   backend:
     name: Backend checks
     needs: changes
-    if: needs.changes.outputs.python-backend == 'true'
+    if: needs.changes.outputs.backend == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     defaults:

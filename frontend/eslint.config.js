@@ -75,12 +75,5 @@ export default [
     rules: {
       '@typescript-eslint/no-magic-numbers': ['error', { ignore: [0, 1] }]
     }
-  },
-  {
-    // Тесты: литералы это ожидаемые значения, правило контрпродуктивно
-    files: ['**/*.test.ts'],
-    rules: {
-      '@typescript-eslint/no-magic-numbers': 'off'
-    }
   }
 ]

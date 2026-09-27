@@ -80,17 +80,11 @@ export function useAutoForm<T extends Record<string, unknown> = Record<string, u
     try {
       const result = onSubmit(values)
       void Promise.resolve(result)
-        .catch((error: unknown) => {
-          const message = error instanceof Error ? error.message : 'Submission failed'
-          setSubmitError(message)
-          console.error(error) // eslint-disable-line no-console -- intentional error logging
-        })
+        .catch((error: unknown) => { reportSubmitError(error) })
         .finally(() => { setIsSubmitting(false) })
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'Submission failed'
-      setSubmitError(message)
+      reportSubmitError(error)
       setIsSubmitting(false)
-      console.error(error) // eslint-disable-line no-console -- intentional error logging
     }
   }, [schema, values, onSubmit])
 
@@ -100,6 +94,12 @@ export function useAutoForm<T extends Record<string, unknown> = Record<string, u
     setSubmitError(null)
     setIsSubmitting(false)
   }, [fields, initialValues])
+
+  function reportSubmitError (error: unknown): void {
+    const message = error instanceof Error ? error.message : 'Submission failed'
+    setSubmitError(message)
+    console.error(error) // eslint-disable-line no-console -- intentional error logging
+  }
 
   return {
     values,
@@ -115,7 +115,7 @@ export function useAutoForm<T extends Record<string, unknown> = Record<string, u
 interface FieldRendererProps {
   field: FieldDefinition
   value: unknown
-  error?: string
+  error?: string | undefined
   onChange: (name: string, value: unknown) => void
 }
 

@@ -33,7 +33,7 @@ class Cabinet(Base):
         ``None`` (TS empty state ``''``) means the roles never expire.
 
         Returns:
-            True when roles are expired.
+            ``True`` when roles are expired, ``False`` for ``None``.
         """
         expires = self.roles.expires_at
         return expires is not None and datetime.now(UTC) > expires

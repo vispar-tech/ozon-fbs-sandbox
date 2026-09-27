@@ -19,22 +19,20 @@ from backend.web.application import get_app
 
 @pytest.fixture(scope="session")
 def anyio_backend() -> str:
-    """
-    Backend for anyio pytest plugin.
+    """Backend for anyio pytest plugin.
 
     Returns:
-        Backend name.
+        ``"asyncio"``, the only backend wired into this suite.
     """
     return "asyncio"
 
 
 @pytest.fixture(scope="session")
-async def _engine(anyio_backend: Any) -> AsyncGenerator[AsyncEngine, None]:
-    """
-    Create engine and databases.
+async def _engine(anyio_backend: Any) -> AsyncGenerator[AsyncEngine]:
+    """Create the test database and engine; drop the database afterwards.
 
     Yields:
-        New engine.
+        Session-scoped test engine, disposed at teardown.
     """
     from backend.db.meta import meta
     from backend.db.models import load_all_models
@@ -57,18 +55,14 @@ async def _engine(anyio_backend: Any) -> AsyncGenerator[AsyncEngine, None]:
 @pytest.fixture
 async def dbsession(
     _engine: AsyncEngine,
-) -> AsyncGenerator[AsyncSession, None]:
-    """
-    Get session to database.
-
-    Fixture that returns a SQLAlchemy session bound to a transaction, rolled back
-    after the test completes.
+) -> AsyncGenerator[AsyncSession]:
+    """Yield a session bound to a transaction that rolls back after the test.
 
     Args:
-        _engine: current engine.
+        _engine: Engine the connection is taken from.
 
     Yields:
-        Async session.
+        Session, rolled back and closed after the test.
     """
     connection = await _engine.connect()
     trans = await connection.begin()
@@ -91,11 +85,10 @@ async def dbsession(
 def fastapi_app(
     dbsession: AsyncSession,
 ) -> FastAPI:
-    """
-    Fixture for creating FastAPI app.
+    """Build the FastAPI app with the DB session dependency overridden.
 
     Returns:
-        Fastapi app with mocked dependencies.
+        App wired to the test session.
     """
     application = get_app()
     application.dependency_overrides[get_db_session] = lambda: dbsession
@@ -105,15 +98,15 @@ def fastapi_app(
 @pytest.fixture
 async def client(
     fastapi_app: FastAPI, anyio_backend: Any
-) -> AsyncGenerator[AsyncClient, None]:
-    """
-    Fixture that creates client for requesting server.
+) -> AsyncGenerator[AsyncClient]:
+    """Yield an httpx client for the test server.
 
     Args:
-        fastapi_app: the application.
+        fastapi_app: Application under test.
+        anyio_backend: Anyio plugin backend parameter, unused here.
 
     Yields:
-        Client for the app.
+        Client bound to the ASGI transport.
     """
     async with AsyncClient(
         transport=ASGITransport(fastapi_app), base_url="http://test", timeout=2.0
@@ -124,29 +117,29 @@ async def client(
 CT_JSON = {"content-type": "application/json"}
 
 
-async def _create(client: AsyncClient, **payload: Any) -> dict[str, Any]:
-    """Create a cabinet and return its body.
+async def create_cabinet(client: AsyncClient, **payload: Any) -> dict[str, Any]:
+    """Create a cabinet and return its response body.
 
     Args:
-        client: client for the app.
-        payload: create payload.
+        client: Client for the app.
+        payload: Create payload fields.
 
     Returns:
-        Response body.
+        Parsed response body of the 201 answer.
     """
     response = await client.post("/api/cabinets", json=payload)
     assert response.status_code == status.HTTP_201_CREATED
     return response.json()
 
 
-def _auth(cabinet: dict[str, Any]) -> dict[str, str]:
-    """Build authenticated seller headers for a cabinet.
+def auth_headers(cabinet: dict[str, Any]) -> dict[str, str]:
+    """Build Client-Id/Api-Key headers for a cabinet.
 
     Args:
-        cabinet: cabinet summary body.
+        cabinet: Cabinet summary body.
 
     Returns:
-        Client-Id/Api-Key headers.
+        Seller auth headers plus the JSON content type.
     """
     return {
         "Client-Id": str(cabinet["client_id"]),

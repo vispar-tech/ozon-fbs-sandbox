@@ -102,7 +102,7 @@ function ToastItemView ({ toast, onDismiss }: ToastItemViewProps): JSX.Element {
 
   return (
     <div
-      className={clsx(styles.toast, styles[`toast${toast.tone[0].toUpperCase()}${toast.tone.slice(1)}`])}
+      className={clsx(styles.toast, styles[`toast${toast.tone.charAt(0).toUpperCase()}${toast.tone.slice(1)}`])}
       role={toast.tone === 'danger' ? 'alert' : undefined}
       onMouseEnter={() => { setPaused(true) }}
       onMouseLeave={() => { setPaused(false) }}
