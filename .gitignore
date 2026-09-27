@@ -25,8 +25,8 @@ logs/
 # local personal compose override (не в remote)
 docker-compose.override.yml
 
-# deepwork state (git-local)
-.slim/deepwork/
+# локальное рабочее состояние агентов: deepwork, review-nits (git-local)
+.slim/
 
 # Playwright MCP artifacts
 .playwright-mcp/

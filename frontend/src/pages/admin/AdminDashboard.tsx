@@ -5,8 +5,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import styles from './AdminDashboard.module.scss'
 import { CreateCabinetModal } from './CreateCabinetModal.js'
 
-import { ApiError, deleteCabinet, listCabinets } from '@/shared/api/index.js'
-import { formatCellValue, formatDate } from '@/shared/lib/index.js'
+import { deleteCabinet, listCabinets } from '@/shared/api/index.js'
+import { errorMessageOr, formatCellValue, formatDate } from '@/shared/lib/index.js'
 import type { CabinetSummary } from '@/shared/model/index.js'
 import { Button, CopyButton, Icon, IconButton } from '@/shared/ui/actions/index.js'
 import { type Column, Table } from '@/shared/ui/data/index.js'
@@ -28,8 +28,7 @@ export function AdminDashboard (): JSX.Element {
       const data = await listCabinets()
       setCabinets(data)
     } catch (err) {
-      const message = err instanceof ApiError ? err.message : 'Не удалось загрузить продавцов'
-      setError(message)
+      setError(errorMessageOr(err, 'Не удалось загрузить продавцов'))
     } finally {
       setLoading(false)
     }
@@ -73,8 +72,7 @@ export function AdminDashboard (): JSX.Element {
       void loadCabinets()
       showToast({ tone: 'success', title: 'Продавец удалён' })
     } catch (err) {
-      const message = err instanceof ApiError ? err.message : 'Не удалось удалить'
-      showToast({ tone: 'danger', title: 'Не удалось удалить', description: message })
+      showToast({ tone: 'danger', title: 'Не удалось удалить', description: errorMessageOr(err, 'Не удалось удалить') })
     } finally {
       setDeleting(false)
     }

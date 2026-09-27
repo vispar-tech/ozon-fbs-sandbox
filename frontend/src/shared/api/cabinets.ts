@@ -1,12 +1,15 @@
+import type { OzonErrorEnvelope } from './ozon-error.js'
+
+import { isRecord } from '@/shared/lib/index.js'
 import type { CabinetSummary, CreateCabinetInput, UpdateCabinetInput } from '@/shared/model/index.js'
 
 const NO_CONTENT_STATUS = 204
 
 export class ApiError extends Error {
   readonly status: number
-  readonly code: number
+  readonly code: number | null
 
-  constructor (status: number, code: number, message: string) {
+  constructor (status: number, code: number | null, message: string) {
     super(message)
     this.name = 'ApiError'
     this.status = status
@@ -35,7 +38,9 @@ async function request<T> (path: string, init?: RequestInit): Promise<T> {
   if (hasBody) {
     headers.set('Content-Type', 'application/json')
   }
-  const response = await performFetch(`/api${path}`, { ...init, headers })
+  // A transport failure rejects with the platform's own TypeError and keeps its
+  // own message, so it is not wrapped: there is no HTTP status or API code to report.
+  const response = await fetch(`/api${path}`, { ...init, headers })
   if (!response.ok) {
     throw await toResponseError(response)
   }
@@ -52,28 +57,18 @@ async function request<T> (path: string, init?: RequestInit): Promise<T> {
   return data as T
 }
 
-async function performFetch (path: string, init?: RequestInit): Promise<Response> {
-  try {
-    return await fetch(path, init)
-  } catch (cause) {
-    throw toApiError(cause)
-  }
-}
-
 async function toResponseError (response: Response): Promise<ApiError> {
   const body: unknown = await response.json().catch(() => null)
-  const errorBody = isErrorBody(body) ? body : null
-  return new ApiError(response.status, errorBody?.code ?? 0, errorBody?.message ?? `Request failed with status ${response.status}`)
-}
-
-function toApiError (cause: unknown): ApiError {
-  if (cause instanceof ApiError) {
-    return cause
+  if (isErrorBody(body) && body.message !== undefined) {
+    return new ApiError(response.status, body.code ?? null, body.message)
   }
-  const message = cause instanceof Error ? cause.message : 'Unknown network error'
-  return new ApiError(0, 0, message)
+  return new ApiError(response.status, null, `Response body is not an OzonError (HTTP ${response.status})`)
 }
 
-function isErrorBody (value: unknown): value is { code?: number; message?: string } {
-  return typeof value === 'object' && value !== null
+function isErrorBody (value: unknown): value is OzonErrorEnvelope {
+  if (!isRecord(value)) {
+    return false
+  }
+  const { code, message } = value
+  return (code === undefined || typeof code === 'number') && (message === undefined || typeof message === 'string')
 }

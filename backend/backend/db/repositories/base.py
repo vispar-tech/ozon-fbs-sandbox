@@ -1,16 +1,14 @@
 """Base repository with common CRUD operations."""
 
-from typing import Any, TypeVar
+from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.db.base import Base
 
-ModelType = TypeVar("ModelType", bound=Base)
-
 
 class BaseRepository[ModelType: Base]:
-    """Base repository with common CRUD operations."""
+    """Async CRUD over ``model`` bound to a single ``session``."""
 
     def __init__(self, session: AsyncSession, model: type[ModelType]) -> None:
         """Bind the repository to a session and its model type."""
