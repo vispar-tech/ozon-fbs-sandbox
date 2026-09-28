@@ -45,6 +45,9 @@ def get_app() -> FastAPI:
         Body validation errors are reported as 400/3 by the global
         RequestValidationError handler, so the auto-generated 422
         response would be misleading.
+
+        Returns:
+            Generated OpenAPI schema.
         """
         if app.openapi_schema is not None:
             return app.openapi_schema

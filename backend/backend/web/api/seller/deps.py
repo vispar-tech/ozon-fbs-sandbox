@@ -63,6 +63,7 @@ async def seller_auth(
 
     Raises:
         OzonHttpError: When any authentication step fails.
+        ValueError: When Client-Id is not a positive integer.
     """
     if client_id is None or api_key is None:
         raise OzonHttpError(OZON_STATUS_UNAUTHORIZED, MISSING_HEADERS_ERROR)

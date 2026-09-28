@@ -13,7 +13,7 @@ except ImportError:
 class UvicornWorker(BaseUvicornWorker):
     """Uvicorn worker with class-wide config gunicorn can't pass through."""
 
-    CONFIG_KWARGS: dict[str, Any] = {  # noqa: RUF012
+    CONFIG_KWARGS: dict[str, Any] = {  # ruff: ignore[mutable-class-default]
         "loop": "uvloop" if uvloop is not None else "asyncio",
         "http": "httptools",
         "lifespan": "on",
