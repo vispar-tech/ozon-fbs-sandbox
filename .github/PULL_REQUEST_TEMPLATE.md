@@ -1,20 +1,20 @@
-## What does this PR do?
+## Что делает этот PR
 
-<!-- One sentence summary -->
+<!-- Одно предложение о результате, не пересказ коммитов -->
 
-## Why?
+## Зачем
 
-<!-- Link to the issue: Closes #123 -->
+<!-- Ссылка на задачу: Closes #123 -->
 
-## Testing
+## Проверки
 
-- [ ] Added tests covering the changes
-- [ ] Frontend: `pnpm lint` and `pnpm build` pass (in `frontend/`)
-- [ ] Backend: `poetry run pytest` and `poetry run ruff format --check && poetry run ruff check backend tests && poetry run mypy backend tests` pass (in `backend/`)
-- [ ] Docker stack smoke-tested if Docker/CI files changed
+- [ ] Добавлены тесты, покрывающие изменения
+- [ ] Фронтенд: проходят `pnpm lint` и `pnpm build` (в `frontend/`)
+- [ ] Бэкенд: проходят `poetry run pytest` и `poetry run ruff format --check && poetry run ruff check backend tests scripts && poetry run mypy backend tests scripts` (в `backend/`)
+- [ ] Prod-стек в Docker проверен вручную, если менялись Docker/CI-файлы
 
-## Checklist
+## Чеклист
 
-- [ ] Code follows the project conventions (imports → constants → types → functions)
-- [ ] No separator comments (`-----`)
-- [ ] Documentation updated where needed
+- [ ] Код следует соглашениям проекта (импорты → константы → типы → функции)
+- [ ] Нет разделительных комментариев (`-----`)
+- [ ] Документация обновлена там, где это нужно

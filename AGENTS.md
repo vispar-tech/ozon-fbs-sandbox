@@ -59,6 +59,8 @@ Husky-хук `frontend/.husky/pre-commit` обновляет субмодуль 
 - Релиз: `git fetch origin && git merge-base --is-ancestor origin/main origin/develop`. Если `false`, делаем `git merge origin/main` (никогда rebase). Дальше PR `develop` → `main` с assignee `vispar-tech`, мерж `gh pr merge <N> --merge`, и сразу синхронизация develop: `git fetch origin && git push origin origin/main:develop`.
 - На release-PR только merge-коммит. Squash подменяет N коммитов develop одним коммитом в main, после чего develop перестаёт быть предком main и каждая следующая синхронизация требует rebase и force-push от человека. Шаг синхронизации сам по себе fast-forward, force-push не требуется. `--delete-branch` не указывать: head это develop.
 - Схему держит сервер: на `main` `required_linear_history: false`, ruleset разрешает merge-коммит и запрещает force-push и удаление `main`. Удаление `develop` запрещено отдельным ruleset, а force-push на `develop` сервером разрешён намеренно: `develop` не release-база. Dependabot у всех трёх записей target `develop`.
+- Заголовок PR пишется по тем же правилам, что и сообщение коммита: Conventional Commits с gitmoji, английский, с маленькой буквы, без точки в конце. Описание PR — по-русски, проект для русскоязычной аудитории. Заголовок не пересказывает список коммитов, а называет результат одной строкой, как `feat: :sparkles: ship the coverage page`.
+- Заголовок issue следует той же логике, что и заголовок PR: английский, с маленькой буквы, префикс из шаблона. Тело issue и PR по-русски. Шаблоны в `.github/` переведены, потому что видят люди: `name`, `description`, подписи полей, плейсхолдеры и варианты списков — по-русски, а `labels` и префиксы заголовков остаются английскими, они нужны для фильтров и поиска.
 
 ## CI
 

@@ -1,19 +1,19 @@
-name: Bug report
-description: Something is broken or behaves incorrectly.
+name: Отчёт об ошибке
+description: Что-то сломано или работает не так, как ожидается.
 title: "[Bug]: "
 labels: ["bug"]
 body:
   - type: textarea
     id: what-happened
     attributes:
-      label: What happened, and what did you expect?
-      description: One sentence each is fine.
+      label: Что произошло и что ожидалось?
+      description: По одному предложению на каждое достаточно.
     validations:
       required: true
   - type: textarea
     id: repro
     attributes:
-      label: Steps to reproduce
+      label: Шаги воспроизведения
       placeholder: |
         1. ...
         2. ...
@@ -23,35 +23,35 @@ body:
   - type: dropdown
     id: area
     attributes:
-      label: Area
-      description: Which part of the project is affected?
+      label: Область
+      description: Какая часть проекта затронута?
       options:
-        - Backend (FastAPI)
-        - Frontend (React/Vite)
+        - Бэкенд (FastAPI)
+        - Фронтенд (React/Vite)
         - Docker / CI
-        - Other
+        - Другое
     validations:
       required: true
   - type: input
     id: version
     attributes:
-      label: Version
-      description: Commit SHA or release tag. "latest" is not a version.
-      placeholder: e.g. 59f7d39
+      label: Версия
+      description: SHA коммита или тег релиза. "latest" не является версией.
+      placeholder: например 59f7d39
     validations:
       required: true
   - type: input
     id: environment
     attributes:
-      label: Environment
-      description: OS, Python/Node/Docker version if relevant.
-      placeholder: macOS 14, Python 3.13, Node 26.9.0, Docker 27
+      label: Окружение
+      description: ОС и версии Python/Node/Docker, если это важно.
+      placeholder: macOS 14, Python 3.14, Node 26.9.0, Docker 27
     validations:
       required: true
   - type: textarea
     id: logs
     attributes:
-      label: Relevant logs or error output
+      label: Логи или вывод ошибки
       render: shell
     validations:
       required: false
