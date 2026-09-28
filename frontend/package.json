@@ -40,9 +40,9 @@
     "husky": "^9.1.7",
     "openapi-typescript": "^7.9.0",
     "prettier": "^3.9.9",
-    "sass": "^1.104.1",
+    "sass": "^1.105.0",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "typescript-eslint": "^8.58.1",
-    "vite": "^8.3.0"
+    "vite": "^8.3.1"
   }
 }
