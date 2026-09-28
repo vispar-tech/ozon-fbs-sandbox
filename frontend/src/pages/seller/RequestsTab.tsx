@@ -18,7 +18,7 @@ import { OperationPanel, OperationsRail, RequestPanel, ResponsePanel } from './R
 
 import { getSellerOperations, sendSellerRequest } from '@/shared/api/seller.js'
 import type { CabinetSummary } from '@/shared/model/index.js'
-import { Spinner } from '@/shared/ui/feedback/index.js'
+import { CenteredStatus } from '@/shared/ui/feedback/index.js'
 
 interface RequestsTabProps {
   cabinet: CabinetSummary
@@ -154,9 +154,7 @@ export function RequestsTab ({ cabinet }: RequestsTabProps): JSX.Element {
   function renderWorkColumn (): JSX.Element | null {
     if (operationsState.status === 'loading') {
       return (
-        <div className={styles.responseCenter}>
-          <Spinner size='lg' label='Загрузка методов' />
-        </div>
+        <CenteredStatus status='loading' label='Загрузка методов' className={styles.responseCenter ?? ''} minHeight='auto' />
       )
     }
     if (selected === null) {

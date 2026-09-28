@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 
-type Theme = 'light' | 'dark'
-
 const STORAGE_KEY = 'ozon-theme'
+
+type Theme = 'light' | 'dark'
 
 function getInitialTheme (): Theme {
   try {

@@ -18,21 +18,21 @@ $menu-max-height: 240px;
   }
 }
 
-.select-placeholder {
+.selectPlaceholder {
   color: var(--text-secondary);
 }
 
-.select-error {
+.selectError {
   @include error-base;
 }
 
-.select-sm {
-  height: 32px;
+.selectSm {
+  height: var(--control-height-sm);
   font-size: var(--text-sm);
 }
 
-.select-lg {
-  height: 40px;
+.selectLg {
+  height: var(--control-height-lg);
   font-size: var(--text-md);
 }
 
@@ -42,7 +42,7 @@ $menu-max-height: 240px;
   transition: transform var(--transition-fast);
 }
 
-.chevron-open {
+.chevronOpen {
   transform: rotate(180deg);
 }
 
@@ -102,7 +102,7 @@ $menu-max-height: 240px;
   }
 }
 
-.option-selected {
+.optionSelected {
   color: var(--accent);
   font-weight: var(--weight-medium);
 }

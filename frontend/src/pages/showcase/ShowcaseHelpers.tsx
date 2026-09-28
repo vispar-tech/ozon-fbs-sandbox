@@ -84,7 +84,7 @@ export function ColorSwatch ({ name, hex, css, primary = false }: ColorSwatchPro
 export function TypeSample ({ size, label }: { size: string; label: string }): JSX.Element {
   return (
     <div className={styles.typeSample}>
-      <span style={{ fontSize: size, fontWeight: 500, color: 'var(--text-h)' }}>The quick brown fox</span>
+      <span style={{ fontSize: size, fontWeight: 'var(--weight-medium)', color: 'var(--text-h)' }}>The quick brown fox</span>
       <span className={styles.spacingLabel}>{label}</span>
     </div>
   )

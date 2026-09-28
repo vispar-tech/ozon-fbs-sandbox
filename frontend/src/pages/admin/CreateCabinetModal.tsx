@@ -40,8 +40,23 @@ export function CreateCabinetModal ({ open, onClose, onCreated }: CreateCabinetM
   }
 
   return (
-    <Modal open={open} onClose={handleClose} title='Создать продавца' size='md'>
-      <form onSubmit={form.handleSubmit} className={styles.form} noValidate>
+    <Modal
+      open={open}
+      onClose={handleClose}
+      title='Создать продавца'
+      size='md'
+      footer={(
+        <>
+          <Button type='button' variant='secondary' onClick={handleClose} disabled={form.isSubmitting}>
+            Отмена
+          </Button>
+          <Button type='submit' form='create-cabinet-form' loading={form.isSubmitting}>
+            Создать
+          </Button>
+        </>
+      )}
+    >
+      <form id='create-cabinet-form' onSubmit={form.handleSubmit} className={styles.form} noValidate>
         {FIELDS.map((field) => (
           <FieldRenderer
             key={field.name}
@@ -55,14 +70,6 @@ export function CreateCabinetModal ({ open, onClose, onCreated }: CreateCabinetM
         {form.submitError !== null && (
           <ErrorBanner title='Не удалось создать' message={form.submitError} />
         )}
-        <div className={styles.actions}>
-          <Button type='button' variant='secondary' onClick={handleClose} disabled={form.isSubmitting}>
-            Отмена
-          </Button>
-          <Button type='submit' loading={form.isSubmitting}>
-            Создать
-          </Button>
-        </div>
       </form>
     </Modal>
   )

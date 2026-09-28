@@ -10,7 +10,7 @@ import { errorMessageOr, formatCellValue, formatDate } from '@/shared/lib/index.
 import type { CabinetSummary } from '@/shared/model/index.js'
 import { Button, CopyButton, Icon, IconButton } from '@/shared/ui/actions/index.js'
 import { type Column, Table } from '@/shared/ui/data/index.js'
-import { ConfirmDialog, EmptyState, ErrorBanner, Spinner, useToast } from '@/shared/ui/feedback/index.js'
+import { CenteredStatus, ConfirmDialog, EmptyState, useToast } from '@/shared/ui/feedback/index.js'
 
 export function AdminDashboard (): JSX.Element {
   const [cabinets, setCabinets] = useState<CabinetSummary[]>([])
@@ -79,22 +79,11 @@ export function AdminDashboard (): JSX.Element {
   }
 
   if (loading) {
-    return (
-      <div className={styles.centered}>
-        <Spinner size='lg' label='Загрузка продавцов' />
-      </div>
-    )
+    return <CenteredStatus status='loading' label='Загрузка продавцов' />
   }
 
   if (error !== null) {
-    return (
-      <div className={styles.centered}>
-        <ErrorBanner message={error} />
-        <Button variant='secondary' className={styles.retryButton} onClick={() => { void loadCabinets() }}>
-          Повторить
-        </Button>
-      </div>
-    )
+    return <CenteredStatus status='error' message={error} onRetry={() => { void loadCabinets() }} />
   }
 
   return (

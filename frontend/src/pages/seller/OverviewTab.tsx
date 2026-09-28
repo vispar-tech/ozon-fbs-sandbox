@@ -1,11 +1,11 @@
-import clsx from 'clsx'
 import type { JSX } from 'react'
 
 import styles from './OverviewTab.module.scss'
 
 import { formatDate, hasPastValue } from '@/shared/lib/index.js'
 import type { CabinetSummary } from '@/shared/model/index.js'
-import { Badge, Chip } from '@/shared/ui/feedback/index.js'
+import { DataField } from '@/shared/ui/data/index.js'
+import { Badge, Chip, EmptyState } from '@/shared/ui/feedback/index.js'
 import { Card, Section } from '@/shared/ui/layout/index.js'
 
 interface OverviewTabProps {
@@ -20,33 +20,33 @@ export function OverviewTab ({ cabinet }: OverviewTabProps): JSX.Element {
     <div className={styles.overview}>
       <Section title='Компания'>
         <div className={styles.grid}>
-          <Field label='Название' value={company.name} />
-          <Field label='Юридическое название' value={company.legal_name} />
-          <Field label='ИНН' value={company.inn} mono />
-          <Field label='ОГРН' value={company.ogrn} mono />
-          <Field label='Страна' value={company.country} />
-          <Field label='Валюта' value={company.currency} />
-          <Field label='Форма собственности' value={company.ownership_form} />
-          <Field label='Система налогообложения' value={company.tax_system} />
+          <DataField label='Название' value={company.name} />
+          <DataField label='Юридическое название' value={company.legal_name} />
+          <DataField label='ИНН' value={company.inn} mono />
+          <DataField label='ОГРН' value={company.ogrn} mono />
+          <DataField label='Страна' value={company.country} />
+          <DataField label='Валюта' value={company.currency} />
+          <DataField label='Форма собственности' value={company.ownership_form} />
+          <DataField label='Система налогообложения' value={company.tax_system} />
         </div>
       </Section>
 
       <Section title='Подписка'>
-        <div className={styles.subscriptionGrid}>
-          <Field label='Тип' value={subscription.type} />
-          <Field label='Премиум-доступ' value={subscription.is_premium ? 'Да' : 'Нет'} />
+        <div className={styles.grid}>
+          <DataField label='Тип' value={subscription.type} />
+          <DataField label='Премиум-доступ' value={subscription.is_premium ? 'Да' : 'Нет'} />
         </div>
       </Section>
 
       <Section title='Рейтинги'>
         {ratings.length === 0
-          ? <p className={styles.empty}>Нет данных о рейтингах</p>
+          ? <EmptyState title='Нет данных о рейтингах' />
           : (
               <div className={styles.ratingsGrid}>
                 {ratings.map((rating) => (
                   <Card key={rating.name} title={rating.name}>
-                    <div className={styles.ratingBody}>
-                      <div className={styles.ratingMain}>
+                    <div className={styles.stack}>
+                      <div className={styles.row}>
                         <span className={styles.ratingValue}>{rating.rating}</span>
                         <Badge
                           variant={getRatingVariant(rating.status)}
@@ -56,21 +56,17 @@ export function OverviewTab ({ cabinet }: OverviewTabProps): JSX.Element {
                         </Badge>
                       </div>
                       <div className={styles.ratingValues}>
-                        <div className={styles.ratingField}>
-                          <span className={styles.ratingLabel}>Текущее</span>
-                          <span className={styles.ratingData}>{rating.current_value.formatted}</span>
-                          <span className={styles.ratingDate}>
-                            {formatDate(rating.current_value.date_from)} — {formatDate(rating.current_value.date_to)}
-                          </span>
-                        </div>
+                        <DataField
+                          label='Текущее'
+                          value={rating.current_value.formatted}
+                          note={`${formatDate(rating.current_value.date_from)} — ${formatDate(rating.current_value.date_to)}`}
+                        />
                         {hasPastValue(rating) && (
-                          <div className={styles.ratingField}>
-                            <span className={styles.ratingLabel}>Прошлое</span>
-                            <span className={styles.ratingData}>{rating.past_value.formatted}</span>
-                            <span className={styles.ratingDate}>
-                              {formatDate(rating.past_value.date_from)} — {formatDate(rating.past_value.date_to)}
-                            </span>
-                          </div>
+                          <DataField
+                            label='Прошлое'
+                            value={rating.past_value.formatted}
+                            note={`${formatDate(rating.past_value.date_from)} — ${formatDate(rating.past_value.date_to)}`}
+                          />
                         )}
                       </div>
                     </div>
@@ -89,12 +85,12 @@ export function OverviewTab ({ cabinet }: OverviewTabProps): JSX.Element {
         }
       >
         {roles.roles.length === 0
-          ? <p className={styles.empty}>Роли не настроены</p>
+          ? <EmptyState title='Роли не настроены' />
           : (
-              <div className={styles.rolesList}>
+              <div className={styles.stack}>
                 {roles.roles.map((role) => (
                   <Card key={role.name} title={role.name}>
-                    <div className={styles.methods}>
+                    <div className={styles.row}>
                       {role.methods.length === 0
                         ? <span className={styles.noMethods}>Нет методов</span>
                         : role.methods.map((method) => (
@@ -106,24 +102,6 @@ export function OverviewTab ({ cabinet }: OverviewTabProps): JSX.Element {
               </div>
             )}
       </Section>
-    </div>
-  )
-}
-
-interface FieldProps {
-  label: string
-  value: string
-  mono?: boolean
-}
-
-function Field ({ label, value, mono = false }: FieldProps): JSX.Element {
-  const isEmpty = value.trim() === ''
-  return (
-    <div className={styles.field}>
-      <span className={styles.fieldLabel}>{label}</span>
-      <span className={clsx(styles.fieldValue, mono && styles.mono, isEmpty && styles.fieldValueEmpty)}>
-        {isEmpty ? '—' : value}
-      </span>
     </div>
   )
 }

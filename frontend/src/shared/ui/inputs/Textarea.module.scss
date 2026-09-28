@@ -5,7 +5,7 @@
   @include field-base;
 
   height: auto;
-  min-height: 72px;
+  min-height: var(--textarea-height-md);
   padding: var(--space-2) var(--space-3);
   resize: vertical;
   line-height: var(--leading-normal);
@@ -19,18 +19,18 @@
   }
 }
 
-.textarea-error {
+.textareaError {
   @include error-base;
 }
 
-.textarea-sm {
-  min-height: 56px;
+.textareaSm {
+  min-height: var(--textarea-height-sm);
   font-size: var(--text-sm);
   padding: var(--space-1) var(--space-2);
 }
 
-.textarea-lg {
-  min-height: 88px;
+.textareaLg {
+  min-height: var(--textarea-height-lg);
   font-size: var(--text-md);
   padding: var(--space-3) var(--space-4);
 }

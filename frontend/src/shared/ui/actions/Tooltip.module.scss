@@ -21,11 +21,11 @@
   animation: tooltip-in var(--transition-fast);
 }
 
-.tooltip-top {
+.tooltipTop {
   bottom: calc(100% + var(--space-2));
 }
 
-.tooltip-bottom {
+.tooltipBottom {
   top: calc(100% + var(--space-2));
 }
 

@@ -4,6 +4,10 @@ import { Link, type To } from 'react-router-dom'
 
 import styles from './Button.module.scss'
 
+import { Spinner } from '@/shared/ui/feedback/index.js'
+
+const btnSpinnerClass = styles.btnSpinner ?? ''
+
 type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'link'
 export type ButtonSize = 'sm' | 'md' | 'lg'
 
@@ -52,15 +56,17 @@ export function Button ({
     )
   }
 
+  // `type='button'` sits before {...rest} on purpose: an explicit type='submit' from the caller must win over the default
   return (
     <button
       ref={ref}
       className={classes}
+      type='button'
       disabled={disabled === true || loading}
       {...rest}
       aria-busy={loading || undefined}
     >
-      {!loading && icon}
+      {loading ? <Spinner size='sm' className={btnSpinnerClass} /> : icon}
       {children}
     </button>
   )
@@ -74,7 +80,7 @@ function ButtonLink ({ to, className, loading, icon, children, rest }: ButtonLin
       aria-busy={loading || undefined}
       {...(rest as AnchorHTMLAttributes<HTMLAnchorElement>)} // eslint-disable-line @typescript-eslint/no-unsafe-type-assertion -- button/anchor event handlers are structurally compatible at runtime
     >
-      {!loading && icon}
+      {loading ? <Spinner size='sm' className={btnSpinnerClass} /> : icon}
       {children}
     </Link>
   )

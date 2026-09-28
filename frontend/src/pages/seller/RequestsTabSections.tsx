@@ -11,7 +11,8 @@ import { toOzonError } from '@/shared/api/index.js'
 import type { SellerOperation } from '@/shared/api/seller.js'
 import type { OzonError } from '@/shared/model/index.js'
 import { Button, CopyButton, Icon } from '@/shared/ui/actions/index.js'
-import { Alert, Badge, EmptyState, ErrorBanner, Skeleton, Spinner } from '@/shared/ui/feedback/index.js'
+import { Eyebrow } from '@/shared/ui/data/index.js'
+import { Alert, Badge, CenteredStatus, EmptyState, ErrorBanner, Skeleton } from '@/shared/ui/feedback/index.js'
 import { Input, Textarea, Toggle } from '@/shared/ui/inputs/index.js'
 import { Card } from '@/shared/ui/layout/index.js'
 
@@ -25,6 +26,12 @@ const OZON_CODE_INTERNAL = 13
 const OZON_CODE_MISSING_HEADERS = 16
 
 const NETWORK_FAILURE_HINT = 'Сервер не ответил — проверьте, что бэкенд запущен, и отправьте запрос повторно.'
+
+// CSS-module classes are typed `string | undefined` while CenteredStatus rejects
+// an explicit undefined under exactOptionalPropertyTypes, so the narrowing lives
+// at module scope instead of inside renderResponseBody (a `??` per branch would
+// push that function past the configured complexity limit).
+const RESPONSE_CENTER_CLASS = styles.responseCenter ?? ''
 
 // The `string | undefined` value type is deliberate: a response may carry a code
 // outside this list, and the lookup must degrade to "no hint" instead of pretending.
@@ -80,43 +87,41 @@ export function OperationsRail ({ state, activeId, onSelect, onRetry }: Operatio
 
   return (
     <aside className={styles.rail} aria-label='Методы API'>
-      <div className={styles.railHead}>
-        <span className={styles.railTitle}>Методы</span>
-        {ready && <span className={styles.railCount}>{count}</span>}
-      </div>
-      {state.status === 'loading' && (
-        <div className={styles.railList}>
-          {Array.from({ length: RAIL_SKELETON_COUNT }, (_, index) => (
-            <Skeleton key={index} variant='rect' height='64px' />
-          ))}
-        </div>
-      )}
-      {state.status === 'error' && (
-        <div className={styles.railError}>
-          <ErrorBanner title='Не удалось загрузить методы' message={state.message} />
-          <Button variant='secondary' size='sm' icon={<Icon icon={ArrowPathIcon} size='sm' />} onClick={onRetry}>Повторить</Button>
-        </div>
-      )}
-      {ready && count === 0 && (
-        <EmptyState title='Методы не найдены' description='Схема OpenAPI не содержит операций seller API.' />
-      )}
-      {ready && count > 0 && (
-        <div className={styles.railList}>
-          {state.operations.map((operation) => (
-            <button
-              key={operation.id}
-              type='button'
-              className={clsx(styles.railItem, operation.id === activeId && styles.railItemActive)}
-              aria-current={operation.id === activeId ? 'true' : undefined}
-              onClick={() => { onSelect(operation.id) }}
-            >
-              <span className={styles.railMethod}>{operation.method.toUpperCase()}</span>
-              <span className={styles.railItemTitle}>{operation.title}</span>
-              <span className={styles.railItemPath}>{operation.path}</span>
-            </button>
-          ))}
-        </div>
-      )}
+      <Card title='Методы' headerAction={ready ? <Badge size='sm'>{count}</Badge> : undefined}>
+        {state.status === 'loading' && (
+          <div className={styles.railList}>
+            {Array.from({ length: RAIL_SKELETON_COUNT }, (_, index) => (
+              <Skeleton key={index} variant='rect' height='64px' />
+            ))}
+          </div>
+        )}
+        {state.status === 'error' && (
+          <div className={styles.railError}>
+            <ErrorBanner title='Не удалось загрузить методы' message={state.message} />
+            <Button variant='secondary' size='sm' icon={<Icon icon={ArrowPathIcon} size='sm' />} onClick={onRetry}>Повторить</Button>
+          </div>
+        )}
+        {ready && count === 0 && (
+          <EmptyState title='Методы не найдены' description='Схема OpenAPI не содержит операций seller API.' />
+        )}
+        {ready && count > 0 && (
+          <div className={styles.railList}>
+            {state.operations.map((operation) => (
+              <button
+                key={operation.id}
+                type='button'
+                className={clsx(styles.railItem, operation.id === activeId && styles.railItemActive)}
+                aria-current={operation.id === activeId ? 'true' : undefined}
+                onClick={() => { onSelect(operation.id) }}
+              >
+                <Badge size='sm'>{operation.method.toUpperCase()}</Badge>
+                <span className={styles.railItemTitle}>{operation.title}</span>
+                <span className={styles.railItemPath}>{operation.path}</span>
+              </button>
+            ))}
+          </div>
+        )}
+      </Card>
     </aside>
   )
 }
@@ -131,7 +136,7 @@ export function OperationPanel ({ operation }: OperationPanelProps): JSX.Element
       title={operation.title}
       headerAction={
         <span className={styles.requestLine}>
-          <span className={styles.methodTag}>{operation.method.toUpperCase()}</span>
+          <Badge variant='blue' size='sm'>{operation.method.toUpperCase()}</Badge>
           <span className={styles.requestPath}>{operation.path}</span>
         </span>
       }
@@ -150,12 +155,12 @@ export function OperationPanel ({ operation }: OperationPanelProps): JSX.Element
       )}
       {operation.responses.length > 0 && (
         <div className={styles.responses}>
-          <span className={styles.responsesLabel}>Ответы по схеме</span>
+          <Eyebrow>Ответы по схеме</Eyebrow>
           <ul className={styles.responseList}>
             {operation.responses.map((documented, index) => (
               <li key={`${documented.status}-${index}`} className={styles.responseItem}>
                 <Badge variant={statusVariant(documented.status)} size='sm'>{documented.status}</Badge>
-                <span className={styles.responseSummary}>{documented.summary}</span>
+                <span className={styles.muted}>{documented.summary}</span>
               </li>
             ))}
           </ul>
@@ -194,7 +199,7 @@ export function RequestPanel ({
       title='Запрос'
       footer={
         <div className={styles.footerRow}>
-          <div className={styles.copyOptions}>
+          <div className={styles.rowWrap}>
             <Toggle
               checked={includeApiKeyInCurl}
               onChange={onIncludeApiKeyInCurlChange}
@@ -213,14 +218,14 @@ export function RequestPanel ({
               <CopyButton value={fetchSnippet} label='Копировать fetch' disabled={fetchSnippet === ''} />
             </div>
             {fetchSnippet === '' && (
-              <span className={styles.fetchHint}>Fetch-код появится, когда тело запроса станет валидным JSON</span>
+              <span className={styles.muted}>Fetch-код появится, когда тело запроса станет валидным JSON</span>
             )}
           </div>
         </div>
       }
     >
       <form noValidate onSubmit={handleSubmit}>
-        <span className={styles.blockLabel}>Заголовки</span>
+        <Eyebrow>Заголовки</Eyebrow>
         <div className={styles.headerGrid}>
           {operation.requiredHeaders.map((header) => (
             <Input
@@ -265,7 +270,7 @@ export function ResponsePanel ({ operation, response, seq }: ResponsePanelProps)
   return (
     <Card title='Ответ'>
       {/* The live region must outlive its content: renderResponseBody swaps
-          whole subtrees and the animated result block is re-keyed by `seq`, so
+          whole subtrees and the result block is re-keyed by `seq`, so
           `aria-live` sits on this persistent wrapper, never on a keyed or
           conditional element. */}
       <div aria-live='polite'>
@@ -288,8 +293,8 @@ function OzonErrorPanel ({ error }: OzonErrorPanelProps): JSX.Element {
           : <Alert tone='danger' title={message} description={hint} />}
       </div>
       {details !== undefined && details.length > 0 && (
-        <div className={styles.errorPanelDetails}>
-          <span className={styles.rawLabel}>Детали</span>
+        <>
+          <Eyebrow>Детали</Eyebrow>
           <pre
             className={styles.raw}
             tabIndex={0}
@@ -298,7 +303,7 @@ function OzonErrorPanel ({ error }: OzonErrorPanelProps): JSX.Element {
           >
             {JSON.stringify(details)}
           </pre>
-        </div>
+        </>
       )}
     </div>
   )
@@ -316,18 +321,22 @@ function renderResponseBody (operation: SellerOperation, response: ResponseState
   }
   if (response.status === 'sending') {
     return (
-      <div className={styles.responseCenter}>
-        <Spinner size='lg' label='Запрос выполняется' />
+      <CenteredStatus status='loading' label='Запрос выполняется' className={RESPONSE_CENTER_CLASS} minHeight='auto'>
         <span className={styles.responseHint}>{`${operation.method.toUpperCase()} ${operation.path}`}</span>
-      </div>
+      </CenteredStatus>
     )
   }
   if (response.status === 'failed') {
     return (
-      <div className={styles.responseCenter}>
-        <ErrorBanner title='Запрос не выполнен' message={response.message} />
+      <CenteredStatus
+        status='error'
+        title='Запрос не выполнен'
+        message={response.message}
+        className={RESPONSE_CENTER_CLASS}
+        minHeight='auto'
+      >
         <p className={styles.responseHint}>{NETWORK_FAILURE_HINT}</p>
-      </div>
+      </CenteredStatus>
     )
   }
   const { result } = response
@@ -335,16 +344,16 @@ function renderResponseBody (operation: SellerOperation, response: ResponseState
   const ozonError = parsed.ok ? toOzonError(parsed.value) : null
 
   return (
-    <div key={seq} className={styles.responseIn}>
-      <div className={styles.statusRow}>
+    <div key={seq}>
+      <div className={styles.rowWrap}>
         <Badge variant={statusVariant(result.status)} size='sm'>HTTP {result.status}</Badge>
-        <span className={styles.duration}>{`${Math.round(result.durationMs)} мс`}</span>
-        <span className={styles.requestEcho}>{`${operation.method.toUpperCase()} ${operation.path}`}</span>
+        <span className={styles.note}>{`${Math.round(result.durationMs)} мс`}</span>
+        <span className={styles.note}>{`${operation.method.toUpperCase()} ${operation.path}`}</span>
       </div>
       {ozonError !== null && <OzonErrorPanel error={ozonError} />}
       <div className={styles.rawBlock}>
         <div className={styles.rawHead}>
-          <span className={styles.rawLabel}>{ozonError === null ? 'Тело ответа' : 'Сырой ответ'}</span>
+          <Eyebrow>{ozonError === null ? 'Тело ответа' : 'Сырой ответ'}</Eyebrow>
           <CopyButton value={result.body} label='Копировать ответ' />
         </div>
         <pre

@@ -8,6 +8,7 @@ import { buildFormSchema, type FieldDefinition, FieldRenderer, useAutoForm } fro
 import { hasPastValue } from '@/shared/lib/index.js'
 import type { CabinetSummary, Rating, RatingValue, SellerInfo } from '@/shared/model/index.js'
 import { Button, Icon } from '@/shared/ui/actions/index.js'
+import { Eyebrow } from '@/shared/ui/data/index.js'
 import { ErrorBanner, useToast } from '@/shared/ui/feedback/index.js'
 import { Input, Select, Toggle } from '@/shared/ui/inputs/index.js'
 import { Card, Section } from '@/shared/ui/layout/index.js'
@@ -195,9 +196,7 @@ export function SellerInfoEditor ({ cabinet, onUpdated }: SellerInfoEditorProps)
                 {hasPastValue(rating)
                   ? (
                       <>
-                        <div className={styles.pastValueHeader}>
-                          <Button type='button' variant='ghost' size='sm' onClick={() => { removePastValue(ratingIdx) }}>Убрать</Button>
-                        </div>
+                        <Button type='button' variant='ghost' size='sm' onClick={() => { removePastValue(ratingIdx) }}>Убрать</Button>
                         <RatingValueEditor
                           title='Прошлое значение'
                           value={rating.past_value}
@@ -230,7 +229,7 @@ interface RatingValueEditorProps {
 export function RatingValueEditor ({ title, value, onFieldChange, onFlagChange }: RatingValueEditorProps): JSX.Element {
   return (
     <>
-      <h4 className={styles.ratingValueTitle}>{title}</h4>
+      <h4 className={styles.ratingValueTitle}><Eyebrow>{title}</Eyebrow></h4>
       <div className={styles.fields}>
         <Input label='Форматированное' value={value.formatted} onChange={(e) => { onFieldChange('formatted', e.target.value) }} />
         <Input label='Числовое' type='number' value={String(value.value)} onChange={(e) => { onFieldChange('value', e.target.value) }} />

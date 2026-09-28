@@ -14,7 +14,7 @@ import { errorMessageOr } from '@/shared/lib/index.js'
 import type { CabinetSummary } from '@/shared/model/index.js'
 import { Button, Icon, IconButton } from '@/shared/ui/actions/index.js'
 import { Tabs } from '@/shared/ui/data/index.js'
-import { ConfirmDialog, ErrorBanner, Spinner, useToast } from '@/shared/ui/feedback/index.js'
+import { CenteredStatus, ConfirmDialog, useToast } from '@/shared/ui/feedback/index.js'
 import { Breadcrumbs } from '@/shared/ui/layout/index.js'
 
 const NOT_FOUND = 404
@@ -97,29 +97,19 @@ export function SellerDetails (): JSX.Element {
   }
 
   if (loading) {
-    return (
-      <div className={styles.centered}>
-        <Spinner size='lg' label='Загрузка продавца' />
-      </div>
-    )
+    return <CenteredStatus status='loading' label='Загрузка продавца' />
   }
 
   if (notFound) {
     return (
-      <div className={styles.centered}>
-        <ErrorBanner title='Продавец не найден' message='Запрошенный кабинет не существует.' />
-        <Link to='/' className={styles.backLink}>Назад к списку</Link>
-      </div>
+      <CenteredStatus status='error' title='Продавец не найден' message='Запрошенный кабинет не существует.'>
+        <Link to='/'>Назад к списку</Link>
+      </CenteredStatus>
     )
   }
 
   if (error !== null) {
-    return (
-      <div className={styles.centered}>
-        <ErrorBanner message={error} />
-        <Button variant='secondary' onClick={() => { void loadCabinet() }}>Повторить</Button>
-      </div>
-    )
+    return <CenteredStatus status='error' message={error} onRetry={() => { void loadCabinet() }} />
   }
 
   if (cabinet === null) return <></>

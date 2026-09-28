@@ -4,7 +4,7 @@
   gap: var(--space-1);
 }
 
-.page-button {
+.pageButton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -35,7 +35,7 @@
   }
 }
 
-.page-button-active {
+.pageButtonActive {
   background: var(--accent);
   border-color: var(--accent);
   color: var(--accent-text);
@@ -56,7 +56,7 @@
   font-size: var(--text-sm);
 }
 
-.page-size-select {
+.pageSizeSelect {
   margin-left: var(--space-2);
   height: var(--space-8);
   padding: 0 var(--space-2);

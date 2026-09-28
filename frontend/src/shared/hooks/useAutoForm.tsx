@@ -20,9 +20,7 @@ export interface FieldDefinition {
   options?: FieldOption[]
   hint?: string
   disabled?: boolean
-  /** Min value for number fields */
   min?: number
-  /** Max value for number fields */
   max?: number
 }
 

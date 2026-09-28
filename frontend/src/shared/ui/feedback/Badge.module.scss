@@ -11,48 +11,48 @@
   border: 1px solid transparent;
 }
 
-.badge-default {
+.badgeDefault {
   background: var(--bg-subtle);
   color: var(--text-secondary);
   border-color: var(--border);
 }
 
-.badge-blue {
+.badgeBlue {
   background: var(--accent-bg);
   color: var(--accent);
   border-color: var(--accent-border);
 }
 
-.badge-green {
+.badgeGreen {
   background: var(--color-success-bg);
   color: var(--color-success);
   border-color: var(--color-success-border);
 }
 
-.badge-orange {
+.badgeOrange {
   background: var(--color-warning-bg);
   color: var(--color-warning-strong);
   border-color: var(--color-warning-border);
 }
 
-.badge-red {
+.badgeRed {
   background: var(--color-danger-bg);
   color: var(--color-danger);
   border-color: var(--color-danger-border);
 }
 
-.badge-magenta {
+.badgeMagenta {
   background: var(--accent-secondary-bg);
   color: var(--ozon-magenta);
   border-color: var(--accent-secondary-border);
 }
 
-.badge-sm {
+.badgeSm {
   padding: 1px var(--space-1);
   font-size: var(--text-2xs);
 }
 
-.badge-lg {
+.badgeLg {
   padding: 3px var(--space-3);
   font-size: var(--text-sm);
 }
@@ -60,7 +60,7 @@
 .dot {
   width: 6px;
   height: 6px;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
   background: currentColor;
   flex-shrink: 0;
 }

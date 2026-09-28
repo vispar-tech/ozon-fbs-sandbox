@@ -23,12 +23,8 @@
   gap: var(--space-3);
 }
 
+/* Type/weight/colour/uppercase come from Eyebrow; the class owns the offset only. */
 .ratingValueTitle {
-  font-size: var(--text-sm);
-  font-weight: var(--weight-medium);
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
   margin: var(--space-3) 0 0 0;
 }
 
@@ -38,14 +34,3 @@
   gap: var(--space-4);
 }
 
-.pastValueHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-  margin-top: var(--space-3);
-}
-
-.pastValueHeader .ratingValueTitle {
-  margin: 0;
-}

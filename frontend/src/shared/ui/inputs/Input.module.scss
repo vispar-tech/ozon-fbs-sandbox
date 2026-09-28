@@ -23,17 +23,17 @@
   }
 }
 
-.input-error {
+.inputError {
   @include error-base;
 }
 
-.input-sm {
-  height: 32px;
+.inputSm {
+  height: var(--control-height-sm);
   font-size: var(--text-sm);
   padding: 0 var(--space-2);
 }
 
-.input-lg {
-  height: 40px;
+.inputLg {
+  height: var(--control-height-lg);
   font-size: var(--text-md);
 }

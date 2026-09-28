@@ -12,12 +12,10 @@
   min-width: 0;
 }
 
+/* Padding only: centering, gap and min-height come from CenteredStatus, and the
+   page class must not restate them or the winner would depend on CSS-module
+   source order. */
 .responseCenter {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-3);
   padding: var(--space-10) var(--space-4);
 }
 

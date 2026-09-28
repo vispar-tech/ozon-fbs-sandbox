@@ -100,6 +100,30 @@
   --weight-medium: 500;
   --weight-semibold: 600;
 
+  --tracking-wide: 0.08em;
+
+  /* Control Size Scale (Button, Input, Select, _field-base) */
+  --control-height-sm: 32px;
+  --control-height-md: 36px;
+  --control-height-lg: 40px;
+
+  /* Icon Size Scale (Icon size: xs/sm/md/lg) */
+  --icon-size-xs: 14px;
+  --icon-size-sm: 16px;
+  --icon-size-md: 20px;
+  --icon-size-lg: 24px;
+
+  /* Spinner Size Scale (Spinner size: sm/md/lg/xl) */
+  --spinner-size-sm: 16px;
+  --spinner-size-md: 24px;
+  --spinner-size-lg: 36px;
+  --spinner-size-xl: 48px;
+
+  /* Textarea Height Scale (size: sm/md/lg) */
+  --textarea-height-sm: 56px;
+  --textarea-height-md: 72px;
+  --textarea-height-lg: 88px;
+
   /* Transitions */
   --transition-fast: 120ms ease;
 

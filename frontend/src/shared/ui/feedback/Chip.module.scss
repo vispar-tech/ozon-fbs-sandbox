@@ -15,23 +15,23 @@
   transition: background var(--transition-fast), border-color var(--transition-fast);
 }
 
-.chip-interactive {
+.chipInteractive {
   cursor: pointer;
 }
 
-.chip-interactive:hover {
+.chipInteractive:hover {
   background: var(--accent-bg);
   border-color: var(--accent-border);
   color: var(--accent);
 }
 
-.chip-active {
+.chipActive {
   background: var(--accent);
   color: var(--accent-text);
   border-color: var(--accent);
 }
 
-.chip-active:hover {
+.chipActive:hover {
   background: var(--accent-hover);
   border-color: var(--accent-hover);
 }
@@ -42,7 +42,7 @@
   justify-content: center;
   width: 16px;
   height: 16px;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
   background: transparent;
   border: none;
   color: inherit;
@@ -59,6 +59,6 @@
   box-shadow: var(--focus-ring);
 }
 
-.chip-active .remove:hover {
+.chipActive .remove:hover {
   background: var(--color-chip-remove-active-hover);
 }
