@@ -10,7 +10,7 @@ import { ErrorBanner, Modal } from '@/shared/ui/feedback/index.js'
 
 const FIELDS = [
   { name: 'name', label: 'Название', placeholder: 'ООО Ромашка', required: true },
-  { name: 'demo', label: 'Заполнить демо-данными', type: 'toggle' as const }
+  { name: 'demo', label: 'Заполнить демо-данными', type: 'toggle' as const },
 ]
 
 const schema = buildFormSchema(FIELDS)
@@ -21,20 +21,27 @@ interface CreateCabinetModalProps {
   onCreated: () => void
 }
 
-export function CreateCabinetModal ({ open, onClose, onCreated }: CreateCabinetModalProps): JSX.Element {
+export function CreateCabinetModal({
+  open,
+  onClose,
+  onCreated,
+}: CreateCabinetModalProps): JSX.Element {
   const form = useAutoForm({
     fields: FIELDS,
     schema,
-    onSubmit: useCallback(async (data: Record<string, unknown>) => {
-      await createCabinet({
-        name: String(data.name),
-        demo: data.demo === true
-      })
-      onCreated()
-    }, [onCreated])
+    onSubmit: useCallback(
+      async (data: Record<string, unknown>) => {
+        await createCabinet({
+          name: String(data.name),
+          demo: data.demo === true,
+        })
+        onCreated()
+      },
+      [onCreated],
+    ),
   })
 
-  function handleClose (): void {
+  function handleClose(): void {
     form.reset()
     onClose()
   }
@@ -45,18 +52,28 @@ export function CreateCabinetModal ({ open, onClose, onCreated }: CreateCabinetM
       onClose={handleClose}
       title='Создать продавца'
       size='md'
-      footer={(
+      footer={
         <>
-          <Button type='button' variant='secondary' onClick={handleClose} disabled={form.isSubmitting}>
+          <Button
+            type='button'
+            variant='secondary'
+            onClick={handleClose}
+            disabled={form.isSubmitting}
+          >
             Отмена
           </Button>
           <Button type='submit' form='create-cabinet-form' loading={form.isSubmitting}>
             Создать
           </Button>
         </>
-      )}
+      }
     >
-      <form id='create-cabinet-form' onSubmit={form.handleSubmit} className={styles.form} noValidate>
+      <form
+        id='create-cabinet-form'
+        onSubmit={form.handleSubmit}
+        className={styles.form}
+        noValidate
+      >
         {FIELDS.map((field) => (
           <FieldRenderer
             key={field.name}

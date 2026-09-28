@@ -14,18 +14,18 @@ interface BadgeProps {
 type BadgeVariant = 'default' | 'blue' | 'green' | 'orange' | 'red' | 'magenta'
 type BadgeSize = 'sm' | 'md' | 'lg'
 
-export function Badge ({
+export function Badge({
   variant = 'default',
   size = 'md',
   children,
   dot = false,
-  className = ''
+  className = '',
 }: BadgeProps): JSX.Element {
   const classes = clsx(
     styles.badge,
     styles[`badge${variant.charAt(0).toUpperCase()}${variant.slice(1)}`],
     size !== 'md' && styles[`badge${size.charAt(0).toUpperCase()}${size.slice(1)}`],
-    className
+    className,
   )
 
   return (

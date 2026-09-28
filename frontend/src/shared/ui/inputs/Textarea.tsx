@@ -1,6 +1,12 @@
 import type { JSX, Ref, TextareaHTMLAttributes } from 'react'
 
-import { buildDescribedBy, buildFieldClasses, buildFieldId, FieldMessage, hasErrorMessage } from './field.js'
+import {
+  buildDescribedBy,
+  buildFieldClasses,
+  buildFieldId,
+  FieldMessage,
+  hasErrorMessage,
+} from './field.js'
 import fieldStyles from './field.module.scss'
 import styles from './Textarea.module.scss'
 
@@ -17,7 +23,7 @@ interface TextareaProps extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>
   ref?: Ref<HTMLTextAreaElement> | undefined
 }
 
-export function Textarea ({
+export function Textarea({
   size = 'md',
   label,
   required = false,
@@ -38,7 +44,9 @@ export function Textarea ({
     <div className={fieldStyles.inputWrap}>
       {label !== undefined && (
         <label
-          className={required ? `${fieldStyles.label} ${fieldStyles.labelRequired}` : fieldStyles.label}
+          className={
+            required ? `${fieldStyles.label} ${fieldStyles.labelRequired}` : fieldStyles.label
+          }
           htmlFor={textareaId}
         >
           {label}

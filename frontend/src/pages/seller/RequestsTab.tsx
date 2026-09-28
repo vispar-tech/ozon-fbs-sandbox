@@ -1,9 +1,7 @@
 import type { JSX } from 'react'
 import { useEffect, useRef, useState } from 'react'
 
-import { buildCurlCommand, buildFetchSnippet } from './RequestsSnippets.js'
-import styles from './RequestsTab.module.scss'
-import type { OperationsState, ResponseState } from './RequestsTabHelpers.js'
+import type { OperationsState, ResponseState } from './requestBuffer.js'
 import {
   buildRequestInput,
   isActiveResponseSending,
@@ -12,11 +10,18 @@ import {
   pickSelectedOperation,
   resolveHeaders,
   toErrorMessage,
-  validateJsonBody
-} from './RequestsTabHelpers.js'
-import { OperationPanel, OperationsRail, RequestPanel, ResponsePanel } from './RequestsTabSections.js'
+  validateJsonBody,
+} from './requestBuffer.js'
+import { buildCurlCommand, buildFetchSnippet } from './RequestsSnippets.js'
+import styles from './RequestsTab.module.scss'
+import {
+  OperationPanel,
+  OperationsRail,
+  RequestPanel,
+  ResponsePanel,
+} from './RequestsTabSections.js'
 
-import { getSellerOperations, sendSellerRequest } from '@/shared/api/seller.js'
+import { getSellerOperations, sendSellerRequest } from '@/shared/api/index.js'
 import type { CabinetSummary } from '@/shared/model/index.js'
 import { CenteredStatus } from '@/shared/ui/feedback/index.js'
 
@@ -24,7 +29,7 @@ interface RequestsTabProps {
   cabinet: CabinetSummary
 }
 
-export function RequestsTab ({ cabinet }: RequestsTabProps): JSX.Element {
+export function RequestsTab({ cabinet }: RequestsTabProps): JSX.Element {
   const [operationsState, setOperationsState] = useState<OperationsState>({ status: 'loading' })
   const [reloadKey, setReloadKey] = useState(0)
   const [selectedId, setSelectedId] = useState<string | null>(null)
@@ -67,7 +72,7 @@ export function RequestsTab ({ cabinet }: RequestsTabProps): JSX.Element {
   useEffect(() => {
     let cancelled = false
 
-    async function loadOperations (): Promise<void> {
+    async function loadOperations(): Promise<void> {
       setOperationsState({ status: 'loading' })
       try {
         const operations = await getSellerOperations()
@@ -82,7 +87,9 @@ export function RequestsTab ({ cabinet }: RequestsTabProps): JSX.Element {
     }
 
     void loadOperations()
-    return () => { cancelled = true }
+    return () => {
+      cancelled = true
+    }
   }, [reloadKey])
 
   const operations = operationsState.status === 'ready' ? operationsState.operations : []
@@ -105,43 +112,49 @@ export function RequestsTab ({ cabinet }: RequestsTabProps): JSX.Element {
   // scrolling is deliberately nearest-block so the viewport is not hijacked
   // when the response card is already visible.
   useEffect(() => {
-    const resultArrived = previousResponseStatus.current === 'sending'
-      && activeResponse !== null
-      && (activeResponse.status === 'done' || activeResponse.status === 'failed')
+    const resultArrived =
+      previousResponseStatus.current === 'sending' &&
+      activeResponse !== null &&
+      (activeResponse.status === 'done' || activeResponse.status === 'failed')
     previousResponseStatus.current = activeResponse?.status ?? null
     if (resultArrived) {
       responseRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
     }
   }, [activeResponse])
 
-  function handleBodyChange (value: string): void {
+  function handleBodyChange(value: string): void {
     if (selected === null) {
       return
     }
     setBodies((previous) => ({ ...previous, [selected.id]: value }))
   }
 
-  function handleHeaderChange (name: string, value: string): void {
+  function handleHeaderChange(name: string, value: string): void {
     setHeaderValues((previous) => ({ ...previous, [name]: value }))
   }
 
-  function handleRetry (): void {
+  function handleRetry(): void {
     setReloadKey((previous) => previous + 1)
   }
 
-  async function handleSend (): Promise<void> {
+  async function handleSend(): Promise<void> {
     setBodyTouched(true)
     if (requestInput === null || sending || jsonError !== null) {
       return
     }
-    const { operation: { id: opId } } = requestInput
+    const {
+      operation: { id: opId },
+    } = requestInput
     setResponses((previous) => ({ ...previous, [opId]: { status: 'sending' } }))
     try {
       const result = await sendSellerRequest(requestInput)
       setResponses((previous) => ({ ...previous, [opId]: { status: 'done', result } }))
       setResponseSeq((previous) => previous + 1)
     } catch (error) {
-      setResponses((previous) => ({ ...previous, [opId]: { status: 'failed', message: toErrorMessage(error) } }))
+      setResponses((previous) => ({
+        ...previous,
+        [opId]: { status: 'failed', message: toErrorMessage(error) },
+      }))
     }
   }
 
@@ -151,10 +164,15 @@ export function RequestsTab ({ cabinet }: RequestsTabProps): JSX.Element {
   // has just two cases of its own: still loading, or `selected === null`,
   // which covers failed and empty alike because the rail auto-selects the
   // first operation.
-  function renderWorkColumn (): JSX.Element | null {
+  function renderWorkColumn(): JSX.Element | null {
     if (operationsState.status === 'loading') {
       return (
-        <CenteredStatus status='loading' label='Загрузка методов' className={styles.responseCenter ?? ''} minHeight='auto' />
+        <CenteredStatus
+          status='loading'
+          label='Загрузка методов'
+          className={styles.responseCenter ?? ''}
+          minHeight='auto'
+        />
       )
     }
     if (selected === null) {
@@ -173,10 +191,14 @@ export function RequestsTab ({ cabinet }: RequestsTabProps): JSX.Element {
           curlCommand={requestInput === null ? '' : buildCurlCommand(requestInput)}
           fetchSnippet={requestInput === null ? '' : buildFetchSnippet(requestInput)}
           onBodyChange={handleBodyChange}
-          onBodyBlur={() => { setBodyTouched(true) }}
+          onBodyBlur={() => {
+            setBodyTouched(true)
+          }}
           onHeaderChange={handleHeaderChange}
           onIncludeApiKeyInCurlChange={setIncludeApiKeyInCurl}
-          onSend={() => { void handleSend() }}
+          onSend={() => {
+            void handleSend()
+          }}
         />
         <div ref={responseRef}>
           <ResponsePanel operation={selected} response={activeResponse} seq={responseSeq} />
@@ -194,9 +216,7 @@ export function RequestsTab ({ cabinet }: RequestsTabProps): JSX.Element {
         onSelect={setSelectedId}
         onRetry={handleRetry}
       />
-      <div className={styles.work}>
-        {renderWorkColumn()}
-      </div>
+      <div className={styles.work}>{renderWorkColumn()}</div>
     </div>
   )
 }

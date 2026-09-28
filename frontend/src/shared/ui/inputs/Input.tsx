@@ -1,6 +1,12 @@
 import type { InputHTMLAttributes, JSX, Ref } from 'react'
 
-import { buildDescribedBy, buildFieldClasses, buildFieldId, FieldMessage, hasErrorMessage } from './field.js'
+import {
+  buildDescribedBy,
+  buildFieldClasses,
+  buildFieldId,
+  FieldMessage,
+  hasErrorMessage,
+} from './field.js'
 import fieldStyles from './field.module.scss'
 import styles from './Input.module.scss'
 
@@ -15,7 +21,7 @@ interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>
   ref?: Ref<HTMLInputElement> | undefined
 }
 
-export function Input ({
+export function Input({
   size = 'md',
   label,
   required = false,
@@ -35,7 +41,9 @@ export function Input ({
     <div className={fieldStyles.inputWrap}>
       {label !== undefined && (
         <label
-          className={required ? `${fieldStyles.label} ${fieldStyles.labelRequired}` : fieldStyles.label}
+          className={
+            required ? `${fieldStyles.label} ${fieldStyles.labelRequired}` : fieldStyles.label
+          }
           htmlFor={inputId}
         >
           {label}

@@ -11,13 +11,15 @@ interface NavLinkProps {
   className?: string
 }
 
-export function NavLink ({ to, children, end = false, className = '' }: NavLinkProps): JSX.Element {
+export function NavLink({ to, children, end = false, className = '' }: NavLinkProps): JSX.Element {
   return (
     <RouterNavLink
       to={to}
       end={end}
       aria-current='page'
-      className={({ isActive }) => clsx(styles.navLink, isActive && styles.navLinkActive, className)}
+      className={({ isActive }) =>
+        clsx(styles.navLink, isActive && styles.navLinkActive, className)
+      }
     >
       {children}
     </RouterNavLink>

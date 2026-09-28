@@ -14,11 +14,11 @@ interface ErrorBannerProps {
   className?: string
 }
 
-export function ErrorBanner ({
+export function ErrorBanner({
   title = 'Ошибка',
   message,
   onDismiss,
-  className = ''
+  className = '',
 }: ErrorBannerProps): JSX.Element {
   return (
     <div className={clsx(styles.banner, className)} role='alert'>

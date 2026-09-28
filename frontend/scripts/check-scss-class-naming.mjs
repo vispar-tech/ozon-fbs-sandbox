@@ -16,21 +16,22 @@ const SKIP_DIRS = new Set(['node_modules', 'dist', 'generated', '.git'])
 // Класс с дефисом: точка не идёт после цифры (иначе это 0.5rem), имя начинается
 // с буквы, внутри есть хотя бы один дефис.
 const KEBAB_CLASS = /(?<![A-Za-z0-9_-])\.([a-z][A-Za-z0-9]*-[A-Za-z0-9-]*[A-Za-z0-9])/g
-// Sass-хвост: &-foo-bar склеивается с родителем в одно имя класса.
-const KEBAB_SUFFIX = /&-([a-z][A-Za-z0-9]*-[A-Za-z0-9-]*[A-Za-z0-9])/g
+// Sass-хвост: &-fooBar склеивается с родителем в .parent-fooBar, поэтому любой
+// такой хвост даёт имя с дефисом, даже когда в суффиксе дефисов нет. Ловим все.
+const KEBAB_SUFFIX = /&-[A-Za-z][A-Za-z0-9]*/g
 
 // Якорь $ в /$/ гарантирует единственное совпадение на строке, поэтому
 // replaceAll здесь не нужен и без флага g бросил бы TypeError.
 const LINE_COMMENT = /\/\/.*$/
 
-const stripComments = source =>
+const stripComments = (source) =>
   source
     .replaceAll(/\/\*[\s\S]*?\*\//g, '')
     .split('\n')
-    .map(line => line.replace(LINE_COMMENT, ''))
+    .map((line) => line.replace(LINE_COMMENT, ''))
     .join('\n')
 
-const scssFiles = dir => {
+const scssFiles = (dir) => {
   const found = []
   for (const entry of readdirSync(dir)) {
     if (SKIP_DIRS.has(entry)) continue

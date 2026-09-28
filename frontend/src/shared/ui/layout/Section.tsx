@@ -11,12 +11,12 @@ interface SectionProps {
   className?: string
 }
 
-export function Section ({
+export function Section({
   title,
   actions,
   flush = false,
   children,
-  className = ''
+  className = '',
 }: SectionProps): JSX.Element {
   const hasHeader = title !== undefined || actions !== undefined
 
@@ -28,9 +28,7 @@ export function Section ({
           {actions}
         </div>
       )}
-      <div className={clsx(styles.body, flush && styles.bodyFlush)}>
-        {children}
-      </div>
+      <div className={clsx(styles.body, flush && styles.bodyFlush)}>{children}</div>
     </div>
   )
 }

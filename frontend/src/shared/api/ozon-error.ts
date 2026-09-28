@@ -18,7 +18,7 @@ export interface OzonErrorEnvelope {
   details?: unknown[] | undefined
 }
 
-export function toOzonError (value: unknown): OzonError | null {
+export function toOzonError(value: unknown): OzonError | null {
   if (!isRecord(value)) {
     return null
   }

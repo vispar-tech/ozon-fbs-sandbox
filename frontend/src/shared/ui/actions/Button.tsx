@@ -3,8 +3,7 @@ import type { AnchorHTMLAttributes, ButtonHTMLAttributes, JSX, ReactNode, Ref } 
 import { Link, type To } from 'react-router-dom'
 
 import styles from './Button.module.scss'
-
-import { Spinner } from '@/shared/ui/feedback/Spinner.js'
+import { Spinner } from './Spinner.js'
 
 const btnSpinnerClass = styles.btnSpinner ?? ''
 
@@ -31,7 +30,7 @@ interface ButtonLinkProps {
   rest: Omit<ButtonProps, 'to' | 'className' | 'loading' | 'icon' | 'children'>
 }
 
-export function Button ({
+export function Button({
   variant = 'primary',
   size = 'md',
   loading = false,
@@ -46,7 +45,15 @@ export function Button ({
 }: ButtonProps): JSX.Element {
   const isIconOnly = icon !== undefined && children === undefined
   const hasIcon = icon !== undefined && children !== undefined
-  const classes = buildButtonClasses({ variant, size, loading, isIconOnly, hasIcon, iconSide, className })
+  const classes = buildButtonClasses({
+    variant,
+    size,
+    loading,
+    isIconOnly,
+    hasIcon,
+    iconSide,
+    className,
+  })
 
   if (to !== undefined) {
     return (
@@ -72,13 +79,21 @@ export function Button ({
   )
 }
 
-function ButtonLink ({ to, className, loading, icon, children, rest }: ButtonLinkProps): JSX.Element {
+function ButtonLink({
+  to,
+  className,
+  loading,
+  icon,
+  children,
+  rest,
+}: ButtonLinkProps): JSX.Element {
   return (
     <Link
       to={to}
       className={className}
       aria-busy={loading || undefined}
-      {...(rest as AnchorHTMLAttributes<HTMLAnchorElement>)} // eslint-disable-line @typescript-eslint/no-unsafe-type-assertion -- button/anchor event handlers are structurally compatible at runtime
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- button/anchor event handlers are structurally compatible at runtime
+      {...(rest as AnchorHTMLAttributes<HTMLAnchorElement>)}
     >
       {loading ? <Spinner size='sm' className={btnSpinnerClass} /> : icon}
       {children}
@@ -86,7 +101,7 @@ function ButtonLink ({ to, className, loading, icon, children, rest }: ButtonLin
   )
 }
 
-function buildButtonClasses (options: {
+function buildButtonClasses(options: {
   variant: ButtonVariant
   size: ButtonSize
   loading: boolean
@@ -102,6 +117,6 @@ function buildButtonClasses (options: {
     options.loading && styles.btnLoading,
     options.isIconOnly && styles.btnIcon,
     options.hasIcon && (options.iconSide === 'right' ? styles.btnIconRight : styles.btnHasIcon),
-    options.className
+    options.className,
   )
 }

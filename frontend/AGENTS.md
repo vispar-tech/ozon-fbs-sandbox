@@ -4,15 +4,15 @@ React/Vite-воркспейс монорепо `ozon-fbs-sandbox`. Стек, mak
 
 ## Команды (из `frontend/`)
 
-| Команда | Что делает |
-|---|---|
-| `pnpm dev` | Vite dev-сервер |
-| `pnpm build` | `tsc6 -b && vite build` → `dist/` |
-| `pnpm lint` | eslint + `scripts/check-scss-class-naming.mjs` (camelCase в scss) |
-| `pnpm typecheck` | `tsc6 -b`, проверка типов |
-| `pnpm install` | установка зависимостей; `prepare` ставит husky-хуки (`cd .. && husky frontend/.husky`) |
-| `pnpm preview` | локальный просмотр `dist/` |
-| `pnpm generate:types` | `openapi-typescript` из `../ozon-seller-api-schema/schemas/ozon-seller-api-openapi.json` → `src/shared/model/generated/ozon-api.ts` |
+| Команда                   | Что делает                                                                                                                                       |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `pnpm dev`                | Vite dev-сервер                                                                                                                                  |
+| `pnpm build`              | `tsc6 -b && vite build` → `dist/`                                                                                                                |
+| `pnpm lint`               | eslint + `prettier --check` + `scripts/check-scss-class-naming.mjs` (camelCase в scss)                                                           |
+| `pnpm typecheck`          | `tsc6 -b`, проверка типов                                                                                                                        |
+| `pnpm install`            | установка зависимостей; `prepare` ставит husky-хуки (`cd .. && husky frontend/.husky`)                                                           |
+| `pnpm preview`            | локальный просмотр `dist/`                                                                                                                       |
+| `pnpm generate:types`     | `openapi-typescript` из `../ozon-seller-api-schema/schemas/ozon-seller-api-openapi.json` → `src/shared/model/generated/ozon-api.ts`              |
 | `pnpm generate:api-types` | `openapi-typescript` из `../backend/.openapi.json` → `src/shared/model/generated/backend-api.ts`; дамп делает `make generate-api-types` из корня |
 
 ## Структура
@@ -22,8 +22,8 @@ React/Vite-воркспейс монорепо `ozon-fbs-sandbox`. Стек, mak
 - `src/pages/seller/RequestsTab.tsx` — ручной UI поверх OpenAPI-схемы, исключение из правила форм с обоснованием в коде. `RequestsSnippets.ts` (сниппеты cURL и fetch для буфера) лежит на странице, а не в `shared/api/`, потому что это presentation.
 - `src/shared/api/ozon-error.ts` — единственное объявление wire-формы ошибки Ozon (`OzonErrorEnvelope`, `toOzonError`); ту же форму валидирует `isErrorBody` в `cabinets.ts`. `seller.ts` не читает браузерных глобалов.
 - `src/shared/model/generated/backend-api.ts` — источник истины по API. Доменные файлы (`api.ts`, `cabinet.ts`, `errors.ts`, `fixtures.ts`) только алиасы `components['schemas'][...]` на него, поля руками не дублировать. `generated/ozon-api.ts` — эталон Ozon, в баррель не реэкспортируется. Правь модель в `backend/backend/db/models/`, а не сгенерированный `.ts`: каталог `generated/` перезаписывается на каждом коммите.
-- `src/shared/lib/` — `errorMessageOr(error, fallback)` показывает реальную причину транспортного сбоя вместо статического текста, `isRecord` единственный тайп-гард «объект или null» в приложении, `hasPastValue` предикат по опциональному и nullable `past_value`.
-- `src/shared/ui/` — дизайн-система по группам `inputs` / `feedback` / `data` / `actions` / `layout`, плюс `Portal.tsx` для portal в body. В каждой группе свой `index.ts`, в корне общий barrel. Вложенный раскрывающийся блок — `actions/Disclosure` (`expanded` / `onToggle` / `size`, внутри уже `aria-expanded` и шеврон), доля или прогресс — `data/Meter` (`value` / `max` / `label`, `role='progressbar'`).
+- `src/shared/lib/` — `errorMessageOr(error, fallback)` показывает реальную причину транспортного сбоя вместо статического текста, `isRecord` единственный тайп-гард «объект или null» в приложении. Предикат `hasPastValue` по опциональному и nullable `past_value` живёт не здесь, а в `src/pages/seller/sellerRating.ts` рядом с `emptyRating`: он кодирует доменное правило, а `shared` бизнес-логику не держит `[4-5]`.
+- `src/shared/ui/` — дизайн-система по группам `inputs` / `feedback` / `data` / `actions` / `layout`, в каждой группе свой `index.ts`, корневого barrel нет. Группы упорядочены по уровню зависимости: `actions` и `layout` не тянут другие группы, `inputs` и `feedback` тянут их, `data` тянет `actions` и `inputs`, поэтому portal в body лежит в `layout/Portal`, поиск в форме в `inputs/SearchInput`, а индикатор в `actions/Spinner`. Вложенный раскрывающийся блок — `actions/Disclosure` (`expanded` / `onToggle` / `size`, внутри уже `aria-expanded` и шеврон), доля или прогресс — `data/Meter` (`value` / `max` / `label`, `role='progressbar'`).
 - `vite.config.ts` — dev-прокси `/api`, `/static`, `^/v[0-9]+/` на `VITE_PROXY_TARGET` (дефолт `localhost:3000`, в dev-стеке Docker `backend:3000`), resolve.alias `@` → `src/`.
 - `nginx.conf` — prod: раздача `dist/`, прокси `/api/`, `/static/` и `~ ^/v[0-9]+/` на `backend:3000`, security-заголовки, gzip, кэш `/assets/` (immutable); общий `proxy-headers.conf` подключается через `include` в каждом прокси-location.
 

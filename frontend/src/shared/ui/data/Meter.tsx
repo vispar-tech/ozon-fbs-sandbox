@@ -12,7 +12,7 @@ interface MeterProps {
   className?: string
 }
 
-export function Meter ({ value, max, label, className = '' }: MeterProps): JSX.Element {
+export function Meter({ value, max, label, className = '' }: MeterProps): JSX.Element {
   const percent = max === 0 ? 0 : Math.round((value / max) * HUNDRED_PERCENT)
 
   return (

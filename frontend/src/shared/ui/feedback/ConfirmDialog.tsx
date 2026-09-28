@@ -3,7 +3,7 @@ import { type JSX, useEffect, useId, useRef } from 'react'
 import styles from './ConfirmDialog.module.scss'
 import { Modal } from './Modal.js'
 
-import { Button } from '@/shared/ui/actions/Button.js'
+import { Button } from '@/shared/ui/actions/index.js'
 
 interface ConfirmDialogProps {
   open: boolean
@@ -16,7 +16,7 @@ interface ConfirmDialogProps {
   pending?: boolean
 }
 
-export function ConfirmDialog ({
+export function ConfirmDialog({
   open,
   onClose,
   onConfirm,
@@ -24,7 +24,7 @@ export function ConfirmDialog ({
   description,
   confirmLabel = 'Подтвердить',
   cancelLabel = 'Отмена',
-  pending = false
+  pending = false,
 }: ConfirmDialogProps): JSX.Element {
   const confirmRef = useRef<HTMLButtonElement>(null)
   const descriptionId = useId()
@@ -48,7 +48,7 @@ export function ConfirmDialog ({
       title={title}
       describedBy={descriptionId}
       size='sm'
-      footer={(
+      footer={
         <>
           <Button variant='secondary' onClick={onClose} disabled={pending}>
             {cancelLabel}
@@ -57,9 +57,13 @@ export function ConfirmDialog ({
             {confirmLabel}
           </Button>
         </>
-      )}
+      }
     >
-      {description !== undefined && <p id={descriptionId} className={styles.description}>{description}</p>}
+      {description !== undefined && (
+        <p id={descriptionId} className={styles.description}>
+          {description}
+        </p>
+      )}
     </Modal>
   )
 }

@@ -1,4 +1,8 @@
-import type { SellerOperation, SellerRequestInput, SellerRequestResult } from '@/shared/api/seller.js'
+import type {
+  SellerOperation,
+  SellerRequestInput,
+  SellerRequestResult,
+} from '@/shared/api/index.js'
 import type { CabinetSummary } from '@/shared/model/index.js'
 
 const API_KEY_HEADER = 'Api-Key'
@@ -19,11 +23,12 @@ export type ResponseState =
   | { status: 'failed'; message: string }
   | { status: 'done'; result: SellerRequestResult }
 
-export type JsonParseResult =
-  | { ok: true; value: unknown }
-  | { ok: false; error: string }
+export type JsonParseResult = { ok: true; value: unknown } | { ok: false; error: string }
 
-export function pickSelectedOperation (operations: SellerOperation[], selectedId: string | null): SellerOperation | null {
+export function pickSelectedOperation(
+  operations: SellerOperation[],
+  selectedId: string | null,
+): SellerOperation | null {
   const first = operations[0] ?? null
   if (selectedId === null) {
     return first
@@ -31,28 +36,34 @@ export function pickSelectedOperation (operations: SellerOperation[], selectedId
   return operations.find((operation) => operation.id === selectedId) ?? first
 }
 
-export function pickBody (operation: SellerOperation | null, bodies: Record<string, string>): string {
+export function pickBody(
+  operation: SellerOperation | null,
+  bodies: Record<string, string>,
+): string {
   if (operation === null) {
     return ''
   }
   return bodies[operation.id] ?? operation.bodyTemplate
 }
 
-export function pickActiveResponse (responses: Record<string, ResponseState>, operation: SellerOperation | null): ResponseState | null {
+export function pickActiveResponse(
+  responses: Record<string, ResponseState>,
+  operation: SellerOperation | null,
+): ResponseState | null {
   if (operation === null) {
     return null
   }
   return responses[operation.id] ?? null
 }
 
-export function isActiveResponseSending (response: ResponseState | null): boolean {
+export function isActiveResponseSending(response: ResponseState | null): boolean {
   return response !== null && response.status === 'sending'
 }
 
-export function resolveHeaders (
+export function resolveHeaders(
   operation: SellerOperation | null,
   edited: Record<string, string>,
-  cabinet: CabinetSummary
+  cabinet: CabinetSummary,
 ): Record<string, string> {
   if (operation === null) {
     return {}
@@ -64,7 +75,7 @@ export function resolveHeaders (
   return headers
 }
 
-function prefillHeader (name: string, cabinet: CabinetSummary): string {
+function prefillHeader(name: string, cabinet: CabinetSummary): string {
   if (name === CLIENT_ID_HEADER) {
     return String(cabinet.client_id)
   }
@@ -74,11 +85,11 @@ function prefillHeader (name: string, cabinet: CabinetSummary): string {
   return ''
 }
 
-export function buildRequestInput (
+export function buildRequestInput(
   operation: SellerOperation | null,
   body: string,
   headers: Record<string, string>,
-  includeApiKeyInSnippets: boolean
+  includeApiKeyInSnippets: boolean,
 ): SellerRequestInput | null {
   if (operation === null) {
     return null
@@ -86,7 +97,7 @@ export function buildRequestInput (
   return { operation, body, headers, includeApiKeyInSnippets }
 }
 
-export function validateJsonBody (text: string): string | null {
+export function validateJsonBody(text: string): string | null {
   if (text.trim() === '') {
     return EMPTY_BODY_MESSAGE
   }
@@ -97,7 +108,7 @@ export function validateJsonBody (text: string): string | null {
   return `Некорректный JSON: ${parsed.error}`
 }
 
-export function tryParseJson (text: string): JsonParseResult {
+export function tryParseJson(text: string): JsonParseResult {
   try {
     const value: unknown = JSON.parse(text)
     return { ok: true, value }
@@ -106,14 +117,14 @@ export function tryParseJson (text: string): JsonParseResult {
   }
 }
 
-export function formatBody (raw: string, parsed: JsonParseResult): string {
+export function formatBody(raw: string, parsed: JsonParseResult): string {
   if (!parsed.ok) {
     return raw
   }
   return JSON.stringify(parsed.value, null, JSON_INDENT_SPACES)
 }
 
-export function statusVariant (status: number): 'green' | 'orange' | 'red' {
+export function statusVariant(status: number): 'green' | 'orange' | 'red' {
   if (status >= HTTP_CLIENT_ERROR_MIN) {
     return 'red'
   }
@@ -123,7 +134,7 @@ export function statusVariant (status: number): 'green' | 'orange' | 'red' {
   return 'green'
 }
 
-export function toErrorMessage (error: unknown): string {
+export function toErrorMessage(error: unknown): string {
   if (error instanceof Error) {
     return error.message
   }

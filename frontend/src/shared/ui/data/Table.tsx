@@ -6,7 +6,7 @@ import styles from './Table.module.scss'
 
 import { formatCellValue } from '@/shared/lib/index.js'
 import { Icon } from '@/shared/ui/actions/index.js'
-import { Checkbox } from '@/shared/ui/inputs/Checkbox.js'
+import { Checkbox } from '@/shared/ui/inputs/index.js'
 
 type SortDirection = 'asc' | 'desc' | 'none'
 
@@ -48,7 +48,7 @@ interface TableProps<T> {
   onSortChange?: (key: string | null, direction: SortDirection) => void
 }
 
-export function Table<T> ({
+export function Table<T>({
   columns,
   data,
   rowKey,
@@ -60,7 +60,7 @@ export function Table<T> ({
   selectable = false,
   onSelectionChange,
   rowDisabled,
-  onSortChange
+  onSortChange,
 }: TableProps<T>): JSX.Element {
   const [sort, setSort] = useState<SortState>({ key: null, direction: 'none' })
   const [selectedKeys, setSelectedKeys] = useState<Set<string>>(() => new Set())
@@ -75,33 +75,33 @@ export function Table<T> ({
       return data
     }
     return [...data].sort((a, b) => {
-      const result = compareValues((a as Record<string, unknown>)[sortKey], (b as Record<string, unknown>)[sortKey]) // eslint-disable-line @typescript-eslint/no-unsafe-type-assertion -- generic row access requires index-signature cast
+      const result = compareValues(cellValue(a, sortKey), cellValue(b, sortKey))
       return sort.direction === 'asc' ? result : -result
     })
   }, [data, sort, columns])
 
   const selectableKeys = useMemo(
     () => getSelectableKeys(data, rowKey, rowDisabled),
-    [data, rowKey, rowDisabled]
+    [data, rowKey, rowDisabled],
   )
 
   const { length: selectedCount } = selectableKeys.filter((key) => selectedKeys.has(key))
   const allSelected = selectableKeys.length > 0 && selectedCount === selectableKeys.length
   const someSelected = selectedCount > 0 && !allSelected
 
-  function handleSort (colKey: string): void {
+  function handleSort(colKey: string): void {
     const next = getNextSort(sort, colKey)
     setSort(next)
     onSortChange?.(next.key, next.direction)
   }
 
-  function handleRowToggle (key: string): void {
+  function handleRowToggle(key: string): void {
     const next = toggleKey(selectedKeys, key)
     setSelectedKeys(next)
     onSelectionChange?.(Array.from(next))
   }
 
-  function handleSelectAll (): void {
+  function handleSelectAll(): void {
     const next = toggleAll(selectedKeys, selectableKeys, allSelected)
     setSelectedKeys(next)
     onSelectionChange?.(Array.from(next))
@@ -152,7 +152,7 @@ interface TableHeaderProps<T> {
   onSort: (key: string) => void
 }
 
-function TableHeader<T> ({
+function TableHeader<T>({
   columns,
   selectable,
   sort,
@@ -160,7 +160,7 @@ function TableHeader<T> ({
   someSelected,
   selectableCount,
   onSelectAll,
-  onSort
+  onSort,
 }: TableHeaderProps<T>): JSX.Element {
   return (
     <thead>
@@ -178,15 +178,22 @@ function TableHeader<T> ({
         )}
         {columns.map((col) => {
           const isSorted = sort.key === col.key
-          const ariaSort = col.sortable === true
-            ? (isSorted ? (sort.direction === 'asc' ? 'ascending' : 'descending') : 'none')
-            : undefined
+          const ariaSort =
+            col.sortable === true
+              ? isSorted
+                ? sort.direction === 'asc'
+                  ? 'ascending'
+                  : 'descending'
+                : 'none'
+              : undefined
           return (
             <th
               key={col.key}
-              style={col.width === undefined && col.align === undefined
-                ? undefined
-                : { width: col.width, textAlign: col.align }}
+              style={
+                col.width === undefined && col.align === undefined
+                  ? undefined
+                  : { width: col.width, textAlign: col.align }
+              }
               aria-sort={ariaSort}
             >
               <HeaderTitle col={col} isSorted={isSorted} sort={sort} onSort={onSort} />
@@ -205,18 +212,19 @@ interface HeaderTitleProps<T> {
   onSort: (key: string) => void
 }
 
-function HeaderTitle<T> ({
-  col,
-  isSorted,
-  sort,
-  onSort
-}: HeaderTitleProps<T>): ReactNode {
+function HeaderTitle<T>({ col, isSorted, sort, onSort }: HeaderTitleProps<T>): ReactNode {
   if (col.sortable !== true) {
     return col.renderTitle === undefined ? col.title : col.renderTitle({ sortIcon: undefined })
   }
   const sortIcon = <SortIcon direction={isSorted ? sort.direction : 'none'} />
   return (
-    <button type='button' className={styles.sortButton} onClick={() => { onSort(col.key) }}>
+    <button
+      type='button'
+      className={styles.sortButton}
+      onClick={() => {
+        onSort(col.key)
+      }}
+    >
       {col.renderTitle === undefined ? col.title : col.renderTitle({ sortIcon })}
       {col.renderTitle === undefined && sortIcon}
     </button>
@@ -235,7 +243,7 @@ interface TableBodyProps<T> {
   onRowToggle: (key: string) => void
 }
 
-function TableBody<T> ({
+function TableBody<T>({
   columns,
   data,
   selectable,
@@ -244,7 +252,7 @@ function TableBody<T> ({
   rowDisabled,
   emptyMessage,
   colSpan,
-  onRowToggle
+  onRowToggle,
 }: TableBodyProps<T>): JSX.Element {
   if (data.length === 0) {
     return (
@@ -270,16 +278,20 @@ function TableBody<T> ({
                   checked={selectedKeys.has(key)}
                   disabled={isDisabled}
                   ariaLabel={`Select row ${key}`}
-                  onChange={() => { onRowToggle(key) }}
+                  onChange={() => {
+                    onRowToggle(key)
+                  }}
                 />
               </td>
             )}
             {columns.map((col) => (
-              <td key={col.key} style={col.align === undefined ? undefined : { textAlign: col.align }}>
+              <td
+                key={col.key}
+                style={col.align === undefined ? undefined : { textAlign: col.align }}
+              >
                 {col.renderCell === undefined
-                  ? formatCellValue((row as Record<string, unknown>)[col.key]) // eslint-disable-line @typescript-eslint/no-unsafe-type-assertion -- generic row access requires index-signature cast
-                  : col.renderCell((row as Record<string, unknown>)[col.key], row, idx) // eslint-disable-line @typescript-eslint/no-unsafe-type-assertion -- generic row access requires index-signature cast
-                }
+                  ? formatCellValue(cellValue(row, col.key))
+                  : col.renderCell(cellValue(row, col.key), row, idx)}
               </td>
             ))}
           </tr>
@@ -289,7 +301,7 @@ function TableBody<T> ({
   )
 }
 
-function getNextSort (current: SortState, colKey: string): SortState {
+function getNextSort(current: SortState, colKey: string): SortState {
   if (current.key !== colKey) {
     return { key: colKey, direction: 'asc' }
   }
@@ -302,7 +314,15 @@ function getNextSort (current: SortState, colKey: string): SortState {
   return { key: colKey, direction: 'asc' }
 }
 
-function compareValues (a: unknown, b: unknown): number {
+function cellValue(row: unknown, key: string): unknown {
+  if (typeof row !== 'object' || row === null) {
+    return undefined
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- generic row access requires index-signature cast
+  return (row as Record<string, unknown>)[key]
+}
+
+function compareValues(a: unknown, b: unknown): number {
   if (typeof a === 'number' && typeof b === 'number') {
     return a - b
   }
@@ -314,7 +334,7 @@ function compareValues (a: unknown, b: unknown): number {
   return aStr.localeCompare(bStr)
 }
 
-function toComparableString (value: unknown): string | null {
+function toComparableString(value: unknown): string | null {
   if (value === null || value === undefined || typeof value === 'object') return null
   if (typeof value === 'number') return String(value)
   if (typeof value === 'boolean') return String(value)
@@ -322,10 +342,10 @@ function toComparableString (value: unknown): string | null {
   return null
 }
 
-function getSelectableKeys<T> (
+function getSelectableKeys<T>(
   data: T[],
   rowKey: (row: T, index: number) => string,
-  rowDisabled: ((row: T) => boolean) | undefined
+  rowDisabled: ((row: T) => boolean) | undefined,
 ): string[] {
   return data
     .map((row, index) => ({ key: rowKey(row, index), disabled: rowDisabled?.(row) ?? false }))
@@ -333,7 +353,7 @@ function getSelectableKeys<T> (
     .map((entry) => entry.key)
 }
 
-function toggleKey (keys: Set<string>, key: string): Set<string> {
+function toggleKey(keys: Set<string>, key: string): Set<string> {
   const next = new Set(keys)
   if (next.has(key)) {
     next.delete(key)
@@ -343,7 +363,7 @@ function toggleKey (keys: Set<string>, key: string): Set<string> {
   return next
 }
 
-function toggleAll (keys: Set<string>, selectableKeys: string[], allSelected: boolean): Set<string> {
+function toggleAll(keys: Set<string>, selectableKeys: string[], allSelected: boolean): Set<string> {
   const next = new Set(keys)
   if (allSelected) {
     next.clear()
@@ -355,19 +375,22 @@ function toggleAll (keys: Set<string>, selectableKeys: string[], allSelected: bo
   return next
 }
 
-function buildTableClasses (compact: boolean, sticky: boolean): string {
+function buildTableClasses(compact: boolean, sticky: boolean): string {
   return clsx(styles.table, compact && styles.tableCompact, sticky && styles.tableSticky)
 }
 
-function buildWrapClasses (sticky: boolean, className: string): string {
+function buildWrapClasses(sticky: boolean, className: string): string {
   return clsx(styles.wrap, sticky && styles.wrapSticky, className)
 }
 
-function buildWrapStyle (sticky: boolean, maxHeight: string | undefined): { maxHeight: string } | undefined {
+function buildWrapStyle(
+  sticky: boolean,
+  maxHeight: string | undefined,
+): { maxHeight: string } | undefined {
   return sticky && maxHeight !== undefined ? { maxHeight } : undefined
 }
 
-function SortIcon ({ direction }: { direction: SortDirection }): JSX.Element {
+function SortIcon({ direction }: { direction: SortDirection }): JSX.Element {
   const Chevron = direction === 'desc' ? ChevronDownIcon : ChevronUpIcon
   return (
     <Icon
@@ -377,7 +400,7 @@ function SortIcon ({ direction }: { direction: SortDirection }): JSX.Element {
         styles.sortIcon,
         direction === 'asc' && styles.sortIconAsc,
         direction === 'desc' && styles.sortIconDesc,
-        direction === 'none' && styles.sortIconNone
+        direction === 'none' && styles.sortIconNone,
       )}
     />
   )

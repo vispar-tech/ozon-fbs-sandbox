@@ -1,0 +1,9 @@
+/dist
+/node_modules
+/coverage
+
+# Перегенерируется pre-commit хуком на каждом коммите, форматировать нельзя.
+src/shared/model/generated
+
+# pnpm перезаписывает lockfile при каждой установке: форматирование даёт вечный churn.
+pnpm-lock.yaml

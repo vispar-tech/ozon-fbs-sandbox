@@ -9,9 +9,7 @@ import type { CabinetSummary } from '@/shared/model/index.js'
 import { Button } from '@/shared/ui/actions/index.js'
 import { ErrorBanner, Modal } from '@/shared/ui/feedback/index.js'
 
-const FIELDS = [
-  { name: 'name', label: 'Название', required: true }
-]
+const FIELDS = [{ name: 'name', label: 'Название', required: true }]
 
 const schema = buildFormSchema(FIELDS)
 
@@ -22,18 +20,26 @@ interface EditCabinetModalProps {
   onUpdated: () => void
 }
 
-export function EditCabinetModal ({ open, onClose, cabinet, onUpdated }: EditCabinetModalProps): JSX.Element {
+export function EditCabinetModal({
+  open,
+  onClose,
+  cabinet,
+  onUpdated,
+}: EditCabinetModalProps): JSX.Element {
   const form = useAutoForm({
     fields: FIELDS,
     schema,
     initialValues: { name: cabinet.name },
-    onSubmit: useCallback(async (data: Record<string, unknown>) => {
-      await updateCabinet(cabinet.client_id, { name: String(data.name) })
-      onUpdated()
-    }, [cabinet, onUpdated])
+    onSubmit: useCallback(
+      async (data: Record<string, unknown>) => {
+        await updateCabinet(cabinet.client_id, { name: String(data.name) })
+        onUpdated()
+      },
+      [cabinet, onUpdated],
+    ),
   })
 
-  function handleClose (): void {
+  function handleClose(): void {
     form.reset()
     onClose()
   }
@@ -44,16 +50,21 @@ export function EditCabinetModal ({ open, onClose, cabinet, onUpdated }: EditCab
       onClose={handleClose}
       title='Редактировать продавца'
       size='md'
-      footer={(
+      footer={
         <>
-          <Button type='button' variant='secondary' onClick={handleClose} disabled={form.isSubmitting}>
+          <Button
+            type='button'
+            variant='secondary'
+            onClick={handleClose}
+            disabled={form.isSubmitting}
+          >
             Отмена
           </Button>
           <Button type='submit' form='edit-cabinet-form' loading={form.isSubmitting}>
             Сохранить
           </Button>
         </>
-      )}
+      }
     >
       <form id='edit-cabinet-form' onSubmit={form.handleSubmit} className={styles.form} noValidate>
         {FIELDS.map((field) => (

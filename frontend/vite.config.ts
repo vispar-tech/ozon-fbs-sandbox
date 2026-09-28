@@ -10,20 +10,20 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
-    }
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
   },
   css: {
     modules: {
-      localsConvention: 'camelCaseOnly'
-    }
+      localsConvention: 'camelCaseOnly',
+    },
   },
   server: {
     proxy: {
       '/api': proxyTarget,
       '/static': proxyTarget,
       // a leading ^ makes the key a RegExp; keep it in sync with the nginx rule
-      '^/v[0-9]+/': proxyTarget
-    }
-  }
+      '^/v[0-9]+/': proxyTarget,
+    },
+  },
 })

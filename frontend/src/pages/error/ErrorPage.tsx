@@ -11,26 +11,24 @@ interface ErrorPageProps {
   onRetry?: () => void
 }
 
-export function ErrorPage ({ variant, onRetry }: ErrorPageProps): JSX.Element {
+export function ErrorPage({ variant, onRetry }: ErrorPageProps): JSX.Element {
   return (
     <div className={styles.page}>
-      {variant === 'error'
-        ? (
-          <EmptyState
-            icon={<Icon icon={ExclamationTriangleIcon} size='lg' />}
-            title='Что-то пошло не так'
-            description='Произошла непредвиденная ошибка. Попробуйте ещё раз.'
-            action={onRetry === undefined ? undefined : <Button onClick={onRetry}>Повторить</Button>}
-          />
-        )
-        : (
-          <EmptyState
-            icon={<Icon icon={QuestionMarkCircleIcon} size='lg' />}
-            title='Страница не найдена'
-            description='По этому адресу ничего нет. Проверьте ссылку или вернитесь на главную.'
-            action={<Button to='/'>На главную</Button>}
-          />
-        )}
+      {variant === 'error' ? (
+        <EmptyState
+          icon={<Icon icon={ExclamationTriangleIcon} size='lg' />}
+          title='Что-то пошло не так'
+          description='Произошла непредвиденная ошибка. Попробуйте ещё раз.'
+          action={onRetry === undefined ? undefined : <Button onClick={onRetry}>Повторить</Button>}
+        />
+      ) : (
+        <EmptyState
+          icon={<Icon icon={QuestionMarkCircleIcon} size='lg' />}
+          title='Страница не найдена'
+          description='По этому адресу ничего нет. Проверьте ссылку или вернитесь на главную.'
+          action={<Button to='/'>На главную</Button>}
+        />
+      )}
     </div>
   )
 }

@@ -13,12 +13,12 @@ interface ErrorBoundaryState {
 export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   state: ErrorBoundaryState = { error: null }
 
-  static getDerivedStateFromError (error: Error): ErrorBoundaryState {
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
     return { error }
   }
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this -- componentDidCatch is a required React lifecycle hook
-  componentDidCatch (error: Error, info: ErrorInfo): void {
+  componentDidCatch(error: Error, info: ErrorInfo): void {
     console.error('Unhandled render error:', error, info.componentStack) // eslint-disable-line no-console -- intentional error logging
   }
 
@@ -26,7 +26,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     this.setState({ error: null })
   }
 
-  render (): ReactNode {
+  render(): ReactNode {
     if (this.state.error !== null) {
       return <ErrorPage variant='error' onRetry={this.handleReset} />
     }

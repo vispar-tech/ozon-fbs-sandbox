@@ -12,11 +12,11 @@ interface TooltipProps {
   className?: string
 }
 
-export function Tooltip ({
+export function Tooltip({
   content,
   children,
   position = 'top',
-  className = ''
+  className = '',
 }: TooltipProps): JSX.Element {
   const [visible, setVisible] = useState(false)
   const tooltipId = useId()
@@ -24,17 +24,28 @@ export function Tooltip ({
   return (
     <span
       className={clsx(styles.wrapper, className)}
-      onMouseEnter={() => { setVisible(true) }}
-      onMouseLeave={() => { setVisible(false) }}
-      onFocus={() => { setVisible(true) }}
-      onBlur={() => { setVisible(false) }}
+      onMouseEnter={() => {
+        setVisible(true)
+      }}
+      onMouseLeave={() => {
+        setVisible(false)
+      }}
+      onFocus={() => {
+        setVisible(true)
+      }}
+      onBlur={() => {
+        setVisible(false)
+      }}
     >
       {withDescribedBy(children, visible ? tooltipId : undefined)}
       {visible && (
         <span
           id={tooltipId}
           role='tooltip'
-          className={clsx(styles.tooltip, styles[`tooltip${position.charAt(0).toUpperCase()}${position.slice(1)}`])}
+          className={clsx(
+            styles.tooltip,
+            styles[`tooltip${position.charAt(0).toUpperCase()}${position.slice(1)}`],
+          )}
         >
           {content}
         </span>
@@ -43,11 +54,13 @@ export function Tooltip ({
   )
 }
 
-function withDescribedBy (node: ReactNode, describedBy: string | undefined): ReactNode {
+function withDescribedBy(node: ReactNode, describedBy: string | undefined): ReactNode {
   if (!isValidElement<{ 'aria-describedby'?: string | undefined }>(node)) {
     return node
   }
-  const { props: { 'aria-describedby': existing } } = node
+  const {
+    props: { 'aria-describedby': existing },
+  } = node
   if (describedBy === undefined) {
     return cloneElement(node, { 'aria-describedby': existing })
   }

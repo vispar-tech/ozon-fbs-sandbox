@@ -1,8 +1,8 @@
 import { type RefObject, useEffect, useRef } from 'react'
 
-export function useOutsideClick (
+export function useOutsideClick(
   ref: RefObject<HTMLElement | null>,
-  handler: (event: MouseEvent | TouchEvent) => void
+  handler: (event: MouseEvent | TouchEvent) => void,
 ): void {
   const handlerRef = useRef(handler)
   handlerRef.current = handler

@@ -12,19 +12,17 @@ interface SkeletonProps {
   className?: string
 }
 
-export function Skeleton ({
+export function Skeleton({
   variant = 'text',
   width,
   height,
-  className = ''
+  className = '',
 }: SkeletonProps): JSX.Element {
   const classes = clsx(
     styles.skeleton,
     styles[`skeleton${variant.charAt(0).toUpperCase()}${variant.slice(1)}`],
-    className
+    className,
   )
 
-  return (
-    <span className={classes} style={{ width, height }} aria-hidden='true' />
-  )
+  return <span className={classes} style={{ width, height }} aria-hidden='true' />
 }

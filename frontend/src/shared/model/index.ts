@@ -5,7 +5,7 @@ export type {
   OzonCoverageGroup,
   OzonCoverageMethod,
   OzonCoverageSource,
-  OzonCoverageTag
+  OzonCoverageTag,
 } from './coverage.js'
 export type { OzonError } from './errors.js'
 export type {
@@ -20,5 +20,5 @@ export type {
   SellerInfo,
   Subscription,
   SubscriptionType,
-  TaxSystem
+  TaxSystem,
 } from './fixtures.js'

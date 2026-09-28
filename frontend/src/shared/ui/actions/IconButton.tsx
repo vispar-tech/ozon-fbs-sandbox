@@ -9,7 +9,7 @@ interface IconButtonProps extends Omit<ButtonProps, 'children' | 'icon'> {
   ref?: Ref<HTMLButtonElement>
 }
 
-export function IconButton ({
+export function IconButton({
   icon,
   ariaLabel,
   variant = 'ghost',
@@ -32,7 +32,7 @@ export function IconButton ({
   )
 }
 
-function mapButtonSizeToIconSize (buttonSize: ButtonSize): IconSize {
+function mapButtonSizeToIconSize(buttonSize: ButtonSize): IconSize {
   if (buttonSize === 'lg') return 'lg'
   if (buttonSize === 'sm') return 'sm'
   return 'md'

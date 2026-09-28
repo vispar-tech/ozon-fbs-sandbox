@@ -7,7 +7,7 @@ import styles from './Modal.module.scss'
 import { useFocusTrap } from '@/shared/hooks/useFocusTrap.js'
 import { useScrollLock } from '@/shared/hooks/useScrollLock.js'
 import { IconButton } from '@/shared/ui/actions/index.js'
-import { Portal } from '@/shared/ui/Portal.js'
+import { Portal } from '@/shared/ui/layout/index.js'
 
 const NEGATIVE_TAB_INDEX = -1
 
@@ -29,7 +29,7 @@ interface ModalProps {
   className?: string
 }
 
-export function Modal ({
+export function Modal({
   open,
   onClose,
   title,
@@ -37,7 +37,7 @@ export function Modal ({
   children,
   footer,
   size = 'md',
-  className = ''
+  className = '',
 }: ModalProps): JSX.Element | null {
   const titleId = useId()
   const dialogRef = useRef<HTMLDivElement>(null)
@@ -82,7 +82,8 @@ export function Modal ({
     if (!open) {
       return
     }
-    const previouslyFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null
+    const previouslyFocused =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null
     dialogRef.current?.focus()
     return () => {
       previouslyFocused?.focus()
@@ -96,7 +97,7 @@ export function Modal ({
   const dialogClasses = clsx(
     styles.modal,
     styles[`modal${size.charAt(0).toUpperCase()}${size.slice(1)}`],
-    className
+    className,
   )
 
   return (
@@ -110,10 +111,14 @@ export function Modal ({
           aria-describedby={describedBy}
           tabIndex={NEGATIVE_TAB_INDEX}
           className={dialogClasses}
-          onClick={(event) => { event.stopPropagation() }}
+          onClick={(event) => {
+            event.stopPropagation()
+          }}
         >
           <header className={styles.header}>
-            <h2 id={titleId} className={styles.title}>{title}</h2>
+            <h2 id={titleId} className={styles.title}>
+              {title}
+            </h2>
             <IconButton icon={XMarkIcon} ariaLabel='Закрыть' onClick={onClose} />
           </header>
           <div className={styles.body}>{children}</div>

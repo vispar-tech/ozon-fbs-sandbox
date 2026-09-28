@@ -15,16 +15,17 @@ interface PaginationProps {
   onPageSizeChange?: (pageSize: number) => void
 }
 
-export function Pagination ({
+export function Pagination({
   page,
   pageSize,
   onPageChange,
   total,
   pageSizeOptions,
-  onPageSizeChange
+  onPageSizeChange,
 }: PaginationProps): JSX.Element {
   const totalPages = total === undefined ? undefined : Math.max(1, Math.ceil(total / pageSize))
-  const displayPage = totalPages === undefined ? Math.max(page, 1) : Math.min(Math.max(page, 1), totalPages)
+  const displayPage =
+    totalPages === undefined ? Math.max(page, 1) : Math.min(Math.max(page, 1), totalPages)
 
   return (
     <nav className={styles.pagination} aria-label='Пагинация'>
@@ -33,33 +34,40 @@ export function Pagination ({
         className={styles.pageButton}
         disabled={displayPage <= 1}
         aria-label='Предыдущая страница'
-        onClick={() => { onPageChange(displayPage - 1) }}
+        onClick={() => {
+          onPageChange(displayPage - 1)
+        }}
       >
         <Icon icon={ChevronLeftIcon} size='sm' />
       </button>
-      {totalPages !== undefined && getPageItems(displayPage, totalPages).map((item, index) => (
-        item === 'ellipsis'
-          ? (
-            <span key={`ellipsis-${index}`} className={styles.ellipsis}>…</span>
-            )
-          : (
+      {totalPages !== undefined &&
+        getPageItems(displayPage, totalPages).map((item, index) =>
+          item === 'ellipsis' ? (
+            <span key={`ellipsis-${index}`} className={styles.ellipsis}>
+              …
+            </span>
+          ) : (
             <button
               key={item}
               type='button'
               className={clsx(styles.pageButton, item === displayPage && styles.pageButtonActive)}
               aria-current={item === displayPage ? 'page' : undefined}
-              onClick={() => { onPageChange(item) }}
+              onClick={() => {
+                onPageChange(item)
+              }}
             >
               {item}
             </button>
-            )
-      ))}
+          ),
+        )}
       <button
         type='button'
         className={styles.pageButton}
         disabled={totalPages !== undefined && displayPage >= totalPages}
         aria-label='Следующая страница'
-        onClick={() => { onPageChange(displayPage + 1) }}
+        onClick={() => {
+          onPageChange(displayPage + 1)
+        }}
       >
         <Icon icon={ChevronRightIcon} size='sm' />
       </button>
@@ -68,10 +76,14 @@ export function Pagination ({
           className={styles.pageSizeSelect}
           aria-label='Размер страницы'
           value={pageSize}
-          onChange={(event) => { onPageSizeChange(Number(event.target.value)) }}
+          onChange={(event) => {
+            onPageSizeChange(Number(event.target.value))
+          }}
         >
           {pageSizeOptions.map((size) => (
-            <option key={size} value={size}>{size} / page</option>
+            <option key={size} value={size}>
+              {size} / page
+            </option>
           ))}
         </select>
       )}
@@ -79,9 +91,11 @@ export function Pagination ({
   )
 }
 
-function getPageItems (page: number, totalPages: number): Array<number | 'ellipsis'> {
+function getPageItems(page: number, totalPages: number): Array<number | 'ellipsis'> {
   const pages = new Set<number>([1, totalPages, page - 1, page, page + 1])
-  const sorted = Array.from(pages).filter((p) => p >= 1 && p <= totalPages).sort((a, b) => a - b)
+  const sorted = Array.from(pages)
+    .filter((p) => p >= 1 && p <= totalPages)
+    .sort((a, b) => a - b)
   const items: Array<number | 'ellipsis'> = []
   let previous = 0
   for (const p of sorted) {

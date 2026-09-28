@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-export function useScrollLock (active: boolean): void {
+export function useScrollLock(active: boolean): void {
   useEffect(() => {
     if (!active) {
       return

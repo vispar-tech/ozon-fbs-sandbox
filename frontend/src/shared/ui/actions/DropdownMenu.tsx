@@ -1,12 +1,22 @@
 import { autoUpdate, useFloating } from '@floating-ui/react-dom'
 import clsx from 'clsx'
-import { cloneElement, isValidElement, type JSX, type KeyboardEvent, type MouseEvent as ReactMouseEvent, type ReactNode, useEffect, useRef, useState } from 'react'
+import {
+  cloneElement,
+  isValidElement,
+  type JSX,
+  type KeyboardEvent,
+  type MouseEvent as ReactMouseEvent,
+  type ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 
 import styles from './DropdownMenu.module.scss'
 
 import { useOutsideClick } from '@/shared/hooks/useOutsideClick.js'
 import { mergeRefs } from '@/shared/lib/refs.js'
-import { Portal } from '@/shared/ui/Portal.js'
+import { Portal } from '@/shared/ui/layout/index.js'
 
 const NO_ACTIVE_ITEM_INDEX = -1
 
@@ -23,7 +33,7 @@ export interface DropdownMenuProps {
   onOpenChange?: (open: boolean) => void
 }
 
-export function DropdownMenu ({ trigger, items, onOpenChange }: DropdownMenuProps): JSX.Element {
+export function DropdownMenu({ trigger, items, onOpenChange }: DropdownMenuProps): JSX.Element {
   const [open, setOpen] = useState(false)
   const triggerRef = useRef<HTMLSpanElement | null>(null)
   const panelRef = useRef<HTMLDivElement | null>(null)
@@ -33,24 +43,25 @@ export function DropdownMenu ({ trigger, items, onOpenChange }: DropdownMenuProp
     placement: 'bottom-start',
     strategy: 'fixed',
     transform: false,
-    whileElementsMounted: autoUpdate
+    whileElementsMounted: autoUpdate,
   })
   const openRef = useRef(open)
   const onOpenChangeRef = useRef(onOpenChange)
   openRef.current = open
   onOpenChangeRef.current = onOpenChange
 
-  function updateOpen (next: boolean): void {
+  function updateOpen(next: boolean): void {
     setOpen(next)
     onOpenChangeRef.current?.(next)
   }
 
-  function handleTriggerClick (): void {
+  function handleTriggerClick(): void {
     if (open) {
       updateOpen(false)
       return
     }
-    previouslyFocusedRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
+    previouslyFocusedRef.current =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null
     updateOpen(true)
   }
 
@@ -86,16 +97,21 @@ export function DropdownMenu ({ trigger, items, onOpenChange }: DropdownMenuProp
     if (!open) {
       return
     }
-    const firstItem = panelRef.current?.querySelector<HTMLButtonElement>('[role="menuitem"]:not(:disabled)')
+    const firstItem = panelRef.current?.querySelector<HTMLButtonElement>(
+      '[role="menuitem"]:not(:disabled)',
+    )
     firstItem?.focus()
   }, [open])
 
-  function handlePanelKeyDown (event: KeyboardEvent<HTMLDivElement>): void {
+  function handlePanelKeyDown(event: KeyboardEvent<HTMLDivElement>): void {
     if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') {
       return
     }
     event.preventDefault()
-    const items = Array.from(panelRef.current?.querySelectorAll<HTMLButtonElement>('[role="menuitem"]:not(:disabled)') ?? [])
+    const items = Array.from(
+      panelRef.current?.querySelectorAll<HTMLButtonElement>('[role="menuitem"]:not(:disabled)') ??
+        [],
+    )
     if (items.length === 0) {
       return
     }
@@ -104,13 +120,14 @@ export function DropdownMenu ({ trigger, items, onOpenChange }: DropdownMenuProp
       focusItem(items[event.key === 'ArrowDown' ? 0 : items.length - 1])
       return
     }
-    const nextIndex = event.key === 'ArrowDown'
-      ? (currentIndex + 1) % items.length
-      : (currentIndex - 1 + items.length) % items.length
+    const nextIndex =
+      event.key === 'ArrowDown'
+        ? (currentIndex + 1) % items.length
+        : (currentIndex - 1 + items.length) % items.length
     focusItem(items[nextIndex])
   }
 
-  function handleItemSelect (item: DropdownMenuItem): void {
+  function handleItemSelect(item: DropdownMenuItem): void {
     item.onSelect?.()
     updateOpen(false)
     previouslyFocusedRef.current?.focus()
@@ -135,7 +152,9 @@ export function DropdownMenu ({ trigger, items, onOpenChange }: DropdownMenuProp
                 role='menuitem'
                 className={clsx(styles.item, item.danger === true && styles.itemDanger)}
                 disabled={item.disabled}
-                onClick={() => { handleItemSelect(item) }}
+                onClick={() => {
+                  handleItemSelect(item)
+                }}
               >
                 {item.label}
               </button>
@@ -147,33 +166,46 @@ export function DropdownMenu ({ trigger, items, onOpenChange }: DropdownMenuProp
   )
 }
 
-function getActiveItemIndex (items: HTMLButtonElement[]): number {
+function getActiveItemIndex(items: HTMLButtonElement[]): number {
   const { activeElement } = document
-  return activeElement instanceof HTMLButtonElement ? items.indexOf(activeElement) : NO_ACTIVE_ITEM_INDEX
+  return activeElement instanceof HTMLButtonElement
+    ? items.indexOf(activeElement)
+    : NO_ACTIVE_ITEM_INDEX
 }
 
-function focusItem (item: HTMLButtonElement | undefined): void {
+function focusItem(item: HTMLButtonElement | undefined): void {
   if (item === undefined) {
     return
   }
   item.focus()
 }
 
-function renderTrigger (trigger: ReactNode, open: boolean, onClick: () => void): ReactNode {
-  if (isValidElement<{ onClick?: (event: ReactMouseEvent) => void; 'aria-haspopup'?: 'menu'; 'aria-expanded'?: boolean }>(trigger)) {
+function renderTrigger(trigger: ReactNode, open: boolean, onClick: () => void): ReactNode {
+  if (
+    isValidElement<{
+      onClick?: (event: ReactMouseEvent) => void
+      'aria-haspopup'?: 'menu'
+      'aria-expanded'?: boolean
+    }>(trigger)
+  ) {
     return cloneElement(trigger, {
       onClick: (event: ReactMouseEvent) => {
         trigger.props.onClick?.(event)
         onClick()
       },
       'aria-haspopup': 'menu',
-      'aria-expanded': open
+      'aria-expanded': open,
     })
   }
   return (
-    <button type='button' className={styles.trigger} onClick={onClick} aria-haspopup='menu' aria-expanded={open}>
+    <button
+      type='button'
+      className={styles.trigger}
+      onClick={onClick}
+      aria-haspopup='menu'
+      aria-expanded={open}
+    >
       {trigger}
     </button>
   )
 }
-

@@ -16,21 +16,21 @@ interface ChipProps {
   className?: string
 }
 
-export function Chip ({
+export function Chip({
   active = false,
   removable = false,
   removeLabel = 'Удалить',
   onRemove,
   onClick,
   children,
-  className = ''
+  className = '',
 }: ChipProps): JSX.Element {
   const { isInteractive, role, tabIndex } = resolveChipInteraction(onClick)
   const classes = clsx(
     styles.chip,
     isInteractive && styles.chipInteractive,
     active && styles.chipActive,
-    className
+    className,
   )
 
   return (
@@ -65,11 +65,15 @@ export function Chip ({
   )
 }
 
-function resolveChipInteraction (onClick?: () => void): { isInteractive: boolean; role: 'button' | undefined; tabIndex: 0 | undefined } {
+function resolveChipInteraction(onClick?: () => void): {
+  isInteractive: boolean
+  role: 'button' | undefined
+  tabIndex: 0 | undefined
+} {
   const isInteractive = onClick !== undefined
   return {
     isInteractive,
     role: isInteractive ? 'button' : undefined,
-    tabIndex: isInteractive ? 0 : undefined
+    tabIndex: isInteractive ? 0 : undefined,
   }
 }

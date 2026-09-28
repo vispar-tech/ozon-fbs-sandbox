@@ -14,10 +14,15 @@ interface DisclosureProps {
   children: ReactNode
 }
 
-export function Disclosure ({ expanded, onToggle, size = 'md', children }: DisclosureProps): JSX.Element {
+export function Disclosure({
+  expanded,
+  onToggle,
+  size = 'md',
+  children,
+}: DisclosureProps): JSX.Element {
   const classes = clsx(
     styles.disclosure,
-    styles[`disclosure${size.charAt(0).toUpperCase()}${size.slice(1)}`]
+    styles[`disclosure${size.charAt(0).toUpperCase()}${size.slice(1)}`],
   )
 
   return (

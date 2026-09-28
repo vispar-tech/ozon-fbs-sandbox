@@ -11,7 +11,7 @@ import { SellerDetails } from '@/pages/seller/index.js'
 import { Showcase } from '@/pages/showcase/index.js'
 import { ToastProvider } from '@/shared/ui/feedback/index.js'
 
-function App (): JSX.Element {
+function App(): JSX.Element {
   return (
     <BrowserRouter>
       <ErrorBoundary>
