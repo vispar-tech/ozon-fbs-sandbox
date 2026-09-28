@@ -78,3 +78,6 @@ async def seller_auth(
     if cabinet is None or str(cabinet.api_key) != api_key or cabinet.is_expired():
         raise OzonHttpError(OZON_STATUS_NOT_FOUND, INVALID_KEY_ERROR)
     return cabinet
+
+
+SellerCabinetDep = Annotated[Cabinet, Depends(seller_auth)]

@@ -1,15 +1,13 @@
 import { MoonIcon, SunIcon } from '@heroicons/react/24/outline'
-import clsx from 'clsx'
 import type { JSX } from 'react'
-import { Link, Outlet, useLocation } from 'react-router-dom'
+import { Link, Outlet } from 'react-router-dom'
 
 import styles from './AppShell.module.scss'
 
 import { useTheme } from '@/shared/hooks/index.js'
-import { Button, Icon } from '@/shared/ui/actions/index.js'
+import { IconButton, NavLink } from '@/shared/ui/actions/index.js'
 
 export function AppShell (): JSX.Element {
-  const location = useLocation()
   const { theme, toggleTheme } = useTheme()
 
   return (
@@ -17,21 +15,20 @@ export function AppShell (): JSX.Element {
       <header className={styles.header}>
         <Link to='/' className={styles.logo}>OZON Sandbox</Link>
         <nav className={styles.nav} aria-label='Основная навигация'>
-          <Link to='/' className={clsx(styles.navLink, location.pathname === '/' && styles.navLinkActive)}>
+          <NavLink to='/' end>
             Продавцы
-          </Link>
+          </NavLink>
+          <NavLink to='/coverage' end>
+            Покрытие API
+          </NavLink>
           <a href='/api/docs' target='_blank' rel='noreferrer' className={styles.navLink}>Swagger</a>
         </nav>
-        <Button
-          variant='ghost'
+        <IconButton
           className={styles.themeToggle}
-          aria-label={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'}
+          ariaLabel={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'}
           aria-pressed={theme === 'dark'}
           onClick={toggleTheme}
-          icon={theme === 'light'
-            ? <Icon icon={MoonIcon} size='md' />
-            : <Icon icon={SunIcon} size='md' />
-          }
+          icon={theme === 'light' ? MoonIcon : SunIcon}
         />
       </header>
       <main className={styles.main}><Outlet /></main>

@@ -22,8 +22,8 @@ export function ConfirmDialog ({
   onConfirm,
   title,
   description,
-  confirmLabel = 'Confirm',
-  cancelLabel = 'Cancel',
+  confirmLabel = 'Подтвердить',
+  cancelLabel = 'Отмена',
   pending = false
 }: ConfirmDialogProps): JSX.Element {
   const confirmRef = useRef<HTMLButtonElement>(null)
@@ -42,18 +42,24 @@ export function ConfirmDialog ({
   }
 
   return (
-    <Modal open={open} onClose={handleClose} title={title} describedBy={descriptionId} size='sm'>
-      <div className={styles.content}>
-        {description !== undefined && <p id={descriptionId} className={styles.description}>{description}</p>}
-        <div className={styles.actions}>
+    <Modal
+      open={open}
+      onClose={handleClose}
+      title={title}
+      describedBy={descriptionId}
+      size='sm'
+      footer={(
+        <>
           <Button variant='secondary' onClick={onClose} disabled={pending}>
             {cancelLabel}
           </Button>
           <Button ref={confirmRef} variant='danger' onClick={onConfirm} loading={pending}>
             {confirmLabel}
           </Button>
-        </div>
-      </div>
+        </>
+      )}
+    >
+      {description !== undefined && <p id={descriptionId} className={styles.description}>{description}</p>}
     </Modal>
   )
 }

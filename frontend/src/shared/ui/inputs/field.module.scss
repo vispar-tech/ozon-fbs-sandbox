@@ -1,4 +1,4 @@
-.input-wrap {
+.inputWrap {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
@@ -10,18 +10,18 @@
   color: var(--text-h);
 }
 
-.label-required::after {
+.labelRequired::after {
   content: ' *';
   color: var(--color-danger);
 }
 
-.error-text {
+.errorText {
   font-size: var(--text-xs);
   color: var(--color-danger);
   line-height: var(--leading-snug);
 }
 
-.hint-text {
+.hintText {
   font-size: var(--text-xs);
   color: var(--text-secondary);
   line-height: var(--leading-snug);

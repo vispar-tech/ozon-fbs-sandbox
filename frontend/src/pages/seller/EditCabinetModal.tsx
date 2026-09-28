@@ -39,8 +39,23 @@ export function EditCabinetModal ({ open, onClose, cabinet, onUpdated }: EditCab
   }
 
   return (
-    <Modal open={open} onClose={handleClose} title='Редактировать продавца' size='md'>
-      <form onSubmit={form.handleSubmit} className={styles.form} noValidate>
+    <Modal
+      open={open}
+      onClose={handleClose}
+      title='Редактировать продавца'
+      size='md'
+      footer={(
+        <>
+          <Button type='button' variant='secondary' onClick={handleClose} disabled={form.isSubmitting}>
+            Отмена
+          </Button>
+          <Button type='submit' form='edit-cabinet-form' loading={form.isSubmitting}>
+            Сохранить
+          </Button>
+        </>
+      )}
+    >
+      <form id='edit-cabinet-form' onSubmit={form.handleSubmit} className={styles.form} noValidate>
         {FIELDS.map((field) => (
           <FieldRenderer
             key={field.name}
@@ -53,14 +68,6 @@ export function EditCabinetModal ({ open, onClose, cabinet, onUpdated }: EditCab
         {form.submitError !== null && (
           <ErrorBanner title='Не удалось сохранить' message={form.submitError} />
         )}
-        <div className={styles.actions}>
-          <Button type='button' variant='secondary' onClick={handleClose} disabled={form.isSubmitting}>
-            Отмена
-          </Button>
-          <Button type='submit' loading={form.isSubmitting}>
-            Сохранить
-          </Button>
-        </div>
       </form>
     </Modal>
   )

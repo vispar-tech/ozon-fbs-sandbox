@@ -15,7 +15,7 @@ interface ErrorBannerProps {
 }
 
 export function ErrorBanner ({
-  title = 'Error',
+  title = 'Ошибка',
   message,
   onDismiss,
   className = ''

@@ -287,12 +287,18 @@ export function ModalSection (): JSX.Element {
       <div className={styles.row}>
         <Button onClick={() => { setOpen(true) }}>Open Modal</Button>
       </div>
-      <Modal open={open} onClose={() => { setOpen(false) }} title='Edit Cabinet'>
+      <Modal
+        open={open}
+        onClose={() => { setOpen(false) }}
+        title='Edit Cabinet'
+        footer={(
+          <>
+            <Button onClick={() => { setOpen(false) }}>Save Changes</Button>
+            <Button variant='secondary' onClick={() => { setOpen(false) }}>Cancel</Button>
+          </>
+        )}
+      >
         <p>Focus is trapped inside the dialog. Escape or clicking the backdrop closes it, and focus returns to the trigger button.</p>
-        <div className={styles.formActions}>
-          <Button onClick={() => { setOpen(false) }}>Save Changes</Button>
-          <Button variant='secondary' onClick={() => { setOpen(false) }}>Cancel</Button>
-        </div>
       </Modal>
     </section>
   )
@@ -323,6 +329,7 @@ export function ConfirmDialogSection (): JSX.Element {
         title='Delete cabinet?'
         description='This action cannot be undone. The cabinet and its fixtures will be removed from the sandbox.'
         confirmLabel='Delete'
+        cancelLabel='Cancel'
         pending={pending}
       />
     </section>

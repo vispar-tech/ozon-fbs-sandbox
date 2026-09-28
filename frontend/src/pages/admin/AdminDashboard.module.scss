@@ -4,15 +4,6 @@
   gap: var(--space-4);
 }
 
-.centered {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-4);
-  min-height: 400px;
-}
-
 .toolbar {
   display: flex;
   align-items: center;
@@ -22,12 +13,6 @@
 
 .title {
   font-size: var(--text-2xl);
-  font-weight: var(--weight-semibold);
-  color: var(--text-h);
-}
-
-.retryButton {
-  margin-top: var(--space-3);
 }
 
 .muted {

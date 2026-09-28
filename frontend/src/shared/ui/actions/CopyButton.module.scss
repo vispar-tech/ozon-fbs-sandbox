@@ -1,11 +1,11 @@
-.copy-button {
+.copyButton {
   min-width: 88px;
 }
 
-.copy-button.copied {
+.copyButton.copied {
   color: var(--color-success);
 }
 
-.copy-button.error {
+.copyButton.error {
   color: var(--color-danger);
 }

@@ -1,5 +1,6 @@
 export { Alert } from './Alert.js'
 export { Badge } from './Badge.js'
+export { CenteredStatus } from './CenteredStatus.js'
 export { Chip } from './Chip.js'
 export { ConfirmDialog } from './ConfirmDialog.js'
 export { EmptyState } from './EmptyState.js'

@@ -1,18 +1,14 @@
 """Seller API routes (Ozon contract, mounted at the app root)."""
 
-from typing import Annotated
+from fastapi import APIRouter
 
-from fastapi import APIRouter, Depends
-
-from backend.db.models.cabinet import Cabinet
 from backend.db.models.roles import Roles
 from backend.db.models.seller_info import SellerInfo
-from backend.web.api.seller.deps import seller_auth
+from backend.web.api.seller.deps import SellerCabinetDep
+from backend.web.enums import RouterTag
 from backend.web.errors import SELLER_ERROR_RESPONSES
 
-SellerCabinetDep = Annotated[Cabinet, Depends(seller_auth)]
-
-router = APIRouter(prefix="/v1", tags=["seller"])
+router = APIRouter(prefix="/v1", tags=[RouterTag.SELLER])
 
 
 @router.post("/seller/info", responses=SELLER_ERROR_RESPONSES)

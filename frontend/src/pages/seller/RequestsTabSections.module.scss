@@ -1,34 +1,5 @@
 .rail {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-3);
   min-width: 0;
-}
-
-.railHead {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-2);
-  padding: 0 var(--space-2) var(--space-1);
-}
-
-.railTitle {
-  font-size: var(--text-xs);
-  font-weight: var(--weight-medium);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-}
-
-.railCount {
-  font-family: var(--mono);
-  font-size: var(--text-xs);
-  color: var(--text-secondary);
 }
 
 .railList {
@@ -47,7 +18,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1px;
+  gap: var(--space-1);
   width: 100%;
   text-align: left;
   padding: var(--space-2) var(--space-3);
@@ -73,18 +44,6 @@
   .railItemTitle {
     color: var(--accent);
   }
-
-  .railMethod {
-    color: var(--accent);
-  }
-}
-
-.railMethod {
-  font-family: var(--mono);
-  font-size: var(--text-2xs);
-  font-weight: var(--weight-semibold);
-  letter-spacing: 0.1em;
-  color: var(--text-secondary);
 }
 
 .railItemTitle {
@@ -109,17 +68,11 @@
 
 .requestLine {
   display: inline-flex;
-  align-items: baseline;
+  align-items: center;
   gap: var(--space-2);
   min-width: 0;
   font-family: var(--mono);
   font-size: var(--text-sm);
-}
-
-.methodTag {
-  font-weight: var(--weight-semibold);
-  letter-spacing: 0.06em;
-  color: var(--accent);
 }
 
 .requestPath {
@@ -157,14 +110,6 @@
   border-top: 1px dashed var(--border);
 }
 
-.responsesLabel {
-  font-size: var(--text-xs);
-  font-weight: var(--weight-medium);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-}
-
 .responseList {
   display: flex;
   flex-direction: column;
@@ -181,26 +126,17 @@
   min-width: 0;
 }
 
-.responseSummary {
+.muted {
   font-size: var(--text-xs);
   color: var(--text-secondary);
   overflow-wrap: anywhere;
-}
-
-.blockLabel {
-  display: block;
-  font-size: var(--text-xs);
-  font-weight: var(--weight-medium);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  margin-bottom: var(--space-2);
 }
 
 .headerGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: var(--space-3);
+  margin-top: var(--space-2);
   margin-bottom: var(--space-2);
 }
 
@@ -234,7 +170,7 @@
   gap: var(--space-3);
 }
 
-.copyOptions {
+.rowWrap {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -262,36 +198,16 @@
   gap: var(--space-2);
 }
 
-.fetchHint {
-  font-size: var(--text-xs);
-  color: var(--text-secondary);
-}
-
-.statusRow {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-}
-
-.duration {
+.note {
   font-family: var(--mono);
   font-size: var(--text-xs);
   color: var(--text-secondary);
 }
 
-.requestEcho {
-  font-family: var(--mono);
-  font-size: var(--text-xs);
-  color: var(--text-secondary);
-}
-
+/* Padding only: centering, gap and min-height come from CenteredStatus, and the
+   page class must not restate them or the winner would depend on CSS-module
+   source order. */
 .responseCenter {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-3);
   padding: var(--space-10) var(--space-4);
 }
 
@@ -299,10 +215,6 @@
   font-family: var(--mono);
   font-size: var(--text-sm);
   color: var(--text-secondary);
-}
-
-.responseIn {
-  animation: response-in var(--transition-fast) ease-out;
 }
 
 .errorPanel {
@@ -328,12 +240,6 @@
   }
 }
 
-.errorPanelDetails {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
 .rawBlock {
   margin-top: var(--space-4);
 }
@@ -344,14 +250,6 @@
   justify-content: space-between;
   gap: var(--space-2);
   margin-bottom: var(--space-2);
-}
-
-.rawLabel {
-  font-size: var(--text-xs);
-  font-weight: var(--weight-medium);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
 }
 
 .raw {
@@ -373,18 +271,6 @@
 .rawSecondary {
   max-height: 260px;
   color: var(--text);
-}
-
-@keyframes response-in {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 @media (max-width: 900px) {

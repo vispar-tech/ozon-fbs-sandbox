@@ -34,9 +34,9 @@ FastAPI-бэкенд песочницы `ozon-fbs-sandbox`. Стек, make-ко�
 ### Seller-контур (`/v1/*`, `/v3/*`, `/v4/*`)
 
 - Монтируется на корень приложения через `root_router` (`api/router.py`), вне префикса `/api`, пути повторяют Ozon Seller API.
-- Роуты: `POST /v1/seller/info`, `POST /v1/roles` (`api/seller/routes.py`), `POST /v3/product/list`, `POST /v4/product/info/attributes` (`api/seller/products.py`); все требуют аутентификацию.
+- Роуты: `POST /v1/seller/info`, `POST /v1/roles` (`api/seller/views.py`), `POST /v3/product/list`, `POST /v4/product/info/attributes` (`api/products/views.py`); все требуют аутентификацию.
 - Карточки товаров отдают типизированные JSON-фикстуры целиком; фильтры, пагинация и сортировка в упрощённой версии игнорируются.
-- Аутентификация — `seller_auth` (`api/seller/deps.py`), четырёхшаговый Ozon-порядок по заголовкам `Client-Id`/`Api-Key`/`Content-Type`: отсутствующие заголовки → 401/16; не-JSON Content-Type → 400/4; невалидный Client-Id → 400/3; неизвестный клиент, неверный ключ или просроченные роли → 404/5.
+- Аутентификация — `seller_auth` (`api/seller/deps.py`), там же единственный `SellerCabinetDep`, который импортируют `seller/views.py` и `products/views.py`, четырёхшаговый Ozon-порядок по заголовкам `Client-Id`/`Api-Key`/`Content-Type`: отсутствующие заголовки → 401/16; не-JSON Content-Type → 400/4; невалидный Client-Id → 400/3; неизвестный клиент, неверный ключ или просроченные роли → 404/5.
 - `POST /v1/seller/info` и `POST /v1/roles` из `/api/docs` **не вызываются**: в собственной схеме бэкенда (`/api/openapi.json`, она же в `ozon-seller-api-schema`) у них нет `requestBody`, а Swagger UI не отправляет `Content-Type: application/json` без объявленного body. Эти роуты вызывают через curl или вкладку «Запросы» на `/seller/:id`; `/v3/*` и `/v4/*` из UI вызываются.
 - Единый формат ошибок — `{code, message, details}` (`OzonError` в `web/errors.py`, parity с googlerpcStatus) для обоих контуров, глобальные хендлеры маппят HTTPException, validation и unhandled в Ozon-тело. Коды 3, 4, 5, 16 перечислены выше по аутентификации, остальные это 6 (conflict) и 13 (internal).
 
@@ -44,6 +44,7 @@ FastAPI-бэкенд песочницы `ozon-fbs-sandbox`. Стек, make-ко�
 
 - `backend/__main__.py` — точка входа: uvicorn при `reload`, иначе gunicorn.
 - `backend/web/` — `application.py` (`get_app`, префикс `/api`, `docs_url=None`), `lifespan.py`, `middleware.py` (`RequireJsonMiddleware`: не-JSON Content-Type на write-роутах `/api/cabinets` → 400/3), `errors.py` (схема Ozon-ошибки, константы gRPC-кодов, глобальные exception-хендлеры), `api/router.py` (собирает роутеры, новые регистрируются здесь).
+- `backend/web/api/` — модуль с роутами называется `views.py`, без исключений. У каждого самостоятельного контура ответственности своя подпакета с `__init__.py`, экспортирующим `router`: `seller/` (аккаунтный контур, `deps.py` плюс `views.py`, префикс `/v1` в роутере), `products/` (карточки товаров, префикса нет — версии `/v3` и `/v4` лежат в путях роутов), `cabinets/`, `coverage/` — соседи на одном уровне. Раскладка идёт по зоне ответственности, а не по версии API: версия живёт в пути (`prefix` или сегменты `/v3`, `/v4`), папку под версию не заводим.
 - `backend/db/` — `meta.py` с `naming_convention` для всех типов констрейнтов; `models/` (`DomainModel` с `extra="forbid"`, лишние ключи отвергаются, а не тихо пишутся в БД); `types/dates.py` — два алиаса дат, `IsoMsZ` (non-null) и `IsoMsZNullable` (nullable; на проводе `None`↔`''`, в БД `''`↔`NULL`), оба несут `WithJsonSchema`, иначе pydantic расщепляет их на `-Input`/`-Output` в OpenAPI; `types/pydantic_type.py` — JSONB-колонка на Pydantic-модели; `migrations/` (alembic, `alembic.ini` соседняя с пакетом, каталог выключен из ruff).
 - `backend/schemas/` — web-DTO, `dates.py` реэкспортирует даты из `db/types`.
 - `scripts/dump_openapi.py` — `PYTHONPATH=.` страхует на случай, когда корневой пакет не встал, например при `poetry install --no-root`. В CI не вызывается, типы лежат в git как `backend-api.ts`.
@@ -52,3 +53,11 @@ FastAPI-бэкенд песочницы `ozon-fbs-sandbox`. Стек, make-ко�
 ## Границы
 
 - Без RabbitMQ и очередей.
+
+## Покрытие Ozon Seller API
+
+- `GET /api/ozon-coverage` отдаёт дерево `x-tagGroups` → теги → методы и счётчики по ним. Без аутентификации, как остальной админ-контур: своей авторизации у приложения нет, а `seller_auth` эмулирует заголовки Ozon (`Client-Id`/`Api-Key`) и к этому контуру отношения не имеет.
+- Источник — закоммиченное зеркало схемы `raw.githubusercontent.com/vispar-tech/ozon-seller-api-schema/main/schemas/ozon-seller-api-openapi.json`, его ежедневно обновляет cron того репозитория. `docs.ozon.ru/api/seller/swagger.json` напрямую не читается: за Qrator отдаёт 307 на страницу челленджа, поэтому и живёт зеркало.
+- Флаг `implemented` ставится сверкой `(path, method)` с роутами, реально зарегистрированными в приложении. Список реализованных вести вручную нельзя: добавление seller-роута обязано сразу отражаться в отчёте, иначе он врёт.
+- Схему держит `OzonSchemaService` (`services/ozon_schema.py`): синглтон на classmethod-ах, `_cache` и `_lock` объявлены на самом классе, поэтому на процесс приходится ровно один кэш, а не по одному на инстанс. TTL 5 минут, разбор JSON уходит в `asyncio.to_thread`, чтобы не блокировать event loop. Отказ зеркала не гасится: исключение доходит до общего хендлера, клиент получает 500/13, фронт показывает ретрай.
+- `httpx` перенесён в `[project].dependencies` ради этого эндпоинта: `Dockerfile` ставит `poetry install --only main`, dev-группа в образ не попадает, и без переноса фича падала бы с `ImportError` только в проде.

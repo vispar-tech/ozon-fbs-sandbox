@@ -12,6 +12,7 @@ from backend.schemas.cabinets import (
 )
 from backend.services.cabinets import CabinetService
 from backend.web.api.deps import get_cabinet_service
+from backend.web.enums import RouterTag
 from backend.web.errors import (
     ADMIN_ERROR_RESPONSES,
     INVALID_REQUEST_BODY_ERROR,
@@ -21,7 +22,7 @@ from backend.web.errors import (
 
 CabinetServiceDep = Annotated[CabinetService, Depends(get_cabinet_service)]
 
-router = APIRouter(prefix="/cabinets", tags=["cabinets"])
+router = APIRouter(prefix="/cabinets", tags=[RouterTag.CABINETS])
 
 
 @router.get("", response_model=list[CabinetSummary], responses=ADMIN_ERROR_RESPONSES)

@@ -15,18 +15,18 @@
   animation: skeleton-shimmer 1.6s ease-in-out infinite;
 }
 
-.skeleton-text {
+.skeletonText {
   width: 100%;
   height: var(--text-base);
 }
 
-.skeleton-circle {
+.skeletonCircle {
   width: var(--space-8);
   height: var(--space-8);
   border-radius: var(--radius-full);
 }
 
-.skeleton-rect {
+.skeletonRect {
   width: 100%;
   height: 80px;
 }

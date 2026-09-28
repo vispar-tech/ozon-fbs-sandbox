@@ -4,11 +4,11 @@
   overflow: hidden;
 }
 
-.card-flat {
+.cardFlat {
   border: 1px solid var(--border);
 }
 
-.card-raised {
+.cardRaised {
   box-shadow: var(--shadow-sm);
 }
 
@@ -32,7 +32,7 @@
   padding: var(--space-4);
 }
 
-.body-none {
+.bodyNone {
   padding: 0;
 }
 

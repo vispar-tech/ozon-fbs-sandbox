@@ -1,3 +1,6 @@
+export { DataField } from './DataField.js'
+export { Eyebrow } from './Eyebrow.js'
+export { Meter } from './Meter.js'
 export { Pagination } from './Pagination.js'
 export { type Column, type SortTitleContext, Table } from './Table.js'
 export { Tabs } from './Tabs.js'

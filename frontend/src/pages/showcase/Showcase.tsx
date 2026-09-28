@@ -86,9 +86,7 @@ export function Showcase (): JSX.Element {
   return (
     <div className={styles.showcase}>
       <header className={styles.header}>
-        <span className={styles.eyebrow}>Design System</span>
-        <h1 className={styles.title}>Ozon Sandbox</h1>
-        <p className={styles.subtitle}>Component library &amp; design tokens for the admin dashboard</p>
+        <h1 className={styles.title}>Design System</h1>
       </header>
       <nav className={styles.nav} aria-label='Sections'>
         {SECTIONS.map((s) => (
@@ -156,7 +154,7 @@ export function Showcase (): JSX.Element {
         <Section title='Cabinets' actions={<Button size='sm'>+ New</Button>}>
           <Table columns={CABINET_COLUMNS} data={MOCK_CABINETS} rowKey={(row) => row.id} />
         </Section>
-        <div className={styles.tableSpacing}>
+        <div className={styles.spaced}>
           <Section title='Compact Table'>
             <Table
               columns={[{ key: 'method', title: 'Method' }, { key: 'path', title: 'Path' }, { key: 'status', title: 'Status' }]}
@@ -166,7 +164,7 @@ export function Showcase (): JSX.Element {
             />
           </Section>
         </div>
-        <div className={styles.tableSpacing}>
+        <div className={styles.spaced}>
           <Section title='Sortable, Selectable &amp; Sticky'>
             <p className={styles.description}>Selected: {selectedKeys.length} · Sort: {sortInfo}</p>
             <Table
@@ -182,7 +180,7 @@ export function Showcase (): JSX.Element {
             />
           </Section>
         </div>
-        <div className={styles.tableSpacing}>
+        <div className={styles.spaced}>
           <Section title='Empty State'>
             <Table columns={CABINET_COLUMNS} data={EMPTY_CABINETS} rowKey={(row) => row.id} emptyMessage='No cabinets match your filters' />
           </Section>
@@ -220,7 +218,7 @@ export function Showcase (): JSX.Element {
         {errorDismissed && (
           <Button variant='secondary' onClick={() => { setErrorDismissed(false) }}>Show Error Again</Button>
         )}
-        <div className={styles.errorSpacing}>
+        <div className={styles.spaced}>
           <ErrorBanner title='Validation Error' message='Client-Id must be a positive integer.' />
         </div>
       </section>
