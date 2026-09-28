@@ -30,11 +30,13 @@ async def lifespan_setup(
 
     Args:
         app: FastAPI application.
-
-    Returns:
-        Async generator: nothing on startup, engine disposal on shutdown.
     """
-    _setup_db(app)
-
-    yield
-    await app.state.db_engine.dispose()
+    try:
+        _setup_db(app)
+        yield
+    finally:
+        # ``_setup_db`` may fail before storing the engine; only dispose
+        # an engine that actually made it onto ``app.state``.
+        engine = getattr(app.state, "db_engine", None)
+        if engine is not None:
+            await engine.dispose()

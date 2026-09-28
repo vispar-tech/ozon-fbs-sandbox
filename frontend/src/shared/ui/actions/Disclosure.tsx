@@ -3,8 +3,7 @@ import clsx from 'clsx'
 import type { JSX, ReactNode } from 'react'
 
 import styles from './Disclosure.module.scss'
-
-import { Icon } from '@/shared/ui/actions/index.js'
+import { Icon } from './Icon.js'
 
 type DisclosureSize = 'md' | 'sm'
 
@@ -15,10 +14,15 @@ interface DisclosureProps {
   children: ReactNode
 }
 
-export function Disclosure ({ expanded, onToggle, size = 'md', children }: DisclosureProps): JSX.Element {
+export function Disclosure({
+  expanded,
+  onToggle,
+  size = 'md',
+  children,
+}: DisclosureProps): JSX.Element {
   const classes = clsx(
     styles.disclosure,
-    styles[`disclosure${size.charAt(0).toUpperCase()}${size.slice(1)}`]
+    styles[`disclosure${size.charAt(0).toUpperCase()}${size.slice(1)}`],
   )
 
   return (

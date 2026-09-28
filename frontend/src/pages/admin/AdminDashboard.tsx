@@ -12,7 +12,7 @@ import { Button, CopyButton, Icon, IconButton } from '@/shared/ui/actions/index.
 import { type Column, Table } from '@/shared/ui/data/index.js'
 import { CenteredStatus, ConfirmDialog, EmptyState, useToast } from '@/shared/ui/feedback/index.js'
 
-export function AdminDashboard (): JSX.Element {
+export function AdminDashboard(): JSX.Element {
   const [cabinets, setCabinets] = useState<CabinetSummary[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -38,32 +38,58 @@ export function AdminDashboard (): JSX.Element {
     void loadCabinets()
   }, [loadCabinets])
 
-  const columns = useMemo<Array<Column<CabinetSummary>>>(() => [
-    { key: 'client_id', title: 'Client ID' },
-    { key: 'name', title: 'Название', sortable: true },
-    { key: 'seller_info', title: 'Компания', renderCell: (_value: unknown, row: CabinetSummary) => {
-      const text = formatCellValue(row.seller_info.company.name)
-      return text === '' ? <span className={styles.muted}>—</span> : text
-    } },
-    { key: 'roles', title: 'Срок ключа', renderCell: (_value: unknown, row: CabinetSummary) => formatDate(row.roles.expires_at) },
-    { key: 'updated_at', title: 'Обновлено', renderCell: (value: unknown) => formatDate(value) },
-    { key: 'actions', title: 'Действия', align: 'end', renderCell: (_value: unknown, row: CabinetSummary) => (
-        <div className={styles.actions}>
-          <Button variant='link' size='sm' to={`/seller/${row.client_id}`}>Открыть</Button>
-          <CopyButton value={row.api_key} label='API-ключ' copiedLabel='Скопировано' />
-          <CopyButton value={String(row.client_id)} label='Client ID' copiedLabel='Скопировано' />
-          <IconButton variant='danger' size='sm' icon={TrashIcon} ariaLabel='Удалить' onClick={() => { setDeleteTarget(row) }} />
-        </div>
-      ) }
-  ], [])
+  const columns = useMemo<Array<Column<CabinetSummary>>>(
+    () => [
+      { key: 'client_id', title: 'Client ID' },
+      { key: 'name', title: 'Название', sortable: true },
+      {
+        key: 'seller_info',
+        title: 'Компания',
+        renderCell: (_value: unknown, row: CabinetSummary) => {
+          const text = formatCellValue(row.seller_info.company.name)
+          return text === '' ? <span className={styles.muted}>—</span> : text
+        },
+      },
+      {
+        key: 'roles',
+        title: 'Срок ключа',
+        renderCell: (_value: unknown, row: CabinetSummary) => formatDate(row.roles.expires_at),
+      },
+      { key: 'updated_at', title: 'Обновлено', renderCell: (value: unknown) => formatDate(value) },
+      {
+        key: 'actions',
+        title: 'Действия',
+        align: 'end',
+        renderCell: (_value: unknown, row: CabinetSummary) => (
+          <div className={styles.actions}>
+            <Button variant='link' size='sm' to={`/seller/${row.client_id}`}>
+              Открыть
+            </Button>
+            <CopyButton value={row.api_key} label='API-ключ' copiedLabel='Скопировано' />
+            <CopyButton value={String(row.client_id)} label='Client ID' copiedLabel='Скопировано' />
+            <IconButton
+              variant='danger'
+              size='sm'
+              icon={TrashIcon}
+              ariaLabel='Удалить'
+              onClick={() => {
+                setDeleteTarget(row)
+              }}
+            />
+          </div>
+        ),
+      },
+    ],
+    [],
+  )
 
-  function handleCreated (): void {
+  function handleCreated(): void {
     setCreateOpen(false)
     void loadCabinets()
     showToast({ tone: 'success', title: 'Продавец создан' })
   }
 
-  async function handleDelete (): Promise<void> {
+  async function handleDelete(): Promise<void> {
     if (deleteTarget === null) return
     setDeleting(true)
     try {
@@ -72,7 +98,11 @@ export function AdminDashboard (): JSX.Element {
       void loadCabinets()
       showToast({ tone: 'success', title: 'Продавец удалён' })
     } catch (err) {
-      showToast({ tone: 'danger', title: 'Не удалось удалить', description: errorMessageOr(err, 'Не удалось удалить') })
+      showToast({
+        tone: 'danger',
+        title: 'Не удалось удалить',
+        description: errorMessageOr(err, 'Не удалось удалить'),
+      })
     } finally {
       setDeleting(false)
     }
@@ -83,46 +113,78 @@ export function AdminDashboard (): JSX.Element {
   }
 
   if (error !== null) {
-    return <CenteredStatus status='error' message={error} onRetry={() => { void loadCabinets() }} />
+    return (
+      <CenteredStatus
+        status='error'
+        message={error}
+        onRetry={() => {
+          void loadCabinets()
+        }}
+      />
+    )
   }
 
   return (
     <div className={styles.page}>
-      {cabinets.length === 0
-        ? (
-            <EmptyState
-              icon={<Icon icon={CubeIcon} size='lg' />}
-              title='Продавцов пока нет'
-              description='Создайте первый кабинет продавца, чтобы начать тестировать Ozon Seller API в песочнице.'
-              action={<Button icon={<Icon icon={PlusIcon} />} onClick={() => { setCreateOpen(true) }}>Создать продавца</Button>}
-            />
-          )
-        : (
-            <>
-              <div className={styles.toolbar}>
-                <h1 className={styles.title}>Продавцы</h1>
-                <Button icon={<Icon icon={PlusIcon} />} onClick={() => { setCreateOpen(true) }}>Создать продавца</Button>
-              </div>
-              <Table
-                columns={columns}
-                data={cabinets}
-                rowKey={(row) => String(row.client_id)}
-                compact
-                sticky
-                maxHeight='calc(100svh - 200px)'
-              />
-              <ConfirmDialog
-                open={deleteTarget !== null}
-                onClose={() => { setDeleteTarget(null) }}
-                onConfirm={() => { void handleDelete() }}
-                title='Удалить продавца'
-                description={`Удалить продавца «${deleteTarget?.name ?? ''}»? Это действие необратимо.`}
-                confirmLabel='Удалить'
-                pending={deleting}
-              />
-            </>
-          )}
-      <CreateCabinetModal open={createOpen} onClose={() => { setCreateOpen(false) }} onCreated={handleCreated} />
+      {cabinets.length === 0 ? (
+        <EmptyState
+          icon={<Icon icon={CubeIcon} size='lg' />}
+          title='Продавцов пока нет'
+          description='Создайте первый кабинет продавца, чтобы начать тестировать Ozon Seller API в песочнице.'
+          action={
+            <Button
+              icon={<Icon icon={PlusIcon} />}
+              onClick={() => {
+                setCreateOpen(true)
+              }}
+            >
+              Создать продавца
+            </Button>
+          }
+        />
+      ) : (
+        <>
+          <div className={styles.toolbar}>
+            <h1 className={styles.title}>Продавцы</h1>
+            <Button
+              icon={<Icon icon={PlusIcon} />}
+              onClick={() => {
+                setCreateOpen(true)
+              }}
+            >
+              Создать продавца
+            </Button>
+          </div>
+          <Table
+            columns={columns}
+            data={cabinets}
+            rowKey={(row) => String(row.client_id)}
+            compact
+            sticky
+            maxHeight='calc(100svh - 200px)'
+          />
+          <ConfirmDialog
+            open={deleteTarget !== null}
+            onClose={() => {
+              setDeleteTarget(null)
+            }}
+            onConfirm={() => {
+              void handleDelete()
+            }}
+            title='Удалить продавца'
+            description={`Удалить продавца «${deleteTarget?.name ?? ''}»? Это действие необратимо.`}
+            confirmLabel='Удалить'
+            pending={deleting}
+          />
+        </>
+      )}
+      <CreateCabinetModal
+        open={createOpen}
+        onClose={() => {
+          setCreateOpen(false)
+        }}
+        onCreated={handleCreated}
+      />
     </div>
   )
 }

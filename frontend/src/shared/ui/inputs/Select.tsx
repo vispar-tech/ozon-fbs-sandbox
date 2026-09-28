@@ -1,16 +1,33 @@
 import { autoUpdate, size as sizeMiddleware, useFloating } from '@floating-ui/react-dom'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
-import { type CSSProperties, type JSX, type KeyboardEvent, type Ref, type RefObject, useEffect, useId, useMemo, useRef, useState } from 'react'
+import {
+  type CSSProperties,
+  type JSX,
+  type KeyboardEvent,
+  type Ref,
+  type RefObject,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 
-import { buildDescribedBy, buildFieldClasses, buildFieldId, FieldMessage, hasErrorMessage } from './field.js'
+import {
+  buildDescribedBy,
+  buildFieldClasses,
+  buildFieldId,
+  FieldMessage,
+  hasErrorMessage,
+} from './field.js'
 import fieldStyles from './field.module.scss'
 import styles from './Select.module.scss'
 
 import { useOutsideClick } from '@/shared/hooks/useOutsideClick.js'
 import { mergeRefs } from '@/shared/lib/refs.js'
 import { Icon } from '@/shared/ui/actions/index.js'
-import { Portal } from '@/shared/ui/Portal.js'
+import { Portal } from '@/shared/ui/layout/index.js'
 
 const NO_ACTIVE_ITEM_INDEX = -1
 
@@ -40,7 +57,7 @@ export interface SelectProps<T extends string = string> {
   ref?: Ref<HTMLButtonElement> | undefined
 }
 
-export function Select<T extends string = string> ({
+export function Select<T extends string = string>({
   value,
   onChange,
   options,
@@ -55,7 +72,7 @@ export function Select<T extends string = string> ({
   searchable = false,
   id,
   className = '',
-  ref
+  ref,
 }: SelectProps<T>): JSX.Element {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
@@ -87,12 +104,12 @@ export function Select<T extends string = string> ({
   const displayText = buildDisplayText(selectedOption, placeholder)
   const filteredOptions = useMemo(
     () => filterOptions(options, searchable, query),
-    [options, searchable, query]
+    [options, searchable, query],
   )
   const triggerClasses = clsx(classes, selectedOption === undefined && styles.selectPlaceholder)
   const ariaDescribedBy = buildDescribedBy(selectId, hasError, hint)
 
-  function handleTriggerClick (): void {
+  function handleTriggerClick(): void {
     if (open) {
       updateOpen(false)
       return
@@ -101,23 +118,31 @@ export function Select<T extends string = string> ({
     updateOpen(true)
   }
 
-  function updateOpen (next: boolean, restoreFocus = false): void {
+  function updateOpen(next: boolean, restoreFocus = false): void {
     setOpen(next)
     if (restoreFocus && !next) {
       triggerRef.current?.focus()
     }
   }
 
-  function handleSelect (option: SelectOption<T>): void {
+  function handleSelect(option: SelectOption<T>): void {
     onChange(option.value)
     updateOpen(false, true)
   }
 
   useOutsideClick(panelRef, (event) => {
-    closeOnOutsideClick(event, openRef, triggerRef, () => { updateOpen(false, true) })
+    closeOnOutsideClick(event, openRef, triggerRef, () => {
+      updateOpen(false, true)
+    })
   })
 
-  useEffect(() => registerEscapeClose(open, () => { updateOpen(false, true) }), [open])
+  useEffect(
+    () =>
+      registerEscapeClose(open, () => {
+        updateOpen(false, true)
+      }),
+    [open],
+  )
 
   useEffect(() => {
     focusSelectedOption(panelRef, open, searchable)
@@ -126,11 +151,7 @@ export function Select<T extends string = string> ({
   return (
     <div className={fieldStyles.inputWrap}>
       {label !== undefined && (
-        <label
-          id={labelId}
-          className={buildLabelClasses(required)}
-          htmlFor={selectId}
-        >
+        <label id={labelId} className={buildLabelClasses(required)} htmlFor={selectId}>
           {label}
         </label>
       )}
@@ -151,7 +172,11 @@ export function Select<T extends string = string> ({
         onClick={handleTriggerClick}
       >
         <span>{displayText}</span>
-        <Icon icon={ChevronDownIcon} size='xs' className={clsx(styles.chevron, open && styles.chevronOpen)} />
+        <Icon
+          icon={ChevronDownIcon}
+          size='xs'
+          className={clsx(styles.chevron, open && styles.chevronOpen)}
+        />
       </button>
       {renderPanel(open, floatingStyles, {
         menuId,
@@ -161,10 +186,14 @@ export function Select<T extends string = string> ({
         options: filteredOptions,
         value,
         onSelect: handleSelect,
-        onPanelKeyDown: (event) => { handlePanelKeyDown(event, panelRef) },
-        onSearchKeyDown: (event) => { handleSearchKeyDown(event, panelRef) },
+        onPanelKeyDown: (event) => {
+          handlePanelKeyDown(event, panelRef)
+        },
+        onSearchKeyDown: (event) => {
+          handleSearchKeyDown(event, panelRef)
+        },
         panelRef,
-        setFloating: refs.setFloating
+        setFloating: refs.setFloating,
       })}
       <FieldMessage fieldId={selectId} hasError={hasError} error={error} hint={hint} />
     </div>
@@ -186,7 +215,7 @@ interface SelectPanelProps<T extends string = string> {
   setFloating: (node: HTMLDivElement | null) => void
 }
 
-function SelectPanel<T extends string = string> ({
+function SelectPanel<T extends string = string>({
   style,
   menuId,
   searchable,
@@ -198,7 +227,7 @@ function SelectPanel<T extends string = string> ({
   onPanelKeyDown,
   onSearchKeyDown,
   panelRef,
-  setFloating
+  setFloating,
 }: SelectPanelProps<T>): JSX.Element {
   return (
     <Portal>
@@ -216,14 +245,17 @@ function SelectPanel<T extends string = string> ({
             aria-label='Search options'
             autoFocus
             value={query}
-            onChange={(event) => { onQueryChange(event.target.value) }}
+            onChange={(event) => {
+              onQueryChange(event.target.value)
+            }}
             onKeyDown={onSearchKeyDown}
           />
         )}
         <div id={menuId} role='listbox' className={styles.listbox}>
-          {options.length === 0
-            ? <div className={styles.empty}>Ничего не найдено</div>
-            : options.map((opt) => (
+          {options.length === 0 ? (
+            <div className={styles.empty}>Ничего не найдено</div>
+          ) : (
+            options.map((opt) => (
               <button
                 key={opt.value}
                 type='button'
@@ -232,41 +264,54 @@ function SelectPanel<T extends string = string> ({
                 aria-selected={opt.value === value}
                 aria-disabled={opt.disabled}
                 disabled={opt.disabled}
-                onClick={() => { onSelect(opt) }}
+                onClick={() => {
+                  onSelect(opt)
+                }}
               >
                 {opt.label}
               </button>
-            ))}
+            ))
+          )}
         </div>
       </div>
     </Portal>
   )
 }
 
-function renderPanel<T extends string = string> (open: boolean, style: CSSProperties, panelProps: Omit<SelectPanelProps<T>, 'style'>): JSX.Element | null {
+function renderPanel<T extends string = string>(
+  open: boolean,
+  style: CSSProperties,
+  panelProps: Omit<SelectPanelProps<T>, 'style'>,
+): JSX.Element | null {
   if (!open) {
     return null
   }
   return <SelectPanel style={style} {...panelProps} />
 }
 
-function buildLabelId (selectId: string | undefined, label: string | undefined): string | undefined {
+function buildLabelId(selectId: string | undefined, label: string | undefined): string | undefined {
   return selectId === undefined || label === undefined ? undefined : `${selectId}-label`
 }
 
-function buildDisplayText<T extends string = string> (selectedOption: SelectOption<T> | undefined, placeholder: string | undefined): string | undefined {
+function buildDisplayText<T extends string = string>(
+  selectedOption: SelectOption<T> | undefined,
+  placeholder: string | undefined,
+): string | undefined {
   return selectedOption?.label ?? placeholder
 }
 
-function buildLabelClasses (required: boolean): string | undefined {
+function buildLabelClasses(required: boolean): string | undefined {
   return required ? `${fieldStyles.label} ${fieldStyles.labelRequired}` : fieldStyles.label
 }
 
-function buildAriaRequired (required: boolean): boolean | undefined {
+function buildAriaRequired(required: boolean): boolean | undefined {
   return required || undefined
 }
 
-function handlePanelKeyDown (event: KeyboardEvent<HTMLDivElement>, panelRef: RefObject<HTMLDivElement | null>): void {
+function handlePanelKeyDown(
+  event: KeyboardEvent<HTMLDivElement>,
+  panelRef: RefObject<HTMLDivElement | null>,
+): void {
   if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') {
     return
   }
@@ -280,13 +325,17 @@ function handlePanelKeyDown (event: KeyboardEvent<HTMLDivElement>, panelRef: Ref
     focusOption(items[event.key === 'ArrowDown' ? 0 : items.length - 1])
     return
   }
-  const nextIndex = event.key === 'ArrowDown'
-    ? (currentIndex + 1) % items.length
-    : (currentIndex - 1 + items.length) % items.length
+  const nextIndex =
+    event.key === 'ArrowDown'
+      ? (currentIndex + 1) % items.length
+      : (currentIndex - 1 + items.length) % items.length
   focusOption(items[nextIndex])
 }
 
-function handleSearchKeyDown (event: KeyboardEvent<HTMLInputElement>, panelRef: RefObject<HTMLDivElement | null>): void {
+function handleSearchKeyDown(
+  event: KeyboardEvent<HTMLInputElement>,
+  panelRef: RefObject<HTMLDivElement | null>,
+): void {
   if (event.key !== 'Enter') {
     return
   }
@@ -297,7 +346,11 @@ function handleSearchKeyDown (event: KeyboardEvent<HTMLInputElement>, panelRef: 
   items[0]?.click()
 }
 
-function filterOptions<T extends string = string> (options: Array<SelectOption<T>>, searchable: boolean, query: string): Array<SelectOption<T>> {
+function filterOptions<T extends string = string>(
+  options: Array<SelectOption<T>>,
+  searchable: boolean,
+  query: string,
+): Array<SelectOption<T>> {
   if (!searchable || query.length === 0) {
     return options
   }
@@ -305,16 +358,20 @@ function filterOptions<T extends string = string> (options: Array<SelectOption<T
   return options.filter((opt) => opt.label.toLowerCase().includes(normalized))
 }
 
-function getEnabledOptions (panelRef: RefObject<HTMLDivElement | null>): HTMLButtonElement[] {
-  return Array.from(panelRef.current?.querySelectorAll<HTMLButtonElement>('[role="option"]:not(:disabled)') ?? [])
+function getEnabledOptions(panelRef: RefObject<HTMLDivElement | null>): HTMLButtonElement[] {
+  return Array.from(
+    panelRef.current?.querySelectorAll<HTMLButtonElement>('[role="option"]:not(:disabled)') ?? [],
+  )
 }
 
-function getActiveOptionIndex (items: HTMLButtonElement[]): number {
+function getActiveOptionIndex(items: HTMLButtonElement[]): number {
   const { activeElement } = document
-  return activeElement instanceof HTMLButtonElement ? items.indexOf(activeElement) : NO_ACTIVE_ITEM_INDEX
+  return activeElement instanceof HTMLButtonElement
+    ? items.indexOf(activeElement)
+    : NO_ACTIVE_ITEM_INDEX
 }
 
-function focusOption (option: HTMLButtonElement | null | undefined): void {
+function focusOption(option: HTMLButtonElement | null | undefined): void {
   if (option === null || option === undefined) {
     return
   }
@@ -322,11 +379,11 @@ function focusOption (option: HTMLButtonElement | null | undefined): void {
   option.scrollIntoView({ block: 'nearest' })
 }
 
-function closeOnOutsideClick (
+function closeOnOutsideClick(
   event: MouseEvent | TouchEvent,
   openRef: RefObject<boolean>,
   triggerRef: RefObject<HTMLButtonElement | null>,
-  close: () => void
+  close: () => void,
 ): void {
   if (!openRef.current) {
     return
@@ -337,7 +394,7 @@ function closeOnOutsideClick (
   close()
 }
 
-function registerEscapeClose (open: boolean, onEscape: () => void): (() => void) | undefined {
+function registerEscapeClose(open: boolean, onEscape: () => void): (() => void) | undefined {
   if (!open) {
     return undefined
   }
@@ -352,11 +409,17 @@ function registerEscapeClose (open: boolean, onEscape: () => void): (() => void)
   }
 }
 
-function focusSelectedOption (panelRef: RefObject<HTMLDivElement | null>, open: boolean, searchable: boolean): void {
+function focusSelectedOption(
+  panelRef: RefObject<HTMLDivElement | null>,
+  open: boolean,
+  searchable: boolean,
+): void {
   if (!open || searchable) {
     return
   }
-  const selected = panelRef.current?.querySelector<HTMLButtonElement>('[role="option"][aria-selected="true"]:not(:disabled)')
+  const selected = panelRef.current?.querySelector<HTMLButtonElement>(
+    '[role="option"][aria-selected="true"]:not(:disabled)',
+  )
   const first = panelRef.current?.querySelector<HTMLButtonElement>('[role="option"]:not(:disabled)')
   focusOption(selected ?? first)
 }

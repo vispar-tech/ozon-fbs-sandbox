@@ -147,7 +147,7 @@ def _map_http_error(status_code: int) -> tuple[OzonError, int]:
     return INTERNAL_ERROR, status_code
 
 
-async def _ozon_http_error_handler(request: Request, exc: OzonHttpError) -> Response:
+def _ozon_http_error_handler(request: Request, exc: OzonHttpError) -> Response:
     """Render OzonHttpError as its OzonError body.
 
     Args:
@@ -162,7 +162,7 @@ async def _ozon_http_error_handler(request: Request, exc: OzonHttpError) -> Resp
     )
 
 
-async def _validation_error_handler(
+def _validation_error_handler(
     request: Request, exc: RequestValidationError
 ) -> Response:
     """Render body/path validation failures as 400/3.
@@ -180,9 +180,7 @@ async def _validation_error_handler(
     )
 
 
-async def _cabinet_not_found_handler(
-    request: Request, exc: CabinetNotFoundError
-) -> Response:
+def _cabinet_not_found_handler(request: Request, exc: CabinetNotFoundError) -> Response:
     """Render a missing cabinet as 404/5.
 
     Args:
@@ -197,9 +195,7 @@ async def _cabinet_not_found_handler(
     )
 
 
-async def _http_exception_handler(
-    request: Request, exc: StarletteHTTPException
-) -> Response:
+def _http_exception_handler(request: Request, exc: StarletteHTTPException) -> Response:
     """Render HTTPException with the Ozon status/error mapping.
 
     Args:
@@ -213,7 +209,7 @@ async def _http_exception_handler(
     return PrettyJSONResponse(status_code=status_code, content=error.model_dump())
 
 
-async def _unhandled_exception_handler(request: Request, exc: Exception) -> Response:
+def _unhandled_exception_handler(request: Request, exc: Exception) -> Response:
     """Render unhandled exceptions as 500/13.
 
     Args:

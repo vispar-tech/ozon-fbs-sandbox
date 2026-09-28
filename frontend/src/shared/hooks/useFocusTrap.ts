@@ -7,10 +7,10 @@ const FOCUSABLE_SELECTOR = [
   'textarea',
   '[href]',
   '[tabindex]:not([tabindex="-1"])',
-  '[contenteditable]'
+  '[contenteditable]',
 ].join(', ')
 
-export function useFocusTrap (ref: RefObject<HTMLElement | null>, active = true): void {
+export function useFocusTrap(ref: RefObject<HTMLElement | null>, active = true): void {
   useEffect(() => {
     if (!active) {
       return
@@ -52,6 +52,6 @@ export function useFocusTrap (ref: RefObject<HTMLElement | null>, active = true)
   }, [ref, active])
 }
 
-function getFocusableElements (container: HTMLElement): HTMLElement[] {
+function getFocusableElements(container: HTMLElement): HTMLElement[] {
   return Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR))
 }

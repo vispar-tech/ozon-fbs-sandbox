@@ -27,7 +27,7 @@ def _empty_str_to_none(value: object) -> object:
     Returns:
         ``None`` for ``''``, the value unchanged otherwise.
     """
-    return None if value == "" else value
+    return None if isinstance(value, str) and not value else value
 
 
 def _iso_ms_z_or_empty(dt: datetime | None) -> str:

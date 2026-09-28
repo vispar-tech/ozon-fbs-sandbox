@@ -15,7 +15,7 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
   className?: string
 }
 
-export function Card ({
+export function Card({
   title,
   headerAction,
   footer,
@@ -28,7 +28,7 @@ export function Card ({
   const classes = clsx(
     styles.card,
     styles[`card${elevation.charAt(0).toUpperCase()}${elevation.slice(1)}`],
-    className
+    className,
   )
 
   return (
@@ -39,9 +39,7 @@ export function Card ({
           {headerAction !== undefined && headerAction}
         </div>
       )}
-      <div className={padding === 'none' ? styles.bodyNone : styles.body}>
-        {children}
-      </div>
+      <div className={padding === 'none' ? styles.bodyNone : styles.body}>{children}</div>
       {footer !== undefined && <div className={styles.footer}>{footer}</div>}
     </div>
   )

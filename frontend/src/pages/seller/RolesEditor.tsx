@@ -5,7 +5,12 @@ import { useState } from 'react'
 import styles from './RolesEditor.module.scss'
 
 import { updateCabinet } from '@/shared/api/index.js'
-import { buildFormSchema, type FieldDefinition, FieldRenderer, useAutoForm } from '@/shared/hooks/index.js'
+import {
+  buildFormSchema,
+  type FieldDefinition,
+  FieldRenderer,
+  useAutoForm,
+} from '@/shared/hooks/index.js'
 import type { CabinetSummary, Roles } from '@/shared/model/index.js'
 import { Button, Icon } from '@/shared/ui/actions/index.js'
 import { Chip, ErrorBanner, useToast } from '@/shared/ui/feedback/index.js'
@@ -26,77 +31,142 @@ interface RolesFormValues extends Record<string, unknown> {
   roles: Roles['roles']
 }
 
-export function RolesEditor ({ cabinet, onUpdated }: RolesEditorProps): JSX.Element {
+export function RolesEditor({ cabinet, onUpdated }: RolesEditorProps): JSX.Element {
   const { showToast } = useToast()
   const form = useAutoForm<RolesFormValues>({
     fields: ROLES_FIELDS,
     schema: ROLES_SCHEMA,
     initialValues: { expires_at: cabinet.roles.expires_at, roles: cabinet.roles.roles },
     onSubmit: async (data) => {
-      await updateCabinet(cabinet.client_id, { roles: { expires_at: data.expires_at, roles: data.roles } })
+      await updateCabinet(cabinet.client_id, {
+        roles: { expires_at: data.expires_at, roles: data.roles },
+      })
       onUpdated()
       showToast({ tone: 'success', title: 'Фикстура ролей обновлена' })
-    }
+    },
   })
   const roles: RolesFormValues['roles'] = form.values.roles
 
-  function addRole (): void {
+  function addRole(): void {
     form.handleChange('roles', [...roles, { name: '', methods: [] }])
   }
 
-  function removeRole (index: number): void {
-    form.handleChange('roles', roles.filter((_, idx) => idx !== index))
+  function removeRole(index: number): void {
+    form.handleChange(
+      'roles',
+      roles.filter((_, idx) => idx !== index),
+    )
   }
 
-  function updateRoleName (index: number, name: string): void {
-    form.handleChange('roles', roles.map((role, idx) => idx === index ? { ...role, name } : role))
+  function updateRoleName(index: number, name: string): void {
+    form.handleChange(
+      'roles',
+      roles.map((role, idx) => (idx === index ? { ...role, name } : role)),
+    )
   }
 
-  function addMethod (roleIndex: number, method: string): void {
+  function addMethod(roleIndex: number, method: string): void {
     if (method.trim() === '') return
-    form.handleChange('roles', roles.map((role, idx) =>
-      idx === roleIndex ? { ...role, methods: [...role.methods, method.trim()] } : role
-    ))
+    form.handleChange(
+      'roles',
+      roles.map((role, idx) =>
+        idx === roleIndex ? { ...role, methods: [...role.methods, method.trim()] } : role,
+      ),
+    )
   }
 
-  function removeMethod (roleIndex: number, methodIndex: number): void {
-    form.handleChange('roles', roles.map((role, idx) =>
-      idx === roleIndex ? { ...role, methods: role.methods.filter((_, mIdx) => mIdx !== methodIndex) } : role
-    ))
+  function removeMethod(roleIndex: number, methodIndex: number): void {
+    form.handleChange(
+      'roles',
+      roles.map((role, idx) =>
+        idx === roleIndex
+          ? { ...role, methods: role.methods.filter((_, mIdx) => mIdx !== methodIndex) }
+          : role,
+      ),
+    )
   }
 
   return (
-    <Section title='Фикстура ролей' actions={<Button type='submit' form='roles-form' size='sm' loading={form.isSubmitting}>Сохранить</Button>}>
+    <Section
+      title='Фикстура ролей'
+      actions={
+        <Button type='submit' form='roles-form' size='sm' loading={form.isSubmitting}>
+          Сохранить
+        </Button>
+      }
+    >
       {form.submitError !== null && (
         <ErrorBanner title='Не удалось обновить' message={form.submitError} />
       )}
       <form id='roles-form' onSubmit={form.handleSubmit} noValidate>
         <div className={styles.fields}>
           {ROLES_FIELDS.map((field) => (
-            <FieldRenderer key={field.name} field={field} value={form.values[field.name]} error={form.errors[field.name]} onChange={form.handleChange} />
+            <FieldRenderer
+              key={field.name}
+              field={field}
+              value={form.values[field.name]}
+              error={form.errors[field.name]}
+              onChange={form.handleChange}
+            />
           ))}
         </div>
         <div className={styles.rolesList}>
           {roles.map((role, roleIdx) => (
-            <Card key={`${roleIdx}-${role.name}`} title={`Роль ${roleIdx + 1}`} headerAction={<Button type='button' variant='danger' size='sm' onClick={() => { removeRole(roleIdx) }}>Удалить</Button>}>
+            <Card
+              key={`${roleIdx}-${role.name}`}
+              title={`Роль ${roleIdx + 1}`}
+              headerAction={
+                <Button
+                  type='button'
+                  variant='danger'
+                  size='sm'
+                  onClick={() => {
+                    removeRole(roleIdx)
+                  }}
+                >
+                  Удалить
+                </Button>
+              }
+            >
               <div className={styles.roleEditorInner}>
                 <Input
                   label='Название роли'
                   value={role.name}
-                  onChange={(e) => { updateRoleName(roleIdx, e.target.value) }}
+                  onChange={(e) => {
+                    updateRoleName(roleIdx, e.target.value)
+                  }}
                 />
                 <div className={styles.methodsEditor}>
                   {role.methods.map((method, mIdx) => (
-                    <Chip key={`${mIdx}-${method}`} removable removeLabel={`Удалить ${method}`} onRemove={() => { removeMethod(roleIdx, mIdx) }}>
+                    <Chip
+                      key={`${mIdx}-${method}`}
+                      removable
+                      removeLabel={`Удалить ${method}`}
+                      onRemove={() => {
+                        removeMethod(roleIdx, mIdx)
+                      }}
+                    >
                       {method}
                     </Chip>
                   ))}
-                  <AddMethodInput onAdd={(method) => { addMethod(roleIdx, method) }} />
+                  <AddMethodInput
+                    onAdd={(method) => {
+                      addMethod(roleIdx, method)
+                    }}
+                  />
                 </div>
               </div>
             </Card>
           ))}
-          <Button type='button' variant='secondary' size='sm' icon={<Icon icon={PlusIcon} size='sm' />} onClick={addRole}>Добавить роль</Button>
+          <Button
+            type='button'
+            variant='secondary'
+            size='sm'
+            icon={<Icon icon={PlusIcon} size='sm' />}
+            onClick={addRole}
+          >
+            Добавить роль
+          </Button>
         </div>
       </form>
     </Section>
@@ -109,10 +179,10 @@ interface AddMethodInputProps {
 
 // Manual single-field inline adder (useState + submit handler), not useAutoForm:
 // it is not a form with fields/submission — just a compact input for one method inside a role card.
-function AddMethodInput ({ onAdd }: AddMethodInputProps): JSX.Element {
+function AddMethodInput({ onAdd }: AddMethodInputProps): JSX.Element {
   const [value, setValue] = useState('')
 
-  function handleSubmit (): void {
+  function handleSubmit(): void {
     if (value.trim() === '') return
     onAdd(value)
     setValue('')
@@ -123,7 +193,9 @@ function AddMethodInput ({ onAdd }: AddMethodInputProps): JSX.Element {
       <Input
         aria-label='Название метода'
         value={value}
-        onChange={(e) => { setValue(e.target.value) }}
+        onChange={(e) => {
+          setValue(e.target.value)
+        }}
         placeholder='/v1/some/endpoint'
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
@@ -132,7 +204,15 @@ function AddMethodInput ({ onAdd }: AddMethodInputProps): JSX.Element {
           }
         }}
       />
-      <Button type='button' variant='ghost' size='sm' icon={<Icon icon={PlusIcon} size='sm' />} onClick={handleSubmit}>Добавить</Button>
+      <Button
+        type='button'
+        variant='ghost'
+        size='sm'
+        icon={<Icon icon={PlusIcon} size='sm' />}
+        onClick={handleSubmit}
+      >
+        Добавить
+      </Button>
     </div>
   )
 }

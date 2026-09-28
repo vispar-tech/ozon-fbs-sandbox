@@ -11,12 +11,12 @@ interface ToggleProps {
   className?: string | undefined
 }
 
-export function Toggle ({
+export function Toggle({
   checked,
   onChange,
   label,
   disabled = false,
-  className = ''
+  className = '',
 }: ToggleProps): JSX.Element {
   const id = useId()
 
@@ -28,7 +28,9 @@ export function Toggle ({
         className={styles.input}
         checked={checked}
         disabled={disabled}
-        onChange={(e) => { onChange(e.target.checked) }}
+        onChange={(e) => {
+          onChange(e.target.checked)
+        }}
       />
       <span className={styles.track}>
         <span className={styles.thumb} />

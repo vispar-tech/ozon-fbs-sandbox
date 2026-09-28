@@ -84,7 +84,9 @@ $menu-max-height: 240px;
   line-height: var(--leading-normal);
   text-align: left;
   cursor: pointer;
-  transition: background var(--transition-fast), color var(--transition-fast);
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
 
   &:hover:not(:disabled) {
     background: var(--bg-subtle);

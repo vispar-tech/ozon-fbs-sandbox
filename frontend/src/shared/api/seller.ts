@@ -52,12 +52,12 @@ export interface SellerRequestResult {
   body: string
 }
 
-export async function getSellerOperations (): Promise<SellerOperation[]> {
+export async function getSellerOperations(): Promise<SellerOperation[]> {
   const document = await fetchOpenApiDocument()
   return collectSellerOperations(document)
 }
 
-export async function sendSellerRequest (input: SellerRequestInput): Promise<SellerRequestResult> {
+export async function sendSellerRequest(input: SellerRequestInput): Promise<SellerRequestResult> {
   const headers = new Headers()
   for (const [name, value] of Object.entries(input.headers)) {
     headers.set(name, value)
@@ -67,13 +67,13 @@ export async function sendSellerRequest (input: SellerRequestInput): Promise<Sel
   const response = await fetch(input.operation.path, {
     method: input.operation.method.toUpperCase(),
     headers,
-    body: input.body
+    body: input.body,
   })
   const body = await response.text()
   return { status: response.status, durationMs: performance.now() - startedAt, body }
 }
 
-async function fetchOpenApiDocument (): Promise<unknown> {
+async function fetchOpenApiDocument(): Promise<unknown> {
   const response = await fetch(OPENAPI_DOCUMENT_PATH)
   if (!response.ok) {
     throw new Error(`Не удалось загрузить OpenAPI-схему: HTTP ${response.status}`)
@@ -82,7 +82,7 @@ async function fetchOpenApiDocument (): Promise<unknown> {
   return document
 }
 
-function collectSellerOperations (document: unknown): SellerOperation[] {
+function collectSellerOperations(document: unknown): SellerOperation[] {
   if (!isRecord(document) || !isRecord(document.paths)) {
     throw new Error('Не удалось разобрать OpenAPI-схему: раздел paths отсутствует')
   }
@@ -105,14 +105,14 @@ function collectSellerOperations (document: unknown): SellerOperation[] {
   return operations
 }
 
-function isSellerPath (path: string): boolean {
+function isSellerPath(path: string): boolean {
   return SELLER_PATH_PATTERN.test(path)
 }
 
-function toSellerOperation (
+function toSellerOperation(
   path: string,
   operation: Record<string, unknown>,
-  document: Record<string, unknown>
+  document: Record<string, unknown>,
 ): SellerOperation {
   const { summary, description, operationId } = operation
   return {
@@ -123,11 +123,11 @@ function toSellerOperation (
     description: typeof description === 'string' ? description : '',
     bodyTemplate: buildBodyTemplate(operation, document),
     requiredHeaders: buildRequiredHeaders(operation, document),
-    responses: buildResponses(operation)
+    responses: buildResponses(operation),
   }
 }
 
-function pickTitle (summary: unknown, operationId: unknown, path: string): string {
+function pickTitle(summary: unknown, operationId: unknown, path: string): string {
   if (typeof summary === 'string' && summary !== '') {
     return summary
   }
@@ -137,9 +137,9 @@ function pickTitle (summary: unknown, operationId: unknown, path: string): strin
   return path
 }
 
-function buildRequiredHeaders (
+function buildRequiredHeaders(
   operation: Record<string, unknown>,
-  document: Record<string, unknown>
+  document: Record<string, unknown>,
 ): Array<{ name: string }> {
   const headers: Array<{ name: string }> = []
   const { security } = operation
@@ -168,7 +168,7 @@ function buildRequiredHeaders (
   return headers
 }
 
-function resolveHeaderName (securitySchemes: unknown, schemeName: string): string | null {
+function resolveHeaderName(securitySchemes: unknown, schemeName: string): string | null {
   if (!isRecord(securitySchemes)) {
     return null
   }
@@ -183,7 +183,9 @@ function resolveHeaderName (securitySchemes: unknown, schemeName: string): strin
   return name
 }
 
-function buildResponses (operation: Record<string, unknown>): Array<{ status: number; summary: string }> {
+function buildResponses(
+  operation: Record<string, unknown>,
+): Array<{ status: number; summary: string }> {
   const responses: Array<{ status: number; summary: string }> = []
   const { responses: declared } = operation
   if (!isRecord(declared)) {
@@ -194,15 +196,17 @@ function buildResponses (operation: Record<string, unknown>): Array<{ status: nu
     if (!Number.isInteger(status)) {
       continue
     }
-    const summary = isRecord(response) && typeof response.description === 'string'
-      ? response.description
-      : ''
+    const summary =
+      isRecord(response) && typeof response.description === 'string' ? response.description : ''
     responses.push({ status, summary })
   }
   return responses
 }
 
-function buildBodyTemplate (operation: Record<string, unknown>, document: Record<string, unknown>): string {
+function buildBodyTemplate(
+  operation: Record<string, unknown>,
+  document: Record<string, unknown>,
+): string {
   const schema = findJsonSchema(operation, document)
   if (schema === null) {
     return EMPTY_BODY_TEMPLATE
@@ -211,9 +215,9 @@ function buildBodyTemplate (operation: Record<string, unknown>, document: Record
   return JSON.stringify(template, null, JSON_INDENT_SPACES)
 }
 
-function findJsonSchema (
+function findJsonSchema(
   operation: Record<string, unknown>,
-  document: Record<string, unknown>
+  document: Record<string, unknown>,
 ): Record<string, unknown> | null {
   const { requestBody } = operation
   if (!isRecord(requestBody)) {
@@ -230,9 +234,9 @@ function findJsonSchema (
   return resolveRef(media.schema, document)
 }
 
-function buildTemplateObject (
+function buildTemplateObject(
   schema: Record<string, unknown>,
-  document: Record<string, unknown>
+  document: Record<string, unknown>,
 ): Record<string, unknown> {
   const { properties } = schema
   if (!isRecord(properties)) {
@@ -245,7 +249,7 @@ function buildTemplateObject (
   return template
 }
 
-function toTemplateValue (schema: unknown, document: Record<string, unknown>): unknown {
+function toTemplateValue(schema: unknown, document: Record<string, unknown>): unknown {
   if (!isRecord(schema)) {
     return null
   }
@@ -269,7 +273,7 @@ function toTemplateValue (schema: unknown, document: Record<string, unknown>): u
   return null
 }
 
-function unwrapAnyOf (schema: Record<string, unknown>): Record<string, unknown> {
+function unwrapAnyOf(schema: Record<string, unknown>): Record<string, unknown> {
   const { anyOf } = schema
   if (!Array.isArray(anyOf)) {
     return schema
@@ -282,16 +286,16 @@ function unwrapAnyOf (schema: Record<string, unknown>): Record<string, unknown> 
   return schema
 }
 
-function resolveSchemaRef (
+function resolveSchemaRef(
   schema: Record<string, unknown>,
-  document: Record<string, unknown>
+  document: Record<string, unknown>,
 ): Record<string, unknown> {
   return resolveRef(schema, document) ?? schema
 }
 
-function resolveRef (
+function resolveRef(
   target: Record<string, unknown>,
-  document: Record<string, unknown>
+  document: Record<string, unknown>,
 ): Record<string, unknown> | null {
   const { $ref: targetRef } = target
   if (typeof targetRef !== 'string') {
@@ -301,7 +305,7 @@ function resolveRef (
   return isRecord(resolved) ? resolved : null
 }
 
-function readDocumentPointer (ref: string, document: Record<string, unknown>): unknown {
+function readDocumentPointer(ref: string, document: Record<string, unknown>): unknown {
   if (!ref.startsWith(DOCUMENT_REF_PREFIX)) {
     return null
   }
@@ -317,6 +321,8 @@ function readDocumentPointer (ref: string, document: Record<string, unknown>): u
   return current
 }
 
-function decodePointerSegment (segment: string): string {
-  return segment.replaceAll(POINTER_ESCAPE_ONE, POINTER_SEPARATOR).replaceAll(POINTER_ESCAPE_ZERO, '~')
+function decodePointerSegment(segment: string): string {
+  return segment
+    .replaceAll(POINTER_ESCAPE_ONE, POINTER_SEPARATOR)
+    .replaceAll(POINTER_ESCAPE_ZERO, '~')
 }

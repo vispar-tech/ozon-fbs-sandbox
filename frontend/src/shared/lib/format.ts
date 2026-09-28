@@ -1,7 +1,7 @@
 import { format, parseISO } from 'date-fns'
 import { ru } from 'date-fns/locale'
 
-export function formatCellValue (value: unknown): string {
+export function formatCellValue(value: unknown): string {
   if (value === undefined || value === null) {
     return ''
   }
@@ -14,7 +14,7 @@ export function formatCellValue (value: unknown): string {
   return ''
 }
 
-export function formatDate (value: unknown): string {
+export function formatDate(value: unknown): string {
   if (typeof value !== 'string' || value.trim() === '') {
     return '—'
   }

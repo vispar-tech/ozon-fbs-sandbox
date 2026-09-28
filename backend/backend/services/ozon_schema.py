@@ -99,15 +99,13 @@ class OzonSchemaService:
     async def _fetch(cls) -> tuple[datetime, dict[str, Any]]:
         """Download and parse the schema mirror.
 
-        Failures are not swallowed: the exception reaches the global handler
-        and the client gets 500/13 with a retryable UI.
+        Failures are not swallowed: ``httpx.HTTPError`` from an unreachable
+        mirror or a status >= 400, and ``json.JSONDecodeError`` from a
+        malformed payload, reach the global handler and the client gets
+        500/13 with a retryable UI.
 
         Returns:
             Fetch timestamp and the parsed OpenAPI document.
-
-        Raises:
-            httpx.HTTPError: When the mirror is unreachable or answers >= 400.
-            json.JSONDecodeError: When the payload is not valid JSON.
         """
         async with httpx.AsyncClient(timeout=FETCH_TIMEOUT_SECONDS) as client:
             response = await client.get(SCHEMA_URL)

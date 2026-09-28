@@ -2,13 +2,16 @@ import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import type { ChangeEventHandler, InputHTMLAttributes, JSX, Ref } from 'react'
 
+import { buildDescribedBy, buildFieldId, FieldMessage, hasErrorMessage } from './field.js'
+import fieldStyles from './field.module.scss'
 import styles from './SearchInput.module.scss'
 
 import { Icon } from '@/shared/ui/actions/index.js'
-import { buildDescribedBy, buildFieldId, FieldMessage, hasErrorMessage } from '@/shared/ui/inputs/field.js'
-import fieldStyles from '@/shared/ui/inputs/field.module.scss'
 
-interface SearchInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'size' | 'value' | 'onChange'> {
+interface SearchInputProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  'type' | 'size' | 'value' | 'onChange'
+> {
   label?: string
   hint?: string
   error?: string
@@ -19,7 +22,7 @@ interface SearchInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, '
   onClear?: () => void
 }
 
-export function SearchInput ({
+export function SearchInput({
   label,
   hint,
   error,

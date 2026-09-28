@@ -14,6 +14,9 @@ def _seller_operations() -> list[dict[str, Any]]:
 
     Path Item objects may carry non-operation keys (``parameters``,
     ``servers``, ``summary``), so only real HTTP methods are collected.
+
+    Returns:
+        Operations of the seller paths from the OpenAPI document.
     """
     schema = get_app().openapi()
     operations: list[dict[str, Any]] = []

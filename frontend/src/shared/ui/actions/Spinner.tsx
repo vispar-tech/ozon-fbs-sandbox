@@ -11,14 +11,18 @@ interface SpinnerProps {
   className?: string
 }
 
-export function Spinner ({
+export function Spinner({
   size = 'md',
   label = 'Загрузка',
-  className = ''
+  className = '',
 }: SpinnerProps): JSX.Element {
   return (
     <span
-      className={clsx(styles.spinner, styles[`spinner${size.charAt(0).toUpperCase()}${size.slice(1)}`], className)}
+      className={clsx(
+        styles.spinner,
+        styles[`spinner${size.charAt(0).toUpperCase()}${size.slice(1)}`],
+        className,
+      )}
       role='status'
       aria-label={label}
     />

@@ -42,6 +42,7 @@ def dump_openapi(output: Path) -> Path:
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(
         json.dumps(schema, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
     )
     return output
 

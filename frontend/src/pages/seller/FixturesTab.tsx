@@ -11,7 +11,7 @@ interface FixturesTabProps {
   onUpdated: () => void
 }
 
-export function FixturesTab ({ cabinet, onUpdated }: FixturesTabProps): JSX.Element {
+export function FixturesTab({ cabinet, onUpdated }: FixturesTabProps): JSX.Element {
   return (
     <div className={styles.fixtures}>
       <SellerInfoEditor cabinet={cabinet} onUpdated={onUpdated} />

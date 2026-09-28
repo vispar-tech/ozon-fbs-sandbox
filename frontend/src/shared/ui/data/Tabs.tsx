@@ -24,13 +24,13 @@ interface TabsProps {
   className?: string
 }
 
-export function Tabs ({
+export function Tabs({
   tabs,
   defaultActive,
   activeKey,
   onChange,
   children,
-  className = ''
+  className = '',
 }: TabsProps): JSX.Element {
   const firstTabKey = tabs[INITIAL_INDEX]?.key ?? ''
   const [internalActive, setInternalActive] = useState(defaultActive ?? firstTabKey)
@@ -55,7 +55,7 @@ export function Tabs ({
   const enabledTabs = tabs.filter((t) => t.disabled !== true)
   const panels = Array.isArray(children) ? children : [children]
 
-  function handleTablistKeyDown (event: KeyboardEvent<HTMLDivElement>): void {
+  function handleTablistKeyDown(event: KeyboardEvent<HTMLDivElement>): void {
     if (!isArrowKey(event.key) && event.key !== 'Home' && event.key !== 'End') {
       return
     }
@@ -65,13 +65,20 @@ export function Tabs ({
     }
     const nextKey = resolveNextKey(event.key, enabledTabs, currentKey)
     handleChange(nextKey)
-    const tabButton = tablistRef.current?.querySelector<HTMLButtonElement>(`[data-tab-key="${nextKey}"]`)
+    const tabButton = tablistRef.current?.querySelector<HTMLButtonElement>(
+      `[data-tab-key="${nextKey}"]`,
+    )
     tabButton?.focus()
   }
 
   return (
     <div className={clsx(styles.tabs, className)}>
-      <div ref={tablistRef} className={styles.tabsList} role='tablist' onKeyDown={handleTablistKeyDown}>
+      <div
+        ref={tablistRef}
+        className={styles.tabsList}
+        role='tablist'
+        onKeyDown={handleTablistKeyDown}
+      >
         {tabs.map((tab) => (
           <button
             key={tab.key}
@@ -83,12 +90,12 @@ export function Tabs ({
             aria-disabled={tab.disabled === true ? true : undefined}
             tabIndex={tab.key === currentKey ? 0 : INACTIVE_TAB_INDEX}
             disabled={tab.disabled}
-            onClick={() => { handleChange(tab.key) }}
+            onClick={() => {
+              handleChange(tab.key)
+            }}
           >
             {tab.label}
-            {tab.count !== undefined && (
-              <span className={styles.tabCount}>{tab.count}</span>
-            )}
+            {tab.count !== undefined && <span className={styles.tabCount}>{tab.count}</span>}
           </button>
         ))}
       </div>
@@ -114,18 +121,18 @@ export function Tabs ({
   )
 }
 
-function isArrowKey (key: string): boolean {
+function isArrowKey(key: string): boolean {
   return key === 'ArrowLeft' || key === 'ArrowRight'
 }
 
-function resolveNextKey (direction: string, enabledTabs: Tab[], currentKey: string): string {
+function resolveNextKey(direction: string, enabledTabs: Tab[], currentKey: string): string {
   if (direction === 'Home') return enabledTabs[INITIAL_INDEX]?.key ?? currentKey
   if (direction === 'End') return enabledTabs[enabledTabs.length - 1]?.key ?? currentKey
   const step = direction === 'ArrowRight' ? NEXT_STEP : PREV_STEP
   return cycleTab(enabledTabs, currentKey, step)
 }
 
-function cycleTab (enabledTabs: Tab[], currentKey: string, step: number): string {
+function cycleTab(enabledTabs: Tab[], currentKey: string, step: number): string {
   const currentIdx = enabledTabs.findIndex((t) => t.key === currentKey)
   const base = currentIdx === INACTIVE_TAB_INDEX ? INITIAL_INDEX : currentIdx
   const idx = (base + step + enabledTabs.length) % enabledTabs.length

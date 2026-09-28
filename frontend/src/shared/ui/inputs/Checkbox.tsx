@@ -22,7 +22,7 @@ interface CheckboxProps {
   ref?: Ref<HTMLInputElement>
 }
 
-export function Checkbox ({
+export function Checkbox({
   checked,
   onChange,
   label,
@@ -32,7 +32,7 @@ export function Checkbox ({
   error,
   id,
   className = '',
-  ref
+  ref,
 }: CheckboxProps): JSX.Element {
   const inputRef = useRef<HTMLInputElement>(null)
   const generatedId = useId()
@@ -62,7 +62,9 @@ export function Checkbox ({
           aria-invalid={hasError || undefined}
           aria-describedby={ariaDescribedBy}
           aria-label={ariaLabel}
-          onChange={(e) => { onChange(e.target.checked) }}
+          onChange={(e) => {
+            onChange(e.target.checked)
+          }}
         />
         <span className={styles.box} aria-hidden='true'>
           <Icon icon={CheckIcon} size='xs' className={styles.checkmark} />

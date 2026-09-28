@@ -43,11 +43,11 @@ interface UseAutoFormReturn<T extends Record<string, unknown>> {
   reset: () => void
 }
 
-export function useAutoForm<T extends Record<string, unknown> = Record<string, unknown>> ({
+export function useAutoForm<T extends Record<string, unknown> = Record<string, unknown>>({
   fields,
   schema,
   onSubmit,
-  initialValues
+  initialValues,
 }: UseAutoFormProps<T>): UseAutoFormReturn<T> {
   const [values, setValues] = useState<T>(() => getInitialValues(fields, initialValues))
   const [errors, setErrors] = useState<FieldErrors>({})
@@ -66,25 +66,32 @@ export function useAutoForm<T extends Record<string, unknown> = Record<string, u
     })
   }, [])
 
-  const handleSubmit = useCallback((e: SyntheticEvent) => {
-    e.preventDefault()
-    const validationErrors = validateWithZod(schema, values)
-    setErrors(validationErrors)
-    if (Object.keys(validationErrors).length > 0) {
-      return
-    }
-    setIsSubmitting(true)
-    setSubmitError(null)
-    try {
-      const result = onSubmit(values)
-      void Promise.resolve(result)
-        .catch((error: unknown) => { reportSubmitError(error) })
-        .finally(() => { setIsSubmitting(false) })
-    } catch (error: unknown) {
-      reportSubmitError(error)
-      setIsSubmitting(false)
-    }
-  }, [schema, values, onSubmit])
+  const handleSubmit = useCallback(
+    (e: SyntheticEvent) => {
+      e.preventDefault()
+      const validationErrors = validateWithZod(schema, values)
+      setErrors(validationErrors)
+      if (Object.keys(validationErrors).length > 0) {
+        return
+      }
+      setIsSubmitting(true)
+      setSubmitError(null)
+      try {
+        const result = onSubmit(values)
+        void Promise.resolve(result)
+          .catch((error: unknown) => {
+            reportSubmitError(error)
+          })
+          .finally(() => {
+            setIsSubmitting(false)
+          })
+      } catch (error: unknown) {
+        reportSubmitError(error)
+        setIsSubmitting(false)
+      }
+    },
+    [schema, values, onSubmit],
+  )
 
   const reset = useCallback(() => {
     setValues(getInitialValues(fields, initialValues))
@@ -93,7 +100,7 @@ export function useAutoForm<T extends Record<string, unknown> = Record<string, u
     setIsSubmitting(false)
   }, [fields, initialValues])
 
-  function reportSubmitError (error: unknown): void {
+  function reportSubmitError(error: unknown): void {
     const message = error instanceof Error ? error.message : 'Ошибка отправки'
     setSubmitError(message)
     console.error(error) // eslint-disable-line no-console -- intentional error logging
@@ -106,7 +113,7 @@ export function useAutoForm<T extends Record<string, unknown> = Record<string, u
     submitError,
     handleChange,
     handleSubmit,
-    reset
+    reset,
   }
 }
 
@@ -117,19 +124,16 @@ interface FieldRendererProps {
   onChange: (name: string, value: unknown) => void
 }
 
-export function FieldRenderer ({
-  field,
-  value,
-  error,
-  onChange
-}: FieldRendererProps): JSX.Element {
+export function FieldRenderer({ field, value, error, onChange }: FieldRendererProps): JSX.Element {
   const type = field.type ?? 'text'
 
   if (type === 'toggle') {
     return (
       <Toggle
         checked={value === true}
-        onChange={(checked) => { onChange(field.name, checked) }}
+        onChange={(checked) => {
+          onChange(field.name, checked)
+        }}
         label={field.label}
         disabled={field.disabled}
       />
@@ -147,7 +151,9 @@ export function FieldRenderer ({
         disabled={field.disabled}
         options={field.options ?? []}
         value={formatCellValue(value)}
-        onChange={(selected) => { onChange(field.name, selected) }}
+        onChange={(selected) => {
+          onChange(field.name, selected)
+        }}
       />
     )
   }
@@ -162,19 +168,28 @@ export function FieldRenderer ({
       placeholder={field.placeholder}
       disabled={field.disabled}
       value={formatCellValue(value)}
-      onChange={(e) => { onChange(field.name, e.target.value) }}
+      onChange={(e) => {
+        onChange(field.name, e.target.value)
+      }}
     />
   )
 }
 
-function buildFieldSchema (field: FieldDefinition): z.ZodType {
+function buildFieldSchema(field: FieldDefinition): z.ZodType {
   switch (field.type) {
     case 'number':
       return buildNumberSchema(field, field.required === true)
     case 'email':
       return field.required === true
-        ? z.string().min(1, 'Обязательное поле').pipe(z.email({ message: 'Некорректный email' }))
-        : z.string().pipe(z.email({ message: 'Некорректный email' })).optional().or(z.literal(''))
+        ? z
+            .string()
+            .min(1, 'Обязательное поле')
+            .pipe(z.email({ message: 'Некорректный email' }))
+        : z
+            .string()
+            .pipe(z.email({ message: 'Некорректный email' }))
+            .optional()
+            .or(z.literal(''))
     case 'toggle':
       return z.boolean()
     case 'select':
@@ -186,7 +201,7 @@ function buildFieldSchema (field: FieldDefinition): z.ZodType {
   }
 }
 
-export function buildFormSchema (fields: FieldDefinition[]): z.ZodObject<Record<string, z.ZodType>> {
+export function buildFormSchema(fields: FieldDefinition[]): z.ZodObject<Record<string, z.ZodType>> {
   const shape: Record<string, z.ZodType> = {}
   for (const field of fields) {
     shape[field.name] = buildFieldSchema(field)
@@ -194,7 +209,10 @@ export function buildFormSchema (fields: FieldDefinition[]): z.ZodObject<Record<
   return z.object(shape)
 }
 
-function getInitialValues<T extends Record<string, unknown>> (fields: FieldDefinition[], initialValues?: Partial<T>): T {
+function getInitialValues<T extends Record<string, unknown>>(
+  fields: FieldDefinition[],
+  initialValues?: Partial<T>,
+): T {
   const values: Record<string, unknown> = { ...initialValues }
   for (const field of fields) {
     if (field.name in values) continue
@@ -204,10 +222,7 @@ function getInitialValues<T extends Record<string, unknown>> (fields: FieldDefin
   return values as T
 }
 
-function validateWithZod (
-  schema: z.ZodType,
-  values: Record<string, unknown>
-): FieldErrors {
+function validateWithZod(schema: z.ZodType, values: Record<string, unknown>): FieldErrors {
   const result = schema.safeParse(values)
   if (result.success) {
     return {}
@@ -223,7 +238,7 @@ function validateWithZod (
   return errors
 }
 
-function buildNumberSchema (field: FieldDefinition, required: boolean): z.ZodType {
+function buildNumberSchema(field: FieldDefinition, required: boolean): z.ZodType {
   let inner = z.coerce.number(required ? { error: 'Обязательное поле' } : undefined)
   if (field.min !== undefined) {
     inner = inner.min(field.min, { message: `Минимальное значение: ${String(field.min)}` })
@@ -231,15 +246,18 @@ function buildNumberSchema (field: FieldDefinition, required: boolean): z.ZodTyp
   if (field.max !== undefined) {
     inner = inner.max(field.max, { message: `Максимальное значение: ${String(field.max)}` })
   }
-  return z.preprocess((v) => v === '' ? undefined : v, required ? inner : inner.optional())
+  return z.preprocess((v) => (v === '' ? undefined : v), required ? inner : inner.optional())
 }
 
-function buildEnumSchema (optionValues: string[], required: boolean): z.ZodType {
+function buildEnumSchema(optionValues: string[], required: boolean): z.ZodType {
   if (optionValues.length === 0) {
     return z.string()
   }
   const entries = Object.fromEntries(optionValues.map((v) => [v, v]))
   return required
-    ? z.preprocess((v) => v === '' ? undefined : v, z.enum(entries, { error: 'Обязательное поле' }))
-    : z.preprocess((v) => v === '' ? undefined : v, z.enum(entries).optional())
+    ? z.preprocess(
+        (v) => (v === '' ? undefined : v),
+        z.enum(entries, { error: 'Обязательное поле' }),
+      )
+    : z.preprocess((v) => (v === '' ? undefined : v), z.enum(entries).optional())
 }

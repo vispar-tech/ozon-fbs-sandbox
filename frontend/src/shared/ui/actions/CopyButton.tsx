@@ -1,4 +1,8 @@
-import { CheckIcon, DocumentDuplicateIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline'
+import {
+  CheckIcon,
+  DocumentDuplicateIcon,
+  ExclamationCircleIcon,
+} from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { type JSX, type ReactNode, useEffect, useRef, useState } from 'react'
 
@@ -16,7 +20,7 @@ interface CopyButtonProps extends Omit<ButtonProps, 'children' | 'onClick'> {
   copiedLabel?: string
 }
 
-export function CopyButton ({
+export function CopyButton({
   value,
   label = 'Копировать',
   copiedLabel = 'Скопировано',
@@ -29,7 +33,7 @@ export function CopyButton ({
   const [state, setState] = useState<CopyState>('idle')
   const resetTimerRef = useRef<number | undefined>(undefined)
 
-  function clearResetTimer (): void {
+  function clearResetTimer(): void {
     if (resetTimerRef.current !== undefined) {
       window.clearTimeout(resetTimerRef.current)
     }
@@ -37,19 +41,28 @@ export function CopyButton ({
 
   useEffect(() => clearResetTimer, [])
 
-  function handleCopy (): void {
+  function handleCopy(): void {
     try {
-      void navigator.clipboard.writeText(value)
-        .then(() => { setState('copied') })
-        .catch(() => { setState('error') })
+      void navigator.clipboard
+        .writeText(value)
+        .then(() => {
+          setState('copied')
+        })
+        .catch(() => {
+          setState('error')
+        })
         .finally(() => {
           clearResetTimer()
-          resetTimerRef.current = window.setTimeout(() => { setState('idle') }, COPY_RESET_DELAY_MS)
+          resetTimerRef.current = window.setTimeout(() => {
+            setState('idle')
+          }, COPY_RESET_DELAY_MS)
         })
     } catch {
       setState('error')
       clearResetTimer()
-      resetTimerRef.current = window.setTimeout(() => { setState('idle') }, COPY_RESET_DELAY_MS)
+      resetTimerRef.current = window.setTimeout(() => {
+        setState('idle')
+      }, COPY_RESET_DELAY_MS)
     }
   }
 
@@ -61,7 +74,12 @@ export function CopyButton ({
       variant={variant}
       size={size}
       icon={buildStateIcon(isCopied, isError, icon)}
-      className={clsx(styles.copyButton, isCopied && styles.copied, isError && styles.error, className)}
+      className={clsx(
+        styles.copyButton,
+        isCopied && styles.copied,
+        isError && styles.error,
+        className,
+      )}
       onClick={handleCopy}
       aria-live='polite'
       {...rest}
@@ -72,7 +90,11 @@ export function CopyButton ({
   )
 }
 
-function buildStateIcon (isCopied: boolean, isError: boolean, icon: ReactNode | undefined): ReactNode {
+function buildStateIcon(
+  isCopied: boolean,
+  isError: boolean,
+  icon: ReactNode | undefined,
+): ReactNode {
   if (isCopied) {
     return <Icon icon={CheckIcon} size='xs' />
   }

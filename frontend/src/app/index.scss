@@ -1,13 +1,13 @@
 :root {
   /* Ozon Brand Palette */
-  --ozon-blue: #005BFF;
+  --ozon-blue: #005bff;
   --ozon-blue-hover: #004de6;
   --ozon-blue-active: #003fb8;
-  --ozon-magenta: #F1117E;
-  --ozon-dark-space: #001A34;
-  --ozon-morning-blue: #00A2FF;
-  --ozon-green: #00BE6C;
-  --ozon-orange: #FFA800;
+  --ozon-magenta: #f1117e;
+  --ozon-dark-space: #001a34;
+  --ozon-morning-blue: #00a2ff;
+  --ozon-green: #00be6c;
+  --ozon-orange: #ffa800;
 
   /* Semantic: Accent (60/40 blue-primary) */
   --accent: var(--ozon-blue);
@@ -201,7 +201,7 @@
   --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
 }
 
-:root[data-theme="dark"] {
+:root[data-theme='dark'] {
   @include dark-theme;
 }
 
@@ -211,7 +211,9 @@
   }
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -219,7 +221,12 @@ body {
   margin: 0;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--heading);
   font-weight: var(--weight-semibold);
   color: var(--text-h);
@@ -235,7 +242,9 @@ button {
   cursor: pointer;
 }
 
-input, select, textarea {
+input,
+select,
+textarea {
   font: inherit;
 }
 

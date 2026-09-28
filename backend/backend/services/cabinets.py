@@ -15,6 +15,9 @@ def _empty_defaults() -> tuple[SellerInfo, Roles]:
 
     A factory, not module-level constants: Pydantic models are mutable, so
     sharing one instance across cabinets would alias mutations across rows.
+
+    Returns:
+        Fresh empty seller info and roles.
     """
     seller_info = SellerInfo(
         company=CompanyInfo(
@@ -125,4 +128,7 @@ class CabinetService(BaseService[CabinetRepository]):
         Raises:
             CabinetNotFoundError: When the cabinet does not exist.
         """
-        await self.repository.delete(await self.get_by_id(client_id))
+        cabinet = await self.repository.get_by_id(client_id)
+        if cabinet is None:
+            raise CabinetNotFoundError(client_id)
+        await self.repository.delete(cabinet)

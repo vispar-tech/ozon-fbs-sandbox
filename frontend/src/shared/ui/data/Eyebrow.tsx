@@ -8,6 +8,6 @@ interface EyebrowProps {
   className?: string
 }
 
-export function Eyebrow ({ children, className = '' }: EyebrowProps): JSX.Element {
+export function Eyebrow({ children, className = '' }: EyebrowProps): JSX.Element {
   return <span className={clsx(styles.eyebrow, className)}>{children}</span>
 }

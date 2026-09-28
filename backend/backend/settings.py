@@ -27,7 +27,7 @@ class Settings(BaseSettings):
     db_host: str = "localhost"
     db_port: int = 5432
     db_user: str = "ozon_fbs_sandbox"
-    db_pass: str = "ozon_fbs_sandbox"  # noqa: S105
+    db_pass: str = "ozon_fbs_sandbox"  # ruff: ignore[hardcoded-password-string]
     db_base: str = "ozon_fbs_sandbox"
     db_echo: bool = False
 

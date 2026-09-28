@@ -13,12 +13,12 @@ import { CONTENT_TYPE_HEADER, JSON_CONTENT_TYPE } from '@/shared/api/index.js'
 const API_KEY_HEADER = 'Api-Key'
 const REDACTED_API_KEY = '<Api-Key>'
 
-export function buildCurlCommand (input: SellerRequestInput): string {
+export function buildCurlCommand(input: SellerRequestInput): string {
   const url = escapeForShell(`${window.location.origin}${input.operation.path}`)
   const flags = [
     `-X ${input.operation.method.toUpperCase()}`,
     `-H '${CONTENT_TYPE_HEADER}: ${JSON_CONTENT_TYPE}'`,
-    ...buildHeaderFlags(input)
+    ...buildHeaderFlags(input),
   ]
   const body = input.body.trim()
   if (body !== '') {
@@ -27,7 +27,7 @@ export function buildCurlCommand (input: SellerRequestInput): string {
   return `curl '${url}' \\\n  ${flags.join(' \\\n  ')}`
 }
 
-export function buildFetchSnippet (input: SellerRequestInput): string {
+export function buildFetchSnippet(input: SellerRequestInput): string {
   const body = input.body.trim()
   if (body !== '' && !isValidJson(body)) {
     return ''
@@ -41,7 +41,7 @@ export function buildFetchSnippet (input: SellerRequestInput): string {
       const headerValue = maskSecret(name, value, input.includeApiKeyInSnippets)
       return `    '${escapeForJsString(name)}': '${escapeForJsString(headerValue)}',`
     }),
-    '  },'
+    '  },',
   ]
   if (body !== '') {
     lines.push(`  body: JSON.stringify(${body}),`)
@@ -50,25 +50,25 @@ export function buildFetchSnippet (input: SellerRequestInput): string {
   return lines.join('\n')
 }
 
-function buildHeaderFlags (input: SellerRequestInput): string[] {
+function buildHeaderFlags(input: SellerRequestInput): string[] {
   return Object.entries(input.headers).map(([name, value]) => {
     const header = `${name}: ${maskSecret(name, value, input.includeApiKeyInSnippets)}`
     return `-H '${escapeForShell(header)}'`
   })
 }
 
-function maskSecret (name: string, value: string, includeApiKey: boolean): string {
+function maskSecret(name: string, value: string, includeApiKey: boolean): string {
   if (name.toLowerCase() === API_KEY_HEADER.toLowerCase() && !includeApiKey) {
     return REDACTED_API_KEY
   }
   return value
 }
 
-function escapeForShell (value: string): string {
+function escapeForShell(value: string): string {
   return value.replaceAll("'", "'\\''")
 }
 
-function escapeForJsString (value: string): string {
+function escapeForJsString(value: string): string {
   return value
     .replaceAll('\\', '\\\\')
     .replaceAll("'", "\\'")
@@ -78,7 +78,7 @@ function escapeForJsString (value: string): string {
     .replaceAll('\u2029', '\\u2029')
 }
 
-function isValidJson (value: string): boolean {
+function isValidJson(value: string): boolean {
   try {
     JSON.parse(value)
     return true

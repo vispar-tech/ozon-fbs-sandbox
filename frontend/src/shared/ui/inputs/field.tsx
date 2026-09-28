@@ -5,11 +5,15 @@ import styles from './field.module.scss'
 
 const WS_PATTERN = /\s+/v
 
-export function hasErrorMessage (error: string | undefined): boolean {
+export function hasErrorMessage(error: string | undefined): boolean {
   return error !== undefined && error.length > 0
 }
 
-export function buildFieldId (prefix: string, id: string | undefined, label: string | undefined): string | undefined {
+export function buildFieldId(
+  prefix: string,
+  id: string | undefined,
+  label: string | undefined,
+): string | undefined {
   if (id !== undefined) {
     return id
   }
@@ -27,16 +31,26 @@ interface BuildFieldClassesOptions {
   className: string
 }
 
-export function buildFieldClasses ({ styles, base, size, hasError, className }: BuildFieldClassesOptions): string {
+export function buildFieldClasses({
+  styles,
+  base,
+  size,
+  hasError,
+  className,
+}: BuildFieldClassesOptions): string {
   return clsx(
     styles[base],
     size !== 'md' && styles[`${base}${size.charAt(0).toUpperCase()}${size.slice(1)}`],
     hasError && styles[`${base}Error`],
-    className.length > 0 && className
+    className.length > 0 && className,
   )
 }
 
-export function buildDescribedBy (fieldId: string | undefined, hasError: boolean, hint: string | undefined): string | undefined {
+export function buildDescribedBy(
+  fieldId: string | undefined,
+  hasError: boolean,
+  hint: string | undefined,
+): string | undefined {
   if (hasError && fieldId !== undefined) {
     return `${fieldId}-error`
   }
@@ -53,10 +67,19 @@ interface FieldMessageProps {
   hint: string | undefined
 }
 
-export function FieldMessage ({ fieldId, hasError, error, hint }: FieldMessageProps): JSX.Element | null {
+export function FieldMessage({
+  fieldId,
+  hasError,
+  error,
+  hint,
+}: FieldMessageProps): JSX.Element | null {
   if (hasError) {
     return (
-      <span className={styles.errorText} id={fieldId === undefined ? undefined : `${fieldId}-error`} role='alert'>
+      <span
+        className={styles.errorText}
+        id={fieldId === undefined ? undefined : `${fieldId}-error`}
+        role='alert'
+      >
         {error}
       </span>
     )

@@ -1,11 +1,22 @@
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
-import { createContext, type JSX, type ReactNode, useCallback, useContext, useEffect, useId, useMemo, useRef, useState } from 'react'
+import {
+  createContext,
+  type JSX,
+  type ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 
 import styles from './Toast.module.scss'
 
 import { IconButton } from '@/shared/ui/actions/index.js'
-import { Portal } from '@/shared/ui/Portal.js'
+import { Portal } from '@/shared/ui/layout/index.js'
 
 const DEFAULT_TOAST_DURATION = 4000
 const MAX_TOASTS = 3
@@ -31,24 +42,27 @@ interface ToastContextValue {
 
 const ToastContext = createContext<ToastContextValue | null>(null)
 
-export function ToastProvider ({ children }: { children: ReactNode }): JSX.Element {
+export function ToastProvider({ children }: { children: ReactNode }): JSX.Element {
   const [toasts, setToasts] = useState<ToastItem[]>([])
   const idPrefix = useId()
   const nextIdRef = useRef(0)
 
-  const showToast = useCallback((options: ToastOptions): void => {
-    const item: ToastItem = {
-      ...options,
-      id: `${idPrefix}-${nextIdRef.current}`,
-      tone: options.tone ?? 'info',
-      duration: options.duration ?? DEFAULT_TOAST_DURATION
-    }
-    nextIdRef.current += 1
-    setToasts(prev => [item, ...prev].slice(0, MAX_TOASTS))
-  }, [idPrefix])
+  const showToast = useCallback(
+    (options: ToastOptions): void => {
+      const item: ToastItem = {
+        ...options,
+        id: `${idPrefix}-${nextIdRef.current}`,
+        tone: options.tone ?? 'info',
+        duration: options.duration ?? DEFAULT_TOAST_DURATION,
+      }
+      nextIdRef.current += 1
+      setToasts((prev) => [item, ...prev].slice(0, MAX_TOASTS))
+    },
+    [idPrefix],
+  )
 
   const dismissToast = useCallback((id: string): void => {
-    setToasts(prev => prev.filter(toast => toast.id !== id))
+    setToasts((prev) => prev.filter((toast) => toast.id !== id))
   }, [])
 
   const value = useMemo(() => ({ showToast }), [showToast])
@@ -58,7 +72,7 @@ export function ToastProvider ({ children }: { children: ReactNode }): JSX.Eleme
       {children}
       <Portal>
         <div className={styles.container} role='status'>
-          {toasts.map(toast => (
+          {toasts.map((toast) => (
             <ToastItemView key={toast.id} toast={toast} onDismiss={dismissToast} />
           ))}
         </div>
@@ -67,7 +81,7 @@ export function ToastProvider ({ children }: { children: ReactNode }): JSX.Eleme
   )
 }
 
-export function useToast (): ToastContextValue {
+export function useToast(): ToastContextValue {
   const context = useContext(ToastContext)
   if (context === null) {
     throw new Error('useToast must be used within a ToastProvider')
@@ -80,7 +94,7 @@ interface ToastItemViewProps {
   onDismiss: (id: string) => void
 }
 
-function ToastItemView ({ toast, onDismiss }: ToastItemViewProps): JSX.Element {
+function ToastItemView({ toast, onDismiss }: ToastItemViewProps): JSX.Element {
   const [paused, setPaused] = useState(false)
   const remainingRef = useRef(toast.duration)
   const onDismissRef = useRef(onDismiss)
@@ -102,21 +116,40 @@ function ToastItemView ({ toast, onDismiss }: ToastItemViewProps): JSX.Element {
 
   return (
     <div
-      className={clsx(styles.toast, styles[`toast${toast.tone.charAt(0).toUpperCase()}${toast.tone.slice(1)}`])}
+      className={clsx(
+        styles.toast,
+        styles[`toast${toast.tone.charAt(0).toUpperCase()}${toast.tone.slice(1)}`],
+      )}
       role={toast.tone === 'danger' ? 'alert' : undefined}
-      onMouseEnter={() => { setPaused(true) }}
-      onMouseLeave={() => { setPaused(false) }}
-      onFocus={() => { setPaused(true) }}
-      onBlur={() => { setPaused(false) }}
+      onMouseEnter={() => {
+        setPaused(true)
+      }}
+      onMouseLeave={() => {
+        setPaused(false)
+      }}
+      onFocus={() => {
+        setPaused(true)
+      }}
+      onBlur={() => {
+        setPaused(false)
+      }}
     >
       <div className={styles.content}>
         <div className={styles.titleRow}>
           <span className={styles.dot} aria-hidden='true' />
           <p className={styles.title}>{toast.title}</p>
         </div>
-        {toast.description !== undefined && <p className={styles.description}>{toast.description}</p>}
+        {toast.description !== undefined && (
+          <p className={styles.description}>{toast.description}</p>
+        )}
       </div>
-      <IconButton icon={XMarkIcon} ariaLabel='Закрыть' onClick={() => { onDismiss(toast.id) }} />
+      <IconButton
+        icon={XMarkIcon}
+        ariaLabel='Закрыть'
+        onClick={() => {
+          onDismiss(toast.id)
+        }}
+      />
     </div>
   )
 }

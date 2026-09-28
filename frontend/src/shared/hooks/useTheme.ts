@@ -4,7 +4,7 @@ const STORAGE_KEY = 'ozon-theme'
 
 type Theme = 'light' | 'dark'
 
-function getInitialTheme (): Theme {
+function getInitialTheme(): Theme {
   try {
     const stored = localStorage.getItem(STORAGE_KEY)
     if (stored === 'light' || stored === 'dark') return stored
@@ -14,7 +14,7 @@ function getInitialTheme (): Theme {
   }
 }
 
-export function useTheme (): { theme: Theme; toggleTheme: () => void } {
+export function useTheme(): { theme: Theme; toggleTheme: () => void } {
   const [theme, setTheme] = useState<Theme>(getInitialTheme)
 
   useEffect(() => {
@@ -33,7 +33,9 @@ export function useTheme (): { theme: Theme; toggleTheme: () => void } {
         setTheme(e.matches ? 'dark' : 'light')
       }
       mq.addEventListener('change', handler)
-      return () => { mq.removeEventListener('change', handler) }
+      return () => {
+        mq.removeEventListener('change', handler)
+      }
     } catch {
       // matchMedia unavailable — silently ignore
       return undefined

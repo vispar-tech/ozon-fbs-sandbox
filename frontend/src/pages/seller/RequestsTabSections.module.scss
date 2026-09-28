@@ -26,7 +26,10 @@
   border-radius: var(--radius-md);
   background: transparent;
   color: var(--text);
-  transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    transform var(--transition-fast);
 
   &:hover {
     background: var(--bg-subtle);
@@ -204,9 +207,8 @@
   color: var(--text-secondary);
 }
 
-/* Padding only: centering, gap and min-height come from CenteredStatus, and the
-   page class must not restate them or the winner would depend on CSS-module
-   source order. */
+/* Padding only: centering, gap and min-height come from CenteredStatus, and
+   restating them here would make the winner depend on CSS-module source order. */
 .responseCenter {
   padding: var(--space-10) var(--space-4);
 }

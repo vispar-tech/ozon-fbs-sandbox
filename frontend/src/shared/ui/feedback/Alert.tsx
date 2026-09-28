@@ -17,18 +17,18 @@ interface AlertProps {
   className?: string
 }
 
-export function Alert ({
+export function Alert({
   tone = 'info',
   title,
   description,
   dismissible = false,
   onClose,
-  className = ''
+  className = '',
 }: AlertProps): JSX.Element {
   const classes = clsx(
     styles.alert,
     styles[`alert${tone.charAt(0).toUpperCase()}${tone.slice(1)}`],
-    className
+    className,
   )
 
   return (

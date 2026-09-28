@@ -19,7 +19,11 @@ REQUEST_TIMEOUT_SECONDS = 30
 
 
 def parse_args() -> argparse.Namespace:
-    """Parse command-line arguments."""
+    """Parse command-line arguments.
+
+    Returns:
+        Parsed command-line arguments.
+    """
     parser = argparse.ArgumentParser(
         description="Fetch a real Ozon Seller API response as a JSON fixture.",
     )
@@ -61,7 +65,14 @@ def parse_args() -> argparse.Namespace:
 
 
 def resolve_credentials(args: argparse.Namespace) -> tuple[int, str]:
-    """Resolve Ozon credentials from CLI args or environment variables."""
+    """Resolve Ozon credentials from CLI args or environment variables.
+
+    Returns:
+        Client id and Api-Key as a pair.
+
+    Raises:
+        SystemExit: When credentials are missing or Client-Id is invalid.
+    """
     client_id = args.client_id or os.environ.get(ENV_CLIENT_ID)
     api_key = args.api_key or os.environ.get(ENV_API_KEY)
     if client_id is None or api_key is None:
@@ -76,12 +87,27 @@ def resolve_credentials(args: argparse.Namespace) -> tuple[int, str]:
 
 
 def default_output_name(path: str) -> str:
-    """Derive a fixture file name from an API path."""
+    """Derive a fixture file name from an API path.
+
+    Returns:
+        File name for the fixture.
+    """
     return path.strip("/").replace("/", "-") + ".json"
 
 
 def resolve_output_path(raw_output: str | None, path: str) -> Path:
-    """Resolve the fixture destination, keeping it inside the fixtures directory."""
+    """Resolve the fixture destination, keeping it inside the fixtures directory.
+
+    Args:
+        raw_output: Explicit output name from the CLI, if any.
+        path: API path used to derive the default name.
+
+    Returns:
+        Resolved destination inside the fixtures directory.
+
+    Raises:
+        SystemExit: When the destination escapes the fixtures directory.
+    """
     output = (FIXTURES_DIR / (raw_output or default_output_name(path))).resolve()
     try:
         output.relative_to(FIXTURES_DIR)
@@ -93,7 +119,18 @@ def resolve_output_path(raw_output: str | None, path: str) -> Path:
 
 
 def fetch_fixture(args: argparse.Namespace) -> Path:
-    """Fetch the Ozon API response and write it to the fixtures directory."""
+    """Fetch the Ozon API response and write it to the fixtures directory.
+
+    Args:
+        args: Parsed command-line arguments.
+
+    Returns:
+        Path the fixture was written to.
+
+    Raises:
+        SystemExit: When credentials are missing, Client-Id or the body is
+            invalid, or the request fails.
+    """
     client_id, api_key = resolve_credentials(args)
     try:
         json.loads(args.body)

@@ -15,11 +15,11 @@ interface BreadcrumbsProps {
   renderLink?: (item: BreadcrumbItem, linkClassName: string | undefined) => ReactNode
 }
 
-export function Breadcrumbs ({
+export function Breadcrumbs({
   items,
   separator = '/',
   className = '',
-  renderLink
+  renderLink,
 }: BreadcrumbsProps): JSX.Element {
   return (
     <nav aria-label='Breadcrumb' className={clsx(styles.breadcrumbs, className)}>

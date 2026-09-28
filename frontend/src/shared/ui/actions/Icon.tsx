@@ -14,14 +14,22 @@ interface IconProps {
   className?: string | undefined
 }
 
-export function Icon ({
+export function Icon({
   icon: IconComponent,
   variant,
   size = 'md',
-  className = ''
+  className = '',
 }: IconProps): JSX.Element {
   return (
-    <span className={clsx(styles.icon, variant !== undefined && styles[`icon${variant.charAt(0).toUpperCase()}${variant.slice(1)}`], styles[`icon${size.charAt(0).toUpperCase()}${size.slice(1)}`], className)}>
+    <span
+      className={clsx(
+        styles.icon,
+        variant !== undefined &&
+          styles[`icon${variant.charAt(0).toUpperCase()}${variant.slice(1)}`],
+        styles[`icon${size.charAt(0).toUpperCase()}${size.slice(1)}`],
+        className,
+      )}
+    >
       <IconComponent aria-hidden='true' />
     </span>
   )

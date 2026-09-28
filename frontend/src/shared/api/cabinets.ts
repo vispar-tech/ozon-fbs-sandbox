@@ -1,7 +1,11 @@
 import type { OzonErrorEnvelope } from './ozon-error.js'
 
 import { isRecord } from '@/shared/lib/index.js'
-import type { CabinetSummary, CreateCabinetInput, UpdateCabinetInput } from '@/shared/model/index.js'
+import type {
+  CabinetSummary,
+  CreateCabinetInput,
+  UpdateCabinetInput,
+} from '@/shared/model/index.js'
 
 const NO_CONTENT_STATUS = 204
 
@@ -9,7 +13,7 @@ export class ApiError extends Error {
   readonly status: number
   readonly code: number | null
 
-  constructor (status: number, code: number | null, message: string) {
+  constructor(status: number, code: number | null, message: string) {
     super(message)
     this.name = 'ApiError'
     this.status = status
@@ -25,14 +29,17 @@ export const createCabinet = async (input: CreateCabinetInput): Promise<CabinetS
 export const getCabinet = async (clientId: number): Promise<CabinetSummary> =>
   await request(`/cabinets/${clientId}`)
 
-export const updateCabinet = async (clientId: number, input: UpdateCabinetInput): Promise<CabinetSummary> =>
+export const updateCabinet = async (
+  clientId: number,
+  input: UpdateCabinetInput,
+): Promise<CabinetSummary> =>
   await request(`/cabinets/${clientId}`, { method: 'PATCH', body: JSON.stringify(input) })
 
 export const deleteCabinet = async (clientId: number): Promise<void> => {
   await request(`/cabinets/${clientId}`, { method: 'DELETE' })
 }
 
-async function request<T> (path: string, init?: RequestInit): Promise<T> {
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const hasBody = init?.body !== undefined
   const headers = new Headers(init?.headers)
   if (hasBody) {
@@ -57,18 +64,25 @@ async function request<T> (path: string, init?: RequestInit): Promise<T> {
   return data as T
 }
 
-async function toResponseError (response: Response): Promise<ApiError> {
+async function toResponseError(response: Response): Promise<ApiError> {
   const body: unknown = await response.json().catch(() => null)
   if (isErrorBody(body) && body.message !== undefined) {
     return new ApiError(response.status, body.code ?? null, body.message)
   }
-  return new ApiError(response.status, null, `Response body is not an OzonError (HTTP ${response.status})`)
+  return new ApiError(
+    response.status,
+    null,
+    `Response body is not an OzonError (HTTP ${response.status})`,
+  )
 }
 
-function isErrorBody (value: unknown): value is OzonErrorEnvelope {
+function isErrorBody(value: unknown): value is OzonErrorEnvelope {
   if (!isRecord(value)) {
     return false
   }
   const { code, message } = value
-  return (code === undefined || typeof code === 'number') && (message === undefined || typeof message === 'string')
+  return (
+    (code === undefined || typeof code === 'number') &&
+    (message === undefined || typeof message === 'string')
+  )
 }

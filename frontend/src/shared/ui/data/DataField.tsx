@@ -14,7 +14,13 @@ interface DataFieldProps {
   className?: string
 }
 
-export function DataField ({ label, value, mono = false, note, className = '' }: DataFieldProps): JSX.Element {
+export function DataField({
+  label,
+  value,
+  mono = false,
+  note,
+  className = '',
+}: DataFieldProps): JSX.Element {
   const empty = value.trim() === ''
 
   return (
