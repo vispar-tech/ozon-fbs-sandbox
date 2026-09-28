@@ -115,6 +115,32 @@ export interface paths {
         patch: operations["update_cabinet_api_cabinets__client_id__patch"];
         trace?: never;
     };
+    "/api/ozon-coverage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Ozon Coverage
+         * @description Report which Ozon Seller API methods the sandbox implements.
+         *
+         *     Args:
+         *         request: Current request, source of the mounted seller routes.
+         *
+         *     Returns:
+         *         Coverage tree over the Ozon schema mirror.
+         */
+        get: operations["get_ozon_coverage_api_ozon_coverage_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/seller/info": {
         parameters: {
             query?: never;
@@ -322,6 +348,78 @@ export interface components {
             last_id?: string | null;
             /** Limit */
             limit?: number | null;
+        };
+        /**
+         * OzonCoverage
+         * @description Response of ``GET /api/ozon-coverage``.
+         */
+        OzonCoverage: {
+            /** Total */
+            total: number;
+            /** Implemented Total */
+            implemented_total: number;
+            source: components["schemas"]["OzonCoverageSource"];
+            /** Groups */
+            groups: components["schemas"]["OzonCoverageGroup"][];
+        };
+        /**
+         * OzonCoverageGroup
+         * @description One ``x-tagGroups`` entry with its tags and counters.
+         */
+        OzonCoverageGroup: {
+            /** Name */
+            name: string;
+            /** Total */
+            total: number;
+            /** Implemented Total */
+            implemented_total: number;
+            /** Tags */
+            tags: components["schemas"]["OzonCoverageTag"][];
+        };
+        /**
+         * OzonCoverageMethod
+         * @description Single Ozon schema operation with its implementation flag.
+         */
+        OzonCoverageMethod: {
+            /** Path */
+            path: string;
+            /** Method */
+            method: string;
+            /** Operation Id */
+            operation_id: string;
+            /** Title */
+            title: string;
+            /** Doc Url */
+            doc_url: string;
+            /** Implemented */
+            implemented: boolean;
+        };
+        /**
+         * OzonCoverageSource
+         * @description Schema mirror location and fetch stamp of the cached payload.
+         */
+        OzonCoverageSource: {
+            /** Url */
+            url: string;
+            /**
+             * Fetched At
+             * Format: date-time
+             */
+            fetched_at: string;
+        };
+        /**
+         * OzonCoverageTag
+         * @description All schema operations of one tag, with counters.
+         */
+        OzonCoverageTag: {
+            /** Name */
+            name: string;
+            /** Total */
+            total: number;
+            /** Implemented Total */
+            implemented_total: number;
+            /** Methods */
+            methods: components["schemas"]["OzonCoverageMethod"][];
         };
         /**
          * OzonError
@@ -925,6 +1023,53 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CabinetSummary"];
+                };
+            };
+            /** @description code 3: Invalid request body */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OzonError"];
+                };
+            };
+            /** @description code 5: Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OzonError"];
+                };
+            };
+            /** @description code 13: Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OzonError"];
+                };
+            };
+        };
+    };
+    get_ozon_coverage_api_ozon_coverage_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OzonCoverage"];
                 };
             };
             /** @description code 3: Invalid request body */

@@ -1,5 +1,12 @@
 export type { CreateCabinetInput, UpdateCabinetInput } from './api.js'
 export type { CabinetSummary } from './cabinet.js'
+export type {
+  OzonCoverage,
+  OzonCoverageGroup,
+  OzonCoverageMethod,
+  OzonCoverageSource,
+  OzonCoverageTag
+} from './coverage.js'
 export type { OzonError } from './errors.js'
 export type {
   CompanyInfo,

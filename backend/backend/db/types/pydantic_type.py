@@ -1,16 +1,14 @@
 """JSONB column type backed by a Pydantic model."""
 
-from typing import Any, TypeVar
+from typing import Any
 
 from pydantic import TypeAdapter
 from sqlalchemy import JSON
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.types import TypeDecorator
 
-T = TypeVar("T")
 
-
-class PydanticType(TypeDecorator[T]):
+class PydanticType[T](TypeDecorator[T]):
     """JSONB column typed by a Pydantic model.
 
     The value is validated by the model on read and dumped on write,

@@ -19,6 +19,12 @@ interface ModalProps {
   title: string
   describedBy?: string
   children: ReactNode
+  /**
+   * Action row of the dialog. It renders outside `children`, so a submit button placed
+   * here loses its form: keep the `<form id>` in `children` and point the button at it
+   * with `form='<form id>'`, exactly as for any submit button outside its form.
+   */
+  footer?: ReactNode
   size?: ModalSize
   className?: string
 }
@@ -29,6 +35,7 @@ export function Modal ({
   title,
   describedBy,
   children,
+  footer,
   size = 'md',
   className = ''
 }: ModalProps): JSX.Element | null {
@@ -110,6 +117,7 @@ export function Modal ({
             <IconButton icon={XMarkIcon} ariaLabel='Закрыть' onClick={onClose} />
           </header>
           <div className={styles.body}>{children}</div>
+          {footer !== undefined && <footer className={styles.footer}>{footer}</footer>}
         </div>
       </div>
     </Portal>

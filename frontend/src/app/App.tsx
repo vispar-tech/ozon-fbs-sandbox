@@ -5,6 +5,7 @@ import { AppShell } from './AppShell.js'
 import { ErrorBoundary } from './ErrorBoundary.js'
 
 import { AdminDashboard } from '@/pages/admin/index.js'
+import { CoveragePage } from '@/pages/coverage/index.js'
 import { ErrorPage } from '@/pages/error/index.js'
 import { SellerDetails } from '@/pages/seller/index.js'
 import { Showcase } from '@/pages/showcase/index.js'
@@ -19,6 +20,7 @@ function App (): JSX.Element {
             <Route element={<AppShell />}>
               <Route path='/' element={<AdminDashboard />} />
               <Route path='/seller/:id' element={<SellerDetails />} />
+              <Route path='/coverage' element={<CoveragePage />} />
             </Route>
             <Route path='/design-code' element={<Showcase />} />
             <Route path='*' element={<ErrorPage variant='not-found' />} />
