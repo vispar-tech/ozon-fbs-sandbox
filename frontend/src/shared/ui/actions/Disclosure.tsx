@@ -3,8 +3,7 @@ import clsx from 'clsx'
 import type { JSX, ReactNode } from 'react'
 
 import styles from './Disclosure.module.scss'
-
-import { Icon } from '@/shared/ui/actions/index.js'
+import { Icon } from './Icon.js'
 
 type DisclosureSize = 'md' | 'sm'
 

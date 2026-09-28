@@ -4,7 +4,7 @@ import { Link, type To } from 'react-router-dom'
 
 import styles from './Button.module.scss'
 
-import { Spinner } from '@/shared/ui/feedback/index.js'
+import { Spinner } from '@/shared/ui/feedback/Spinner.js'
 
 const btnSpinnerClass = styles.btnSpinner ?? ''
 

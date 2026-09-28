@@ -2,9 +2,9 @@ import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import type { ChangeEventHandler, InputHTMLAttributes, JSX, Ref } from 'react'
 
+import { Icon } from './Icon.js'
 import styles from './SearchInput.module.scss'
 
-import { Icon } from '@/shared/ui/actions/index.js'
 import { buildDescribedBy, buildFieldId, FieldMessage, hasErrorMessage } from '@/shared/ui/inputs/field.js'
 import fieldStyles from '@/shared/ui/inputs/field.module.scss'
 
